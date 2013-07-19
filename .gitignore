@@ -1,0 +1,7 @@
+build/
+packages/
+*.ipch
+*.opensdf
+*.sdf
+*.suo
+*.user
