@@ -1,5 +1,7 @@
 build/
 packages/
+bin/
+obj/
 *.ipch
 *.opensdf
 *.sdf
