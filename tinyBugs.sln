@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tinyBugs", "src\tinyBugs.csproj", "{B4922769-2048-48E5-B994-91DC3E5D736F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tinyBugs.test", "test\tinyBugs.test.csproj", "{8AA85EE2-53BD-4039-8940-99311674DD6F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B4922769-2048-48E5-B994-91DC3E5D736F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B4922769-2048-48E5-B994-91DC3E5D736F}.Release|x86.ActiveCfg = Release|Any CPU
+		{8AA85EE2-53BD-4039-8940-99311674DD6F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8AA85EE2-53BD-4039-8940-99311674DD6F}.Release|x86.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
