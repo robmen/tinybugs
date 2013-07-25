@@ -9,6 +9,7 @@
     //WorksForMe,
     public enum IssueStatus
     {
+        Unknown,
         Open,
         Resolved,
         Closed,

@@ -2,6 +2,7 @@
 {
     public enum IssueType
     {
+        Unknown,
         Bug,
         Feature,
     }

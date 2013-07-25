@@ -12,10 +12,13 @@
         }
 
         [AutoIncrement]
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         [References(typeof(Issue))]
-        public Issue Issue { get; set; }
+        public long IssueId { get; set; }
+
+        [References(typeof(User))]
+        public Guid UpdateByUserId { get; set; }
 
         public DateTime CreatedAt { get; set; }
 

@@ -12,13 +12,13 @@
         }
 
         [AutoIncrement]
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         [References(typeof(User))]
-        public Guid AssignedToId { get; set; }
+        public Guid AssignedToUserId { get; set; }
 
         [References(typeof(User))]
-        public Guid CreatedById { get; set; }
+        public Guid CreatedByUserId { get; set; }
 
         public DateTime CreatedAt { get; set; }
 

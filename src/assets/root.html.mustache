@@ -1,0 +1,47 @@
+﻿<html>
+<head>
+<title>tinyBugs - Issues</title>
+</head>
+<body>
+<p>
+Issues:
+</p>
+{{#issues}}
+<p>{{id}} - {{createdat}} - {{title}} - {{text}}</p>
+{{/issues}}
+{{^issues}}
+No issues found.
+{{/issues}}
+{{#previousPageUri}}
+<a href="{{previousPageUri}}">Previous</a>
+{{/previousPageUri}}
+{{#nextPageUri}}
+<a href="{{nextPageUri}}">Next</a>
+{{/nextPageUri}}
+
+<hr>
+<p>
+Search syntax: ?[filter=column:value]&[sort=column[:desc]]&[search=query]&[page=#]&[count=#]
+</p>
+<dl>
+<dt>filter</dt><dd>filter the results of columns that contain based on the 'value'.</dd>
+<dt>sort</dt><dd>sort the results on a column, optionally descending by adding the "desc" modifier.</dd>
+<dt>search</dt><dd>query the result text.</dd>
+<dt>page</dt><dd>page of the results to return.</dd>
+<dt>count</dt><dd>number of the issues to return per page.</dd>
+<dl>
+<p>
+The `filter`, `sort` and `search` queries are additive such that multiple columns or search
+terms can be filtered, sorted and searched. The `page` and `count` modifiers are singletons and
+the last appearance is used.
+</p>
+<p>
+Some example queries:
+</p>
+<dl>
+<dt><a href="?sort=id:desc">?sort=id:desc</a></dt><dd>Return the list of issues in reverse default order.</dd>
+<dt><a href="?filter=type:Bug">?filter=type:Bug</a></dt><dd>Return the list of bugs.</dd>
+<dt><a href="?search=longer+old">?search=old</a></dt><dd>Return the list of issues that have "longer" and "old" in their title, text or comments.</dd>
+<dt><a href="?page=2&count=1">?page=2&count=1</a></dt><dd>Return the second page where there is only one issue per page.</dd>
+</dl>
+</html>

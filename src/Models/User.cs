@@ -12,6 +12,8 @@
 
         public string Name { get; set; }
 
+        public string GravatarId { get; set; }
+
         public string Salt { get; set; }
 
         public string PasswordHash { get; set; }

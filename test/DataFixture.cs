@@ -18,13 +18,13 @@
             var userId = Guid.NewGuid();
             using (IDbConnection db = DataService.Connect())
             {
-                int issueId = -1;
+                long issueId = -1;
                 using (IDbTransaction tx = db.OpenTransaction())
                 {
                     db.CreateTables(true, typeof(User), typeof(Issue), typeof(IssueUpdate));
                     db.Insert(new User() { Id = userId, Email = "tinybugs@robmensching.com", Name = "tinyBugs at RobMensching.com" });
 
-                    db.Insert(new Issue() { AssignedToId = userId, CreatedById = userId, CreatedAt = DateTime.UtcNow, Title = "Test bug", Type = IssueType.Bug, Status = IssueStatus.Open, Release = "v3.x", Text = "This is a test bug. It will have Markdown content in it." });
+                    db.Insert(new Issue() { AssignedToUserId = userId, CreatedByUserId = userId, CreatedAt = DateTime.UtcNow, Title = "Test bug", Type = IssueType.Bug, Status = IssueStatus.Open, Release = "v3.x", Text = "This is a test bug. It will have Markdown content in it." });
                     issueId = (int)db.GetLastInsertId();
 
                     tx.Commit();
@@ -36,7 +36,7 @@
                 string us = db.GetLastSql();
                 var issue = db.GetByIdParam<Issue>(issueId);
                 string uss = db.GetLastSql();
-                Assert.Equal(user.Id, issue.CreatedById);
+                Assert.Equal(user.Id, issue.CreatedByUserId);
             }
         }
     }

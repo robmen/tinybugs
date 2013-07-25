@@ -1,0 +1,16 @@
+﻿<html>
+<head>
+<title>Login</title>
+</head>
+<body>
+{{#retry}}
+  <p>Retry your login.</p>
+{{/retry}}
+<form method='post' action='/login/'>
+    <label for='username'>Email</label>
+    <input id='username' name='username' type='text' maxlength='50' value="{{username}}" />
+    <label for='password'>Password</label>
+    <input id='password' name='password' type='text' maxlength='50'/>
+  <input type='submit' name='submit' value='Login'/>
+</form>
+</html>
