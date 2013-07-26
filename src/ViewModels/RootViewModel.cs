@@ -5,10 +5,6 @@
 
     public class RootViewModel
     {
-        public RootViewModel()
-        {
-        }
-
         public List<CompleteIssue> Issues { get; set; }
 
         public Pagination Page { get; set; }

@@ -5,10 +5,6 @@
 
     public class ApiViewModel
     {
-        public ApiViewModel()
-        {
-        }
-
         public IEnumerable<CompleteIssue> Issues { get; set; }
 
         public Pagination Page { get; set; }
