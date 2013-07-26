@@ -1,9 +1,9 @@
 ﻿namespace RobMensching.TinyBugs.Services
 {
     using System;
-using System.Data;
-using RobMensching.TinyBugs.Models;
-using ServiceStack.OrmLite;
+    using System.Data;
+    using RobMensching.TinyBugs.Models;
+    using ServiceStack.OrmLite;
 
     public static class DataService
     {
