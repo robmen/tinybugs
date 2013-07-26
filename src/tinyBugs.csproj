@@ -113,8 +113,10 @@
     <None Include="assets\login\login.html.mustache" />
     <None Include="assets\notfound\index.html.mustache" />
     <Compile Include="Models\CompleteIssue.cs" />
+    <Compile Include="Models\CompleteIssueComment.cs" />
     <Compile Include="Models\FullTextSearchIssue.cs" />
-    <Compile Include="Models\IssuesPaged.cs" />
+    <Compile Include="Models\QueriedIssues.cs" />
+    <Compile Include="Models\Pagination.cs" />
     <Compile Include="Models\Query.cs" />
     <Compile Include="Models\QueryFilterColumn.cs" />
     <Compile Include="Models\QuerySortColumn.cs" />
@@ -136,7 +138,7 @@
     <Compile Include="Models\IssueChange.cs" />
     <Compile Include="Models\IssueStatus.cs" />
     <Compile Include="Models\IssueType.cs" />
-    <Compile Include="Models\IssueUpdate.cs" />
+    <Compile Include="Models\IssueComment.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\DataService.cs" />

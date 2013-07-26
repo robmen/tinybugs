@@ -56,5 +56,7 @@
 
         [BelongTo(typeof(Issue))]
         public int Votes { get; set; }
+
+        public List<CompleteIssueComment> Comments { get; set; }
     }
 }

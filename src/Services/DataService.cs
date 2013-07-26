@@ -31,7 +31,7 @@ using ServiceStack.OrmLite;
                     fullTextSearchExists = false;
                 }
 
-                db.CreateTables(overwrite, typeof(User), typeof(Issue), typeof(IssueUpdate));
+                db.CreateTables(overwrite, typeof(User), typeof(Issue), typeof(IssueComment));
                 if (!fullTextSearchExists)
                 {
                     db.ExecuteSql("CREATE VIRTUAL TABLE FullTextSearchIssue USING fts4(Title, Text, Comments)");
@@ -81,11 +81,21 @@ using ServiceStack.OrmLite;
                 };
                 db.Insert(issueOld);
 
+                var issueOldComment = new IssueComment()
+                {
+                    IssueId = db.GetLastInsertId(),
+                    CommentByUserId = barUser.Id,
+                    CreatedAt = DateTime.UtcNow,
+                    Text = "This is the text of the comment. It is a little longer to provide some detail about the feature request.",
+                };
+                db.Save(issueOldComment);
+
                 var issueOldSearch = new FullTextSearchIssue()
                 {
-                    DocId = db.GetLastInsertId(),
+                    DocId = issueOldComment.IssueId,
                     Text = issueOld.Text,
                     Title = issueOld.Title,
+                    Comments = issueOldComment.Text,
                 };
                 //db.SqlScalar<int>("INSERT INTO issue_text(docid, title, text) VALUES(@i, @t, @c)",
                 //              new { i = db.GetLastInsertId(), t = issue.Title, c = issue.Text });

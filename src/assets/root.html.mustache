@@ -12,12 +12,14 @@ Issues:
 {{^issues}}
 No issues found.
 {{/issues}}
-{{#previousPageUri}}
-<a href="{{previousPageUri}}">Previous</a>
-{{/previousPageUri}}
-{{#nextPageUri}}
-<a href="{{nextPageUri}}">Next</a>
-{{/nextPageUri}}
+{{#page}}
+{{#previousUrl}}
+<a href="{{previousUrl}}">Previous</a>
+{{/previousUrl}}
+{{#nextUrl}}
+<a href="{{nextUrl}}">Next</a>
+{{/nextUrl}}
+{{/page}}
 
 <hr>
 <p>

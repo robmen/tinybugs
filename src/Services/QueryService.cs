@@ -27,6 +27,13 @@ INNER JOIN User AS u1 ON Issue.AssignedToUserId=u1.Id
 INNER JOIN User AS u2 ON Issue.CreatedByUserId=u2.Id
 /**join**/ /**leftjoin**/ /**where**/ /**orderby**/";
 
+        private const string CommentSqlQueryTemplate = @"
+SELECT *, User.Email AS CommentByUserEmail, User.Name AS CommentByUserName
+FROM IssueComment
+INNER JOIN User ON IssueComment.CommentByUserId=User.Id
+/**join**/ /**leftjoin**/ /**where**/ /**orderby**/";
+
+
         private static Dictionary<string, string> AllowedColumns = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase) {
             { "id", "Issue.Id" },
             { "assignedto", "u1.Email" /*"AssignedToUserEmail"*/ },
@@ -114,7 +121,7 @@ INNER JOIN User AS u2 ON Issue.CreatedByUserId=u2.Id
             return sb.ToString();
         }
 
-        public static IssuesPaged QueryIssues(Query query)
+        public static QueriedIssues QueryIssues(Query query)
         {
             SqlBuilder sql = new SqlBuilder();
             Dictionary<string, object> parameters = new Dictionary<string, object>();
@@ -136,7 +143,7 @@ INNER JOIN User AS u2 ON Issue.CreatedByUserId=u2.Id
             }
             else
             {
-                ProcessSort(new QuerySortColumn("created"), sql, parameters);
+                ProcessSort(new QuerySortColumn("id"), sql, parameters);
             }
 
             if (query.Searches != null)
@@ -155,17 +162,24 @@ INNER JOIN User AS u2 ON Issue.CreatedByUserId=u2.Id
 
             using (var db = DataService.Connect())
             {
-                long total = db.SqlScalar<long>(countTemplate.RawSql, parameters);
-                int pages = (int)((total + query.Count - 1) / query.Count);
-                return new IssuesPaged()
+                int total = db.SqlScalar<int>(countTemplate.RawSql, parameters);
+                return new QueriedIssues()
                 {
                     Issues = db.Query<CompleteIssue>(rawSql, parameters),
-                    Page = (query.Page == 0) ? 1 : query.Page,
-                    Pages = pages,
-                    PreviousPage = (query.Page > 1) ? Math.Min(query.Page - 1, pages) : 0,
-                    NextPage = (query.Page < pages) ? query.Page + 1 : 0,
                     Total = total,
                 };
+            }
+        }
+
+        public static List<CompleteIssueComment> CommentsForIssue(int issueId)
+        {
+            SqlBuilder sql = new SqlBuilder();
+            sql.Where("IssueId=@issueId", new { issueId = issueId });
+            var commentTemplate = sql.AddTemplate(CommentSqlQueryTemplate);
+
+            using (var db = DataService.Connect())
+            {
+                return db.Query<CompleteIssueComment>(commentTemplate.RawSql, commentTemplate.Parameters);
             }
         }
 

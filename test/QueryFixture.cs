@@ -171,10 +171,23 @@
             Assert.Equal("?filter=createdby:bar%40example.com&count=250", s);
         }
 
+        [Fact]
+        public void CommentsQuery()
+        {
+            DataService.ConnectionString = "test.sqlite";
+            DataService.Initialize(true);
+
+            var q = QueryService.ParseQuery("?filter=type:Feature");
+            var i = QueryService.QueryIssues(q);
+            i.Issues.ForEach(issue => issue.Comments = QueryService.CommentsForIssue(issue.Id));
+            Assert.Single(i.Issues);
+            Assert.Single(i.Issues[0].Comments);
+        }
+
         private static IDbConnection OpenDatabaseWithTestData()
         {
             var db = ":memory:".OpenDbConnection();
-            db.CreateTables(false, typeof(User), typeof(Issue), typeof(IssueUpdate));
+            db.CreateTables(false, typeof(User), typeof(Issue), typeof(IssueComment));
 
             var fooUser = UserService.Create("foo@example.com", "bar.");
             fooUser.Name = "Foo User";

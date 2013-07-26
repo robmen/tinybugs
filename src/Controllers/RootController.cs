@@ -15,12 +15,7 @@
             RootViewModel vm = new RootViewModel()
             {
                 Issues = issuesPaged.Issues,
-                Page = issuesPaged.Page,
-                Pages = issuesPaged.Pages,
-                Total = issuesPaged.Total,
-                PageUriPrefix = pagePrefix,
-                PreviousPageUri = (issuesPaged.PreviousPage > 0) ? pagePrefix + issuesPaged.PreviousPage : null,
-                NextPageUri = (issuesPaged.NextPage > 0) ? pagePrefix + issuesPaged.NextPage : null,
+                Page = new Pagination(q.Page, q.Count, issuesPaged.Total, pagePrefix),
             };
 
             string path = q.Template ?? "root.html.mustache";

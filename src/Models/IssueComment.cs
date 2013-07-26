@@ -4,9 +4,9 @@
     using System.Collections.Generic;
     using ServiceStack.DataAnnotations;
 
-    public class IssueUpdate
+    public class IssueComment
     {
-        public IssueUpdate()
+        public IssueComment()
         {
             this.Changes = new List<IssueChange>();
         }
@@ -18,7 +18,7 @@
         public long IssueId { get; set; }
 
         [References(typeof(User))]
-        public Guid UpdateByUserId { get; set; }
+        public Guid CommentByUserId { get; set; }
 
         public DateTime CreatedAt { get; set; }
 
