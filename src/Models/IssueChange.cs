@@ -2,7 +2,7 @@
 {
     public class IssueChange
     {
-        public string Field { get; set; }
+        public string Column { get; set; }
 
         public string Old { get; set; }
 
