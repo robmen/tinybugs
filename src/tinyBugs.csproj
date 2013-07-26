@@ -50,57 +50,6 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NLog">
-      <HintPath>..\packages\NLog.2.0.1.2\lib\net40\NLog.dll</HintPath>
-    </Reference>
-    <Reference Include="Nustache.Core">
-      <HintPath>..\packages\Nustache.1.13.6.20\lib\net20\Nustache.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="ServiceStack.Common">
-      <HintPath>..\packages\ServiceStack.Common.3.9.55\lib\net35\ServiceStack.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="ServiceStack.Interfaces">
-      <HintPath>..\packages\ServiceStack.Common.3.9.55\lib\net35\ServiceStack.Interfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="ServiceStack.Logging.NLog">
-      <HintPath>..\packages\ServiceStack.Logging.NLog.1.0.10.0\lib\net35\ServiceStack.Logging.NLog.dll</HintPath>
-    </Reference>
-    <Reference Include="ServiceStack.Text">
-      <HintPath>..\packages\ServiceStack.Text.3.9.55\lib\net35\ServiceStack.Text.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.configuration" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup Condition=" '$(Platform)' != 'x64' ">
-    <Reference Include="ServiceStack.OrmLite">
-      <HintPath>..\packages\ServiceStack.OrmLite.Sqlite32.3.9.55\lib\net40\ServiceStack.OrmLite.dll</HintPath>
-    </Reference>
-    <Reference Include="ServiceStack.OrmLite.SqliteNET">
-      <HintPath>..\packages\ServiceStack.OrmLite.Sqlite32.3.9.55\lib\net40\ServiceStack.OrmLite.SqliteNET.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Data.SQLite">
-      <HintPath>..\packages\System.Data.SQLite.x86.1.0.86.0\lib\net40\System.Data.SQLite.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup Condition=" '$(Platform)' == 'x64' ">
-    <Reference Include="ServiceStack.OrmLite">
-      <HintPath>..\packages\ServiceStack.OrmLite.Sqlite64.3.9.55\lib\net40\ServiceStack.OrmLite.dll</HintPath>
-    </Reference>
-    <Reference Include="ServiceStack.OrmLite.SqliteNET">
-      <HintPath>..\packages\ServiceStack.OrmLite.Sqlite64.3.9.55\lib\net40\ServiceStack.OrmLite.SqliteNET.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Data.SQLite">
-      <HintPath>..\packages\System.Data.SQLite.x64.1.0.86.0\lib\net40\System.Data.SQLite.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Controllers\IssuesApiController.cs" />
     <Compile Include="Controllers\CommentApiController.cs" />
     <Compile Include="Controllers\ControllerBase.cs" />
@@ -151,21 +100,89 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <Reference Include="NLog">
+      <HintPath>..\packages\NLog.2.0.1.2\lib\net40\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="Nustache.Core">
+      <HintPath>..\packages\Nustache.1.13.6.20\lib\net20\Nustache.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Common">
+      <HintPath>..\packages\ServiceStack.Common.3.9.55\lib\net35\ServiceStack.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Interfaces">
+      <HintPath>..\packages\ServiceStack.Common.3.9.55\lib\net35\ServiceStack.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Logging.NLog">
+      <HintPath>..\packages\ServiceStack.Logging.NLog.1.0.10.0\lib\net35\ServiceStack.Logging.NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Text">
+      <HintPath>..\packages\ServiceStack.Text.3.9.55\lib\net35\ServiceStack.Text.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(Platform)' != 'x64' ">
+    <Reference Include="ServiceStack.OrmLite">
+      <HintPath>..\packages\ServiceStack.OrmLite.Sqlite32.3.9.55\lib\net40\ServiceStack.OrmLite.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.OrmLite.SqliteNET">
+      <HintPath>..\packages\ServiceStack.OrmLite.Sqlite32.3.9.55\lib\net40\ServiceStack.OrmLite.SqliteNET.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.SQLite">
+      <HintPath>..\packages\System.Data.SQLite.x86.1.0.86.0\lib\net40\System.Data.SQLite.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup Condition=" '$(Platform)' == 'x64' ">
+    <Reference Include="ServiceStack.OrmLite">
+      <HintPath>..\packages\ServiceStack.OrmLite.Sqlite64.3.9.55\lib\net40\ServiceStack.OrmLite.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.OrmLite.SqliteNET">
+      <HintPath>..\packages\ServiceStack.OrmLite.Sqlite64.3.9.55\lib\net40\ServiceStack.OrmLite.SqliteNET.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.SQLite">
+      <HintPath>..\packages\System.Data.SQLite.x64.1.0.86.0\lib\net40\System.Data.SQLite.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  -->
+
   <Target Name="AfterBuild">
     <ItemGroup>
-      <CopyBinFiles Include="bin\$(Platform)\$(Configuration)\**\*.dll;bin\$(Platform)\$(Configuration)\**\*.pdb">
+      <MergeAssemblies Include="bin\$(Platform)\$(Configuration)\*.dll"/>
+      <InternalizeExcludeClasses Include="RobMensching.TinyBugs.Application" />
+    </ItemGroup>
+
+    <ILRepack InputAssemblies="@(MergeAssemblies)"
+              OutputFile="bin\$(Platform)\$(Configuration)\merged\$(AssemblyName).dll"
+              InternalizeExclude="@(InternalizeExcludeClasses)"
+              Parallel="true"
+              Internalize="true"
+              ZeroPeKind="true"
+              DebugInfo="true" />
+
+    <ItemGroup>
+      <CopyBinFiles Include="bin\$(Platform)\$(Configuration)\merged\**">
         <PlaceHere>bin</PlaceHere>
       </CopyBinFiles>
-      <CopyFiles Include="bin\$(Platform)\$(Configuration)\**\*.config;bin\$(Platform)\$(Configuration)\**\*.asax;bin\$(Platform)\$(Configuration)\**\*.mustache" Exclude="bin\$(Platform)\$(Configuration)\assets\**" />
+      <CopyBinFiles Include="bin\$(Platform)\$(Configuration)\System.Data.SQLite.dll">
+        <PlaceHere>bin</PlaceHere>
+      </CopyBinFiles>
+      <CopyFiles Include="bin\$(Platform)\$(Configuration)\web.config" />
+      <CopyFiles Include="bin\$(Platform)\$(Configuration)\Global.asax" />
       <CopyFiles Include="assets\**" />
     </ItemGroup>
+
     <Copy SourceFiles="@(CopyBinFiles)" DestinationFolder="..\build\publish\$(Platform)\bin\" SkipUnchangedFiles="true" />
     <Copy SourceFiles="@(CopyFiles)" DestinationFiles="..\build\publish\$(Platform)\%(RecursiveDir)%(Filename)%(Extension)" SkipUnchangedFiles="true" />
   </Target>
+
+  <Import Project="..\packages\ILRepack.MSBuild.Task.1.0.8\build\ILRepack.MSBuild.Task.targets" />
 </Project>
