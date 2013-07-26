@@ -101,7 +101,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controllers\ApiController.cs" />
+    <Compile Include="Controllers\IssuesApiController.cs" />
+    <Compile Include="Controllers\CommentApiController.cs" />
     <Compile Include="Controllers\ControllerBase.cs" />
     <Compile Include="Controllers\ControllerContext.cs" />
     <Compile Include="Controllers\LoginController.cs" />
@@ -122,7 +123,7 @@
     <Compile Include="Models\QuerySortColumn.cs" />
     <Compile Include="Services\FileService.cs" />
     <Compile Include="Services\QueryService.cs" />
-    <Compile Include="ViewModels\ApiViewModel.cs" />
+    <Compile Include="ViewModels\IssuesApiViewModel.cs" />
     <Compile Include="ViewModels\RootViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\NotFoundViewModel.cs" />

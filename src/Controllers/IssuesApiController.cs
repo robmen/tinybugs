@@ -5,7 +5,7 @@
     using RobMensching.TinyBugs.ViewModels;
     using ServiceStack.Text;
 
-    public class ApiController : ControllerBase
+    public class IssuesApiController : ControllerBase
     {
         public override void Execute()
         {
@@ -13,7 +13,7 @@
             QueriedIssues issuesPaged = QueryService.QueryIssues(q);
             var pagePrefix = this.Context.ApplicationPath + "api/" + QueryService.RecreateQueryString(q) + "&page=";
 
-            ApiViewModel vm = new ApiViewModel()
+            IssuesApiViewModel vm = new IssuesApiViewModel()
             {
                 Issues = issuesPaged.Issues,
                 Page = new Pagination(q.Page, q.Count, issuesPaged.Total, pagePrefix),
