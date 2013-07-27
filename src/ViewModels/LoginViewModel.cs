@@ -1,17 +1,9 @@
 ﻿namespace RobMensching.TinyBugs.ViewModels
 {
-    using System.Net;
     using Nustache.Core;
 
-    public class LoginViewModel
+    public class LoginViewModel : ViewModelBase
     {
-        public LoginViewModel()
-        {
-            this.StatusCode = HttpStatusCode.OK;
-        }
-
-        public HttpStatusCode StatusCode { get; set; }
-
         public string RedirectUrl { get; set; }
 
         public bool Retry { get; set; }

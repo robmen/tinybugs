@@ -1,9 +1,7 @@
 ﻿namespace RobMensching.TinyBugs.ViewModels
 {
-    public class NotFoundViewModel
+    public class NotFoundViewModel : ViewModelBase
     {
-        public int StatusCode { get; set; }
-
         public string ReferralUri { get; set; }
     }
 }

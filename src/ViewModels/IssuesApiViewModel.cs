@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using RobMensching.TinyBugs.Models;
 
-    public class IssuesApiViewModel
+    public class IssuesApiViewModel : ViewModelBase
     {
         public IEnumerable<CompleteIssue> Issues { get; set; }
 

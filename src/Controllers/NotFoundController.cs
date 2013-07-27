@@ -13,13 +13,13 @@
         public override void Execute()
         {
             var query = this.Context.QueryString;
-            int statusCode = (int)HttpStatusCode.NotFound;
+            HttpStatusCode statusCode = HttpStatusCode.NotFound;
             string referrer = this.Context.Referrer != null ? this.Context.Referrer.AbsoluteUri : String.Empty;
 
             if (query.Count > 0)
             {
                 string[] s = query.Get(0).Split(new char[] { ';' });
-                statusCode = Convert.ToInt32(s[0]);
+                statusCode = (HttpStatusCode)Convert.ToInt32(s[0]);
                 if (String.IsNullOrEmpty(referrer) && s.Length > 1)
                 {
                     referrer = s[1];
