@@ -30,10 +30,10 @@
                     template.Load(reader);
                 }
 
-                if (!CompiledTemplates.TryAdd(path, template))
-                {
-                    template = CompiledTemplates[path];
-                }
+                //if (!CompiledTemplates.TryAdd(path, template))
+                //{
+                //    template = CompiledTemplates[path];
+                //}
             }
 
             return template;
