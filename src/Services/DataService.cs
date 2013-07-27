@@ -39,11 +39,11 @@
 
                 var fooUser = UserService.Create("foo@example.com", "bar.");
                 fooUser.Name = "Foo User";
-                db.Insert(fooUser);
+                db.Save(fooUser);
 
                 var barUser = UserService.Create("bar@example.com", "foo");
                 barUser.Name = "Bar User";
-                db.Insert(barUser);
+                db.Save(barUser);
 
                 var issue = new Issue()
                 {
@@ -56,7 +56,7 @@
                     Text = "This is the text of the bug. It is a little longer than the title.",
                     Votes = 4,
                 };
-                db.Insert(issue);
+                db.Save(issue);
 
                 var issueSearch = new FullTextSearchIssue()
                 {
@@ -79,7 +79,7 @@
                     Text = "This is the text of the feature. It is a little longer than the title and it's for older stuff.",
                     Votes = 1,
                 };
-                db.Insert(issueOld);
+                db.Save(issueOld);
 
                 var issueOldComment = new IssueComment()
                 {

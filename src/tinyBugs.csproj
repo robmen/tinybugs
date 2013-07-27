@@ -58,7 +58,9 @@
     <Compile Include="Controllers\EverythingController.cs" />
     <Compile Include="Controllers\RootController.cs" />
     <Compile Include="Controllers\NotFoundController.cs" />
+    <Compile Include="ViewModels\ViewModelBase.cs" />
     <Content Include="assets\1234\index.html" />
+    <None Include="assets\post.html.mustache" />
     <None Include="assets\root.html.mustache" />
     <None Include="assets\login\login.html.mustache" />
     <None Include="assets\notfound\index.html.mustache" />
@@ -72,10 +74,12 @@
     <Compile Include="Models\QuerySortColumn.cs" />
     <Compile Include="Services\FileService.cs" />
     <Compile Include="Services\QueryService.cs" />
+    <Compile Include="ViewModels\IssueApiViewModel.cs" />
     <Compile Include="ViewModels\IssuesApiViewModel.cs" />
     <Compile Include="ViewModels\RootViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\NotFoundViewModel.cs" />
+    <Content Include="assets\js\tinybugs.js" />
     <Content Include="Global.asax">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -98,6 +102,7 @@
     <None Include="packages.config" />
     <None Include="web.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -151,38 +156,36 @@
       <HintPath>..\packages\System.Data.SQLite.x64.1.0.86.0\lib\net40\System.Data.SQLite.dll</HintPath>
     </Reference>
   </ItemGroup>
-
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-
   <Target Name="AfterBuild">
+    <!--
     <ItemGroup>
-      <MergeAssemblies Include="bin\$(Platform)\$(Configuration)\*.dll"/>
+      <MergeAssemblies Include="bin\$(Platform)\$(Configuration)\*.dll" />
       <InternalizeExcludeClasses Include="RobMensching.TinyBugs.Application" />
     </ItemGroup>
-
-    <ILRepack InputAssemblies="@(MergeAssemblies)"
-              OutputFile="bin\$(Platform)\$(Configuration)\merged\$(AssemblyName).dll"
-              InternalizeExclude="@(InternalizeExcludeClasses)"
-              Parallel="true"
-              Internalize="true"
-              ZeroPeKind="true"
-              DebugInfo="true" />
-
+    <ILRepack InputAssemblies="@(MergeAssemblies)" OutputFile="bin\$(Platform)\$(Configuration)\merged\$(AssemblyName).dll" InternalizeExclude="@(InternalizeExcludeClasses)" Parallel="true" Internalize="true" ZeroPeKind="true" DebugInfo="true" />
+-->
     <ItemGroup>
+      <!--
       <CopyBinFiles Include="bin\$(Platform)\$(Configuration)\merged\**">
         <PlaceHere>bin</PlaceHere>
       </CopyBinFiles>
       <CopyBinFiles Include="bin\$(Platform)\$(Configuration)\System.Data.SQLite.dll">
         <PlaceHere>bin</PlaceHere>
       </CopyBinFiles>
+-->
+      <CopyBinFiles Include="bin\$(Platform)\$(Configuration)\*.dll">
+        <PlaceHere>bin</PlaceHere>
+      </CopyBinFiles>
+      <CopyBinFiles Include="bin\$(Platform)\$(Configuration)\*.pdb">
+        <PlaceHere>bin</PlaceHere>
+      </CopyBinFiles>
       <CopyFiles Include="bin\$(Platform)\$(Configuration)\web.config" />
       <CopyFiles Include="bin\$(Platform)\$(Configuration)\Global.asax" />
       <CopyFiles Include="assets\**" />
     </ItemGroup>
-
     <Copy SourceFiles="@(CopyBinFiles)" DestinationFolder="..\build\publish\$(Platform)\bin\" SkipUnchangedFiles="true" />
     <Copy SourceFiles="@(CopyFiles)" DestinationFiles="..\build\publish\$(Platform)\%(RecursiveDir)%(Filename)%(Extension)" SkipUnchangedFiles="true" />
   </Target>
-
   <Import Project="..\packages\ILRepack.MSBuild.Task.1.0.8\build\ILRepack.MSBuild.Task.targets" />
 </Project>
