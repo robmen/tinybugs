@@ -20,7 +20,11 @@
 
         public string Method { get { return this.Context.Request.HttpMethod; } }
 
-        public HttpCookieCollection Cookies { get { return this.Context.Request.Cookies; } }
+        public bool Authenticated { get { return (this.Context.User != null && this.Context.User.Identity.IsAuthenticated); } }
+
+        public HttpCookieCollection RequestCookies { get { return this.Context.Request.Cookies; } }
+
+        public HttpCookieCollection Cookies { get { return this.Context.Response.Cookies; } }
 
         public NameValueCollection QueryString { get { return this.Context.Request.QueryString; } }
 
@@ -29,6 +33,8 @@
         public Uri Referrer { get { return this.Context.Request.UrlReferrer; } }
 
         public Uri Url { get { return this.Context.Request.Url; } }
+
+        public Guid User { get { return (this.Context.User != null && this.Context.User.Identity.IsAuthenticated) ? new Guid(this.Context.User.Identity.Name) : Guid.Empty; } }
 
         public TextWriter GetOutput(string contentType = null)
         {
