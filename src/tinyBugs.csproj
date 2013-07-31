@@ -62,6 +62,45 @@
     <Compile Include="Controllers\NotFoundController.cs" />
     <Compile Include="Controllers\UserApiController.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
+    <Content Include="assets\bug.mustache">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="assets\header.mustache">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="assets\post.html.mustache">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="assets\root.html.mustache">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="assets\login.html.mustache">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="assets\notfound.html.mustache">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Compile Include="Models\CompleteIssue.cs" />
+    <Compile Include="Models\CompleteIssueComment.cs" />
+    <Compile Include="Models\FullTextSearchIssue.cs" />
+    <Compile Include="Models\QueriedIssues.cs" />
+    <Compile Include="Models\Pagination.cs" />
+    <Compile Include="Models\Query.cs" />
+    <Compile Include="Models\QueryFilterColumn.cs" />
+    <Compile Include="Models\QuerySortColumn.cs" />
+    <Compile Include="Services\FileService.cs" />
+    <Compile Include="Services\QueryService.cs" />
+    <Compile Include="ViewModels\IssueApiViewModel.cs" />
+    <Compile Include="ViewModels\IssuesApiViewModel.cs" />
+    <Compile Include="ViewModels\RootViewModel.cs" />
+    <Compile Include="ViewModels\LoginViewModel.cs" />
+    <Compile Include="ViewModels\NotFoundViewModel.cs" />
+    <Content Include="assets\css\tinybugs.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="assets\js\tinybugs.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="assets\js\mdd\MarkdownDeepLib.min.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -83,28 +122,7 @@
     <Content Include="assets\js\mdd\mdd_toolbar.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="assets\bug.mustache" />
-    <None Include="assets\header.mustache" />
-    <None Include="assets\post.html.mustache" />
-    <None Include="assets\root.html.mustache" />
-    <None Include="assets\login.html.mustache" />
-    <None Include="assets\notfound.html.mustache" />
-    <Compile Include="Models\CompleteIssue.cs" />
-    <Compile Include="Models\CompleteIssueComment.cs" />
-    <Compile Include="Models\FullTextSearchIssue.cs" />
-    <Compile Include="Models\QueriedIssues.cs" />
-    <Compile Include="Models\Pagination.cs" />
-    <Compile Include="Models\Query.cs" />
-    <Compile Include="Models\QueryFilterColumn.cs" />
-    <Compile Include="Models\QuerySortColumn.cs" />
-    <Compile Include="Services\FileService.cs" />
-    <Compile Include="Services\QueryService.cs" />
-    <Compile Include="ViewModels\IssueApiViewModel.cs" />
-    <Compile Include="ViewModels\IssuesApiViewModel.cs" />
-    <Compile Include="ViewModels\RootViewModel.cs" />
-    <Compile Include="ViewModels\LoginViewModel.cs" />
-    <Compile Include="ViewModels\NotFoundViewModel.cs" />
-    <Content Include="assets\js\tinybugs.js">
+    <Content Include="assets\login\index.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="assets\new\index.html">
