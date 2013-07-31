@@ -51,7 +51,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Controllers\SessionApiController.cs" />
-    <Compile Include="Controllers\EditController.cs" />
+    <Compile Include="Controllers\EditIssueController.cs" />
     <Compile Include="Controllers\IssuesApiController.cs" />
     <Compile Include="Controllers\CommentApiController.cs" />
     <Compile Include="Controllers\ControllerBase.cs" />
