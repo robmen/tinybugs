@@ -38,11 +38,12 @@
                 }
 
                 var fooUser = UserService.Create("foo@example.com", "bar.");
-                fooUser.Name = "Foo User";
+                fooUser.FullName = "Foo User";
                 db.Save(fooUser);
 
                 var barUser = UserService.Create("bar@example.com", "foo");
-                barUser.Name = "Bar User";
+                barUser.UserName = "bar";
+                barUser.FullName = "Bar User";
                 db.Save(barUser);
 
                 var issue = new Issue()

@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Collections.Specialized;
     using System.Net;
-    using System.Web.Security;
     using RobMensching.TinyBugs.Models;
     using RobMensching.TinyBugs.Services;
     using RobMensching.TinyBugs.ViewModels;
@@ -15,7 +14,7 @@
     {
         public override void Execute()
         {
-            string handlerPath = this.Context.ApplicationPath + "api/";
+            string handlerPath = this.Context.ApplicationPath + "api/issue/";
 #if DEBUG
             if (!this.Context.Url.AbsolutePath.WithTrailingSlash().StartsWithIgnoreCase(handlerPath))
             {
@@ -38,6 +37,7 @@
                     case "GET":
                         {
                             QueriedIssues issues = QueryService.QueryIssues(q);
+                            issues.Issues.ForEach(i => i.Location = this.Context.ApplicationPath + i.Id + "/"); // TODO: come up with a better way of handling this.
                             var pagePrefix = handlerPath + QueryService.RecreateQueryString(q) + "&page=";
 
                             IssuesApiViewModel vm = new IssuesApiViewModel()
@@ -53,22 +53,21 @@
                         {
                             if (!this.Context.Authenticated)
                             {
-                                FormsAuthentication.RedirectToLoginPage();
+                                this.Context.SetStatusCode(HttpStatusCode.Unauthorized);
                             }
                             else
                             {
-                                CompleteIssue ci = null;
-                                Issue i = CreateIssueFromCollection(this.Context.User, this.Context.Form);
-                                QueryService.TryGetIssueWithComments(i.Id, out ci);
-                                if (String.IsNullOrEmpty(q.Template))
+                                CompleteIssue ci = CreateIssueFromCollection(this.Context.User, this.Context.Form);
+                                if (ci == null)
                                 {
-                                    IssueApiViewModel vm = new IssueApiViewModel() { Issue = ci };
-                                    JsonSerializer.SerializeToWriter(vm, this.Context.GetOutput("application/json"));
+                                    this.Context.SetStatusCode(HttpStatusCode.InternalServerError);
                                 }
                                 else
                                 {
-                                    var template = FileService.LoadTemplate(q.Template);
-                                    template.Render(ci, this.Context.GetOutput(), null);
+                                    ci.Location = this.Context.ApplicationPath + ci.Id + "/";
+
+                                    this.Context.SetStatusCode(HttpStatusCode.Created);
+                                    JsonSerializer.SerializeToWriter(ci, this.Context.GetOutput("application/json"));
                                 }
                             }
                         }
@@ -79,7 +78,7 @@
                         break;
                 }
             }
-            else
+            else // interact with existing issue.
             {
                 CompleteIssue issue;
                 if (!QueryService.TryGetIssueWithComments(issueId, out issue))
@@ -88,45 +87,62 @@
                 }
                 else
                 {
-                    IssueApiViewModel vm = null;
                     switch (this.Context.Method)
                     {
                         case "GET":
-                            vm = new IssueApiViewModel()
-                            {
-                                Issue = issue,
-                            };
+                            issue.Location = this.Context.ApplicationPath + issue.Id + "/";
                             break;
 
                         case "PUT":
                         case "POST":
-                            UpdateIssueFromCollection(this.Context.User, issue.Id, this.Context.Form);
-                            QueryService.TryGetIssueWithComments(issueId, out issue);
-                            vm = new IssueApiViewModel()
+                            if (!this.Context.Authenticated)
                             {
-                                Issue = issue,
-                            };
+                                this.Context.SetStatusCode(HttpStatusCode.Unauthorized);
+                            }
+                            else
+                            {
+                                CompleteIssue ci = UpdateIssueFromCollection(this.Context.User, issue.Id, this.Context.Form);
+                                if (ci == null)
+                                {
+                                    this.Context.SetStatusCode(HttpStatusCode.InternalServerError);
+                                }
+                                else
+                                {
+                                    issue.Location = this.Context.ApplicationPath + issue.Id + "/";
+                                }
+                            }
                             break;
 
                         case "DELETE":
-                            DeleteIssue(issue.Id);
+                            if (!this.Context.Authenticated)
+                            {
+                                this.Context.SetStatusCode(HttpStatusCode.Unauthorized);
+                            }
+                            else
+                            {
+                                DeleteIssue(issue.Id);
+                                this.Context.SetStatusCode(HttpStatusCode.OK);
+                                issue = null;
+                            }
                             break;
 
                         default:
                             this.Context.SetStatusCode(HttpStatusCode.MethodNotAllowed);
+                            issue = null;
                             break;
                     }
 
-                    if (vm != null)
+                    if (issue != null)
                     {
-                        JsonSerializer.SerializeToWriter(vm, this.Context.GetOutput("application/json"));
+                        JsonSerializer.SerializeToWriter(issue, this.Context.GetOutput("application/json"));
                     }
                 }
             }
         }
 
-        public Issue CreateIssueFromCollection(Guid userId, NameValueCollection data)
+        public CompleteIssue CreateIssueFromCollection(Guid userId, NameValueCollection data)
         {
+            CompleteIssue ci = null;
             Issue issue = new Issue();
             issue.PopulateWithData(data);
             issue.CreatedAt = issue.UpdatedAt;
@@ -137,6 +153,7 @@
             if (!String.IsNullOrEmpty(issue.Title))
             {
                 using (var db = DataService.Connect())
+                using (var tx = db.BeginTransaction())
                 {
                     db.Insert(issue);
                     issue.Id = db.GetLastInsertId();
@@ -148,14 +165,21 @@
                         Title = issue.Title,
                     };
                     db.InsertParam(issueSearch);
+
+                    if (QueryService.TryGetIssueWithCommentsUsingDb(issue.Id, db, out ci))
+                    {
+                        FileService.WriteIssue(ci);
+                        tx.Commit();
+                    }
                 }
             }
 
-            return issue;
+            return ci;
         }
 
-        public void UpdateIssueFromCollection(Guid userId, int issueId, NameValueCollection data)
+        public CompleteIssue UpdateIssueFromCollection(Guid userId, int issueId, NameValueCollection data)
         {
+            CompleteIssue ci = null;
             Issue issue = new Issue();
             Dictionary<string, object> updates = issue.PopulateWithData(data);
 
@@ -165,6 +189,7 @@
             //       create IssueComment from data.comment and IssueChange list
 
             using (var db = DataService.Connect())
+            using (var tx = db.BeginTransaction())
             {
                 db.UpdateOnly(issue, v => v.Update(updates.Keys.ToArray()).Where(i => i.Id == issueId));
 
@@ -172,7 +197,15 @@
                 {
                     db.Update<FullTextSearchIssue>(new { Text = issue.Text, Title = issue.Title }, s => s.DocId == issueId);
                 }
+
+                if (QueryService.TryGetIssueWithCommentsUsingDb(issue.Id, db, out ci))
+                {
+                    FileService.WriteIssue(ci);
+                    tx.Commit();
+                }
             }
+
+            return ci;
         }
 
         //public static Issue PopulateIssueFromData(NameValueCollection data, List<string> updated)
@@ -258,9 +291,13 @@
         public void DeleteIssue(int issueId)
         {
             using (var db = DataService.Connect())
+            using (var tx = db.BeginTransaction())
             {
                 db.DeleteByIdParam<Issue>(issueId);
+                FileService.RemoveIssue(issueId);
+                tx.Commit();
             }
+
         }
     }
 }

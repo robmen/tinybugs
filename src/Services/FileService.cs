@@ -7,6 +7,7 @@
     using System.Linq;
     using System.Text;
     using Nustache.Core;
+    using RobMensching.TinyBugs.Models;
 
     public static class FileService
     {
@@ -43,6 +44,26 @@
         {
             string fullPath = Path.Combine(RootPath, path);
             return File.OpenText(fullPath);
+        }
+
+        public static void WriteIssue(CompleteIssue issue)
+        {
+            string folder = Path.Combine(RootPath, issue.Id.ToString());
+            string file = Path.Combine(folder, "index.html");
+
+            Template template = LoadTemplate("bug.mustache");
+
+            Directory.CreateDirectory(folder);
+            using (var writer = File.CreateText(file))
+            {
+                template.Render(issue, writer, (p) => { p = Path.Combine(RootPath, p); if (!File.Exists(p)) { p += ".mustache"; } return LoadTemplate(p); });
+            }
+        }
+
+        public static void RemoveIssue(int issueId)
+        {
+            string folder = Path.Combine(RootPath, issueId.ToString());
+            Directory.Delete(folder, true);
         }
     }
 }

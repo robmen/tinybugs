@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Collections.Specialized;
+    using System.Data;
     using System.Linq;
     using System.Text;
     using System.Web;
@@ -13,8 +14,8 @@
     public static class QueryService
     {
         private const string IssueSqlQueryTemplate = @"
-SELECT *, u1.Email AS AssignedToUserEmail, u1.Name AS AssignedToUserName,
-          u2.Email AS CreatedByUserEmail, u2.Name AS CreatedByUserName
+SELECT *, u1.Email AS AssignedToUserEmail, u1.UserName AS AssignedToUserName,
+          u2.Email AS CreatedByUserEmail, u2.UserName AS CreatedByUserName
 FROM Issue
 LEFT JOIN User AS u1 ON Issue.AssignedToUserId=u1.Id
 LEFT JOIN User AS u2 ON Issue.CreatedByUserId=u2.Id
@@ -28,7 +29,7 @@ LEFT JOIN User AS u2 ON Issue.CreatedByUserId=u2.Id
 /**join**/ /**leftjoin**/ /**where**/ /**orderby**/";
 
         private const string CommentSqlQueryTemplate = @"
-SELECT *, User.Email AS CommentByUserEmail, User.Name AS CommentByUserName
+SELECT *, User.Email AS CommentByUserEmail, User.UserName AS CommentByUserName
 FROM IssueComment
 LEFT JOIN User ON IssueComment.CommentByUserId=User.Id
 /**join**/ /**leftjoin**/ /**where**/ /**orderby**/";
@@ -36,23 +37,24 @@ LEFT JOIN User ON IssueComment.CommentByUserId=User.Id
 
         private static Dictionary<string, string> AllowedColumns = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase) {
             { "id", "Issue.Id" },
-            { "assigned", "u1.Name" /*"AssignedToUserName"*/ },
-            { "assignedto", "u1.Name" /*"AssignedToUserName"*/ },
-            { "assignedtoemail", "u1.Email" /*"AssignedToUserEmail"*/ },
-            { "assignedtouser", "u1.Name" /*"AssignedToUserName"*/ },
-            { "assignedtoname", "u1.Name" /*"AssignedToUserName"*/ },
-            { "assignedtousername", "u1.Name" /*"AssignedToUserName"*/ },
-            { "createdby", "u2.Name" /*"CreatedByUserName"*/ },
-            { "createdbyemail", "u2.Email" /*"CreatedByUserEmail"*/ },
-            { "createdbyuser", "u2.Name" /*"CreatedByUserName"*/ },
-            { "createdbyname", "u2.Name" /*"CreatedByUserName"*/ },
-            { "createdbyusername", "u2.Name" /*"CreatedByUserName"*/ },
+            { "assigned", "u1.UserName" },
+            { "assignedto", "u1.UserName" },
+            { "assignedtoemail", "u1.Email" },
+            { "assignedtouser", "u1.UserName" },
+            { "assignedtoname", "u1.UserName" },
+            { "assignedtousername", "u1.UserName" },
+            { "createdby", "u2.UserName" },
+            { "createdbyemail", "u2.Email" },
+            { "createdbyuser", "u2.UserName" },
+            { "createdbyname", "u2.UserName" },
+            { "createdbyusername", "u2.UserName" },
             { "createdat", "CreatedAt" },
             { "created", "CreatedAt" },
             { "updatedat", "UpdatedAt" },
             { "updated", "UpdatedAt" },
             { "status", "Status" },
             { "resolution", "Resolution" },
+            { "area", "Area" },
             { "milestone", "Release" },
             { "release", "Release" },
             { "tag", "Tags" },
@@ -174,21 +176,26 @@ LEFT JOIN User ON IssueComment.CommentByUserId=User.Id
 
         public static List<CompleteIssueComment> CommentsForIssue(int issueId)
         {
+            using (var db = DataService.Connect(true))
+            {
+                return CommentsForIssueUsingDb(issueId, db);
+            }
+        }
+
+        public static List<CompleteIssueComment> CommentsForIssueUsingDb(int issueId, IDbConnection db)
+        {
             SqlBuilder sql = new SqlBuilder();
             sql.Where("IssueId=@issueId", new { issueId = issueId });
             var commentTemplate = sql.AddTemplate(CommentSqlQueryTemplate);
 
-            using (var db = DataService.Connect(true))
-            {
-                return db.Query<CompleteIssueComment>(commentTemplate.RawSql, commentTemplate.Parameters);
-            }
+            return db.Query<CompleteIssueComment>(commentTemplate.RawSql, commentTemplate.Parameters);
         }
 
         public static User GetUserFromName(string value)
         {
             using (var db = DataService.Connect(true))
             {
-                return db.SelectParam<User>(u => u.Name == value).SingleOrDefault();
+                return db.SelectParam<User>(u => u.UserName == value).SingleOrDefault();
             }
         }
 
@@ -202,18 +209,22 @@ LEFT JOIN User ON IssueComment.CommentByUserId=User.Id
 
         public static bool TryGetIssueWithComments(long issueId, out CompleteIssue issue)
         {
+            using (var db = DataService.Connect(true))
+            {
+                return TryGetIssueWithCommentsUsingDb(issueId, db, out issue);
+            }
+        }
+
+        public static bool TryGetIssueWithCommentsUsingDb(long issueId, IDbConnection db, out CompleteIssue issue)
+        {
             SqlBuilder sql = new SqlBuilder();
             sql.Where("Issue.Id=@id", new { id = issueId });
             var issueTemplate = sql.AddTemplate(IssueSqlQueryTemplate);
 
-            using (var db = DataService.Connect(true))
-            {
-                issue = db.Query<CompleteIssue>(issueTemplate.RawSql, issueTemplate.Parameters).SingleOrDefault();
-            }
-
+            issue = db.Query<CompleteIssue>(issueTemplate.RawSql, issueTemplate.Parameters).SingleOrDefault();
             if (issue != null)
             {
-                issue.Comments = CommentsForIssue(issue.Id);
+                issue.Comments = CommentsForIssueUsingDb(issue.Id, db);
             }
 
             return issue != null;

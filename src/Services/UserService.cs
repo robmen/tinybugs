@@ -23,25 +23,26 @@
             {
                 Id = Guid.NewGuid(),
                 Email = email.ToLowerInvariant(),
+                UserName = email.ToLowerInvariant(),
                 GravatarId = GenerateGravatarId(email),
                 Salt = Convert.ToBase64String(salt),
                 PasswordHash = CalculatePasswordHash(email, salt, password),
             };
         }
 
-        public static string CalculatePasswordHash(string email, string salt, string password)
+        public static string CalculatePasswordHash(string username, string salt, string password)
         {
             byte[] saltBytes = Convert.FromBase64String(salt);
-            return CalculatePasswordHash(email, saltBytes, password);
+            return CalculatePasswordHash(username, saltBytes, password);
         }
 
-        public static string CalculatePasswordHash(string email, byte[] salt, string password)
+        public static string CalculatePasswordHash(string username, byte[] salt, string password)
         {
             byte[] passwordBytes;
             using (SHA256 sha = SHA256.Create())
             {
-                string emailPassword = email.Trim().ToLowerInvariant() + password;
-                passwordBytes = sha.ComputeHash(Encoding.UTF8.GetBytes(emailPassword));
+                string namePassword = username.Trim().ToLowerInvariant() + password;
+                passwordBytes = sha.ComputeHash(Encoding.UTF8.GetBytes(namePassword));
             }
 
             using (Rfc2898DeriveBytes pbkdf2 = new Rfc2898DeriveBytes(passwordBytes, salt, PasswordHashIterations))
@@ -76,20 +77,20 @@
             return String.Format("{0}://www.gravatar.com/avatar/{1}?r=g&d=mm{2}", protocol, id, sizeQuery);
         }
 
-        public static bool TryAuthenticateUser(string email, string password, out User user)
+        public static bool TryAuthenticateUser(string username, string password, out User user)
         {
-            email = String.IsNullOrEmpty(email) ? String.Empty : email.ToLowerInvariant();
+            username = String.IsNullOrEmpty(username) ? String.Empty : username.ToLowerInvariant();
 
             using (var db = DataService.Connect())
             {
-                user = db.SelectParam<User>(u => u.Email == email).SingleOrDefault();
+                user = db.SelectParam<User>(u => u.UserName == username).SingleOrDefault();
                 if (user == null)
                 {
                     return false;
                 }
             }
 
-            string hash = UserService.CalculatePasswordHash(user.Email, user.Salt, password);
+            string hash = UserService.CalculatePasswordHash(user.UserName, user.Salt, password);
             return user.PasswordHash.Equals(hash, StringComparison.Ordinal);
         }
 

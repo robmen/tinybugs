@@ -5,14 +5,10 @@
     using System.Collections.Specialized;
     using RobMensching.TinyBugs.Services;
     using ServiceStack.DataAnnotations;
+    using Microsoft.Security.Application;
 
     public class Issue
     {
-        public Issue()
-        {
-            this.Tags = new List<string>();
-        }
-
         [AutoIncrement]
         public long Id { get; set; }
 
@@ -32,9 +28,11 @@
 
         public string Release { get; set; }
 
-        public List<string> Tags { get; private set; }
+        public string Area { get; set; }
 
         public string Text { get; set; }
+
+        public string TextRendered { get; set; }
 
         public string Title { get; set; }
 
@@ -51,7 +49,8 @@
             foreach (string name in data.AllKeys)
             {
                 string[] values = data.GetValues(name);
-                string value = values[values.Length - 1];
+                string unsafeValue = values[values.Length - 1];
+                string value = unsafeValue; // Encoder.HtmlEncode(unsafeValue);
                 switch (name.ToLowerInvariant())
                 {
                     case "assigned":
@@ -83,6 +82,11 @@
                         }
                         break;
 
+                    case "area":
+                        this.Area = value;
+                        updated.Add("Area", this.Area);
+                        break;
+
                     case "milestone":
                     case "release":
                         this.Release = value;
@@ -103,17 +107,22 @@
                         }
                         break;
 
-                    case "tag":
-                    case "tags":
-                        this.Tags.Clear();
-                        this.Tags.AddRange(values);
-                        updated.Add("Tags", this.Tags);
-                        break;
+                    //case "tag":
+                    //case "tags":
+                    //    this.Tags.Clear();
+                    //    this.Tags.AddRange(values);
+                    //    updated.Add("Tags", this.Tags);
+                    //    break;
 
                     case "content":
                     case "text":
-                        this.Text = value;
-                        updated.Add("Text", this.Text);
+                        {
+                            MarkdownDeep.Markdown md = new MarkdownDeep.Markdown();
+                            md.SafeMode = true;
+                            this.Text = value;
+                            this.TextRendered = md.Transform(unsafeValue);
+                            updated.Add("Text", this.Text);
+                        }
                         break;
 
                     case "title":

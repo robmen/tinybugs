@@ -50,6 +50,8 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Controllers\SessionApiController.cs" />
+    <Compile Include="Controllers\EditController.cs" />
     <Compile Include="Controllers\IssuesApiController.cs" />
     <Compile Include="Controllers\CommentApiController.cs" />
     <Compile Include="Controllers\ControllerBase.cs" />
@@ -58,12 +60,35 @@
     <Compile Include="Controllers\EverythingController.cs" />
     <Compile Include="Controllers\RootController.cs" />
     <Compile Include="Controllers\NotFoundController.cs" />
+    <Compile Include="Controllers\UserApiController.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
-    <Content Include="assets\1234\index.html" />
+    <Content Include="assets\js\mdd\MarkdownDeepLib.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="assets\js\mdd\mdd_ajax_loader.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="assets\js\mdd\mdd_gripper.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="assets\js\mdd\mdd_help.htm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="assets\js\mdd\mdd_modal_background.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="assets\js\mdd\mdd_styles.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="assets\js\mdd\mdd_toolbar.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="assets\bug.mustache" />
+    <None Include="assets\header.mustache" />
     <None Include="assets\post.html.mustache" />
     <None Include="assets\root.html.mustache" />
-    <None Include="assets\login\login.html.mustache" />
-    <None Include="assets\notfound\index.html.mustache" />
+    <None Include="assets\login.html.mustache" />
+    <None Include="assets\notfound.html.mustache" />
     <Compile Include="Models\CompleteIssue.cs" />
     <Compile Include="Models\CompleteIssueComment.cs" />
     <Compile Include="Models\FullTextSearchIssue.cs" />
@@ -79,7 +104,12 @@
     <Compile Include="ViewModels\RootViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\NotFoundViewModel.cs" />
-    <Content Include="assets\js\tinybugs.js" />
+    <Content Include="assets\js\tinybugs.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="assets\new\index.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Global.asax">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -87,7 +117,6 @@
       <DependentUpon>Global.asax</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Controllers\Handler.cs" />
     <Compile Include="Models\Issue.cs" />
     <Compile Include="Models\IssueChange.cs" />
     <Compile Include="Models\IssueStatus.cs" />
@@ -106,6 +135,15 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="AntiXssLibrary">
+      <HintPath>..\packages\AntiXSS.4.2.1\lib\net40\AntiXssLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="HtmlSanitizationLibrary">
+      <HintPath>..\packages\AntiXSS.4.2.1\lib\net40\HtmlSanitizationLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="MarkdownDeep">
+      <HintPath>..\packages\MarkdownDeep.Full.1.5\lib\.NetFramework 3.5\MarkdownDeep.dll</HintPath>
+    </Reference>
     <Reference Include="NLog">
       <HintPath>..\packages\NLog.2.0.1.2\lib\net40\NLog.dll</HintPath>
     </Reference>

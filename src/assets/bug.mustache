@@ -1,51 +1,35 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>tinyBugs - Post New Issue</title>
-  <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
-<!--  <link href="//netdna.bootstrapcdn.com/bootswatch/2.3.2/united/bootstrap.min.css" rel="stylesheet">-->
+  <title>tinyBugs - Issue {{id}}</title>
+  {{> header}}
 </head>
 <body>
 <div class="container">
   <div class="row">
   <div class="span12">
-  <form id='bugForm' method='post'>
+    <h3><small>{{type}} {{id}}</small> {{title}}</h3>
+
+    <p>Details</p>
+    <p>{{{textrendered}}}</p>
+
+    <p>Release</p>
+      <p>{{release}}</p>
+      <p>Assigned to</p>
+      <p>{{assignto}}</p>
+
+    <p>Tags</p>
+      <p>{{tags}}</p>
+
+      <p>Private</p>
+      <p>{{private}}</p>
+
+      <p>Votes</p>
+      <p>{{votes}}</p>
+
+    <form id='bugForm' method='post'>
     <fieldset>
     <legend>New Issue</legend>
-
-    <label for='title'>Title</label>
-    <input id='title' name='title' type='text' maxlength='140' value="{{title}}" placeholder="required" required='required' class="span8" />
-
-    <label for='type'>Details</label>
-    <div class="mdd_toolbar"></div>
-    <textarea id='text' name='text' rows='5' class='span8 mdd_editor' required='required' placeholder="required">{{text}}</textarea>
-    <div class="mdd_resizer"></div>
-
-    <div class="controls controls-row">
-        <label for='type' class="span2">Type</label>
-        <label for='release' class="span2">Release</label>
-        <label for='assignto' class="span3">Assign To</label>
-    </div>
-    <div class="controls controls-row">
-        <select id='type' name='type' class="span2">
-          <option value='Bug'>bug</option>
-          <option value='Feature'>feature</option>
-        </select>
-        <select id='release' name='release' class="span2">
-          <option value='v4.x'>v4.x</option>
-          <option value='v3.x'>v3.x</option>
-        </select>
-        <input id='assignto' name='assignto' type='text' class="typeahead span3"
-               data-url='/api/user/' autocomplete="off" />
-    </div>
-
-    <label for='tags'>Tags</label>
-    <input id='tags' name='tags' type='text' value="{{tags}}" />
-
-    <label for='private' class="checkbox">
-      <input id='private' name='private' type='checkbox' />Private
-      <span class="help-inline">(only you and administrators can see the bug)</span>
-    </label>
 
     <input type="hidden" value="{{id}}" id="id" name="id" />
 
@@ -87,7 +71,6 @@
   </div>
 </div>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/knockout/2.3.0/knockout-min.js"></script>
 <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
 <script src="/js/tinybugs.js"></script>
 <script>
@@ -123,49 +106,6 @@ $(document).ready(function () {
                 $('#savebug').button('reset');
             });
     });
-
-    $('#loginModal').on('hide', function () {
-        $(this).find('.alert').hide();
-    });
-
-    $('#loginForm').submit(function (e) {
-        var submit = $(this).find(':submit').button('loading');
-        var alert = $(this).find('.alert').slideUp('fast');
-
-        e.preventDefault();
-        $.post('login/', $(this).serialize())
-            .done(function () {
-                $('#loginModal').modal('hide');
-            }).fail(function (jqXHR, textStatus, errorThrown) {
-                alert.slideDown();
-            }).always(function () {
-                submit.button('reset');
-            });
-    });
-
-    $(".alert").find(".close").on("click", function (e) {
-        e.stopPropagation();
-        e.preventDefault();
-        $(this).closest(".alert").slideUp();
-    });
-
-    var dirty = false;
-
-    $(':input').change(function () {
-        dirty = true;
-    });
-
-    window.onbeforeunload = function (e) {
-        if (dirty) {
-            var message = "There are edits to this bug report.";
-            e = e || window.event;
-            if (e) {
-                e.returnValue = message; // IE and Firefox support
-            }
-
-            return message; // Safari support
-        }
-    };
 });
 </script>
 </body>

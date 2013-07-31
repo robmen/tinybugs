@@ -29,7 +29,7 @@
             Log.InfoFormat("url: {0}  referrer: {1}", this.Context.Url.AbsoluteUri, referrer);
 
             var viewModel = new NotFoundViewModel() { ReferralUri = referrer, StatusCode = statusCode };
-            var template = FileService.LoadTemplate("notfound/index.html.mustache");
+            var template = FileService.LoadTemplate("notfound.html.mustache");
 
             this.Context.SetStatusCode(statusCode);
             template.Render(viewModel, this.Context.GetOutput(), null);

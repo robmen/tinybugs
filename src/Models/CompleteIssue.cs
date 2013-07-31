@@ -37,10 +37,16 @@
         public string Release { get; set; }
 
         [BelongTo(typeof(Issue))]
-        public List<string> Tags { get; private set; }
+        public string Area { get; set; }
+
+        //[BelongTo(typeof(Issue))]
+        //public List<string> Tags { get; private set; }
 
         [BelongTo(typeof(Issue))]
         public string Text { get; set; }
+
+        [BelongTo(typeof(Issue))]
+        public string TextRendered { get; set; }
 
         [BelongTo(typeof(Issue))]
         public string Title { get; set; }
@@ -53,6 +59,8 @@
 
         [BelongTo(typeof(Issue))]
         public int Votes { get; set; }
+
+        public string Location { get; set; }
 
         public List<CompleteIssueComment> Comments { get; set; }
     }

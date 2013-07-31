@@ -20,8 +20,8 @@
                 string releaseValue = "v3.8";
                 SqlBuilder sb = new SqlBuilder();
                 sb.Select("*");
-                sb.Select("u1.Email AS AssignedToUserEmail, u1.Name AS AssignedToUserName");
-                sb.Select("u2.Email AS CreatedByUserEmail, u2.Name AS CreatedByUserName");
+                sb.Select("u1.Email AS AssignedToUserEmail, u1.UserName AS AssignedToUserName");
+                sb.Select("u2.Email AS CreatedByUserEmail, u2.UserName AS CreatedByUserName");
                 sb.Join(" User AS u1 ON Issue.AssignedToUserId=u1.Id");
                 sb.Join(" User AS u2 ON Issue.CreatedByUserId=u2.Id");
                 sb.Where("Release=@a", new { a = releaseValue });
@@ -190,11 +190,11 @@
             db.CreateTables(false, typeof(User), typeof(Issue), typeof(IssueComment));
 
             var fooUser = UserService.Create("foo@example.com", "bar.");
-            fooUser.Name = "Foo User";
+            fooUser.FullName = "Foo User";
             db.Insert(fooUser);
 
             var barUser = UserService.Create("bar@example.com", "foo");
-            barUser.Name = "Bar User";
+            barUser.FullName = "Bar User";
             db.Insert(barUser);
 
             var issue = new Issue()

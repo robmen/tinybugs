@@ -10,7 +10,10 @@
         [Index(Unique = true)]
         public string Email { get; set; }
 
-        public string Name { get; set; }
+        [Index(Unique = true)]
+        public string UserName { get; set; }
+
+        public string FullName { get; set; }
 
         public string GravatarId { get; set; }
 
