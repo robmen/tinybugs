@@ -1,57 +1,48 @@
 ﻿namespace RobMensching.TinyBugs.Controllers
 {
     using System;
+    using System.Net;
     using System.Web;
     using System.Web.Security;
     using RobMensching.TinyBugs.Models;
     using RobMensching.TinyBugs.Services;
-    using RobMensching.TinyBugs.ViewModels;
 
     public class SessionApiController : ControllerBase
     {
         public override void Execute()
         {
-            LoginViewModel vm;
-
+            string redirect = null;
             switch (this.Context.Method)
             {
                 case "GET":
-                    // TODO: verify whether the user is logged in.
-                    vm = new LoginViewModel() { StatusCode = System.Net.HttpStatusCode.OK };
+                    if (!this.Context.Authenticated)
+                    {
+                        this.Context.SetStatusCode(HttpStatusCode.BadGateway); // TODO: return a better error code that doesn't cause forms authentication to overwrite our response
+                    }
                     break;
 
                 case "POST":
-                    vm = this.Login();
-                    vm.Retry = true;
+                    redirect = this.Login();
                     break;
 
                 case "DELETE":
-                    vm = this.Logout();
+                    redirect = this.Logout();
                     break;
 
                 default:
-                    vm = new LoginViewModel() { StatusCode = System.Net.HttpStatusCode.MethodNotAllowed };
+                    this.Context.SetStatusCode(HttpStatusCode.MethodNotAllowed);
                     break;
             }
 
-            if (!String.IsNullOrEmpty(vm.RedirectUrl))
+            if (!String.IsNullOrEmpty(redirect))
             {
-                this.Context.Redirect(vm.RedirectUrl);
-            }
-            else
-            {
-                this.Context.SetStatusCode(vm.StatusCode);
-                if (vm.Template != null)
-                {
-                    vm.Template.Render(vm, this.Context.GetOutput(), null);
-                }
+                this.Context.Redirect(redirect);
             }
         }
 
-        public LoginViewModel Login()
+        public string Login()
         {
-            LoginViewModel vm = new LoginViewModel();
-
+            string redirect = null;
             string username = this.Context.Form["username"];
             string password = this.Context.Form["password"];
 
@@ -63,29 +54,23 @@
                 FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(userId, false, 30);
                 this.Context.Cookies.Add(new HttpCookie(FormsAuthentication.FormsCookieName, FormsAuthentication.Encrypt(ticket)));
 
-                vm.GravatarId = user.GravatarId;
-                vm.UserEmail = user.Email;
-                vm.UserName = user.UserName;
-                vm.UserFullName = user.FullName;
-
                 // Forms authentication is a bit old fashioned and will automatically add "default.aspx" on to
                 // URLs lacking a filename. Remove that default document and let the web server find the default
                 // document itself.
-                vm.RedirectUrl = FormsAuthentication.GetRedirectUrl(userId, false).ToLowerInvariant().Replace("default.aspx", String.Empty);
+                redirect = FormsAuthentication.GetRedirectUrl(userId, false).ToLowerInvariant().Replace("default.aspx", String.Empty);
             }
             else
             {
-                vm.StatusCode = System.Net.HttpStatusCode.BadGateway; // TODO: return a better error code that doesn't cause forms authentication to overwrite our response.
-                vm.UserName = username;
+                this.Context.SetStatusCode(HttpStatusCode.BadGateway); // TODO: return a better error code that doesn't cause forms authentication to overwrite our response.
             }
 
-            return vm;
+            return redirect;
         }
 
-        public LoginViewModel Logout()
+        public string Logout()
         {
             FormsAuthentication.SignOut();
-            return new LoginViewModel() { RedirectUrl = "/" };
+            return this.Context.ApplicationPath;
         }
     }
 }
