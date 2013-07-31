@@ -47,12 +47,12 @@
             return File.OpenText(fullPath);
         }
 
-        public static void WriteIssue(CompleteIssue issue)
+        public static void WriteIssue(AppViewModel app, CompleteIssue issue)
         {
             string file = Path.Combine(RootPath, issue.Id.ToString() + "\\index.html");
 
             Template template = LoadTemplate("bug.mustache");
-            RenderTemplateToFile(template, issue, file);
+            RenderTemplateToFile(template, new { app = app, issue = issue }, file);
         }
 
         public static void RemoveIssue(int issueId)

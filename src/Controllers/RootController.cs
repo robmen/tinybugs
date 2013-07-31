@@ -18,7 +18,7 @@
                 Page = new Pagination(q.Page, q.Count, issuesPaged.Total, pagePrefix),
             };
 
-            string path = q.Template ?? "root.html.mustache";
+            string path = q.Template ?? "root.mustache";
             var template = FileService.LoadTemplate(path);
             template.Render(vm, this.Context.GetOutput(), null);
         }

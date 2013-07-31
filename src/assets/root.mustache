@@ -3,11 +3,12 @@
 <title>tinyBugs - Issues</title>
 </head>
 <body>
+    <p><a href="/new/">New issue...</a></p>
 <p>
 Issues:
 </p>
 {{#issues}}
-<p>{{id}} - {{createdat}} - {{title}} - {{text}}</p>
+<p><a href="/edit/{{id}}">{{id}}</a> - {{createdat}} - {{title}} - {{text}}</p>
 {{/issues}}
 {{^issues}}
 No issues found.

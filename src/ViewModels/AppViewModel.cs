@@ -1,16 +1,17 @@
 ﻿namespace RobMensching.TinyBugs.ViewModels
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
+    using System.Web.Configuration;
 
     public class AppViewModel
     {
+        public AppViewModel(string path = null)
+        {
+            this.Name = WebConfigurationManager.AppSettings["app.name"] ?? "tinyBld";
+            this.Path = path;
+        }
+
         public string Path { get; set; }
 
         public string Name { get; set; }
-
-        public string UserName { get; set; }
     }
 }

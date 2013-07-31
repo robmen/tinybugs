@@ -38,12 +38,7 @@
                 {
                     if (!FirstRequestInitialization)
                     {
-                        var app = new AppViewModel()
-                        {
-                            Name = WebConfigurationManager.AppSettings["app.name"] ?? "tinyBld",
-                            Path = this.Context.Request.ApplicationPath.WithTrailingSlash(),
-                        };
-
+                        var app = new AppViewModel(this.Context.Request.ApplicationPath.WithTrailingSlash());
                         FileService.PregenerateApp(app);
                         FirstRequestInitialization = true;
                     }

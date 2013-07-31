@@ -1,37 +1,41 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>tinyBugs - Issue {{id}}</title>
+  <title>{{app.name}} - Issue {{issue.id}}</title>
   {{> header}}
 </head>
 <body>
 <div class="container">
   <div class="row">
   <div class="span12">
-    <h3><small>{{type}} {{id}}</small> {{title}}</h3>
+    <h3><small>{{issue.type}} {{issue.id}}</small> {{issue.title}}</h3>
+
+    <span class="label label-info">{{issue.status}}</span>
+
+    {{#issue.private}}
+    <span class="label label-important">Private</span>
+    {{/issue.private}}
 
     <p>Details</p>
-    <p>{{{textrendered}}}</p>
+    <p>{{{issue.textrendered}}}</p>
 
     <p>Release</p>
-      <p>{{release}}</p>
+      <p>{{issue.release}}</p>
       <p>Assigned to</p>
-      <p>{{assignto}}</p>
+      <p>{{issue.assignto}}</p>
 
-    <p>Tags</p>
-      <p>{{tags}}</p>
-
-      <p>Private</p>
-      <p>{{private}}</p>
+    <p>Area</p>
+      <p>{{issue.area}}</p>
 
       <p>Votes</p>
-      <p>{{votes}}</p>
+      <p>{{issue.votes}}</p>
 
+<!--
     <form id='bugForm' method='post'>
     <fieldset>
     <legend>New Issue</legend>
 
-    <input type="hidden" value="{{id}}" id="id" name="id" />
+    <input type="hidden" value="{{bug.id}}" id="id" name="id" />
 
     <div id="bugerror" class="alert alert-error hide">
       <button type="button" class="close">&times;</button>
@@ -44,6 +48,8 @@
     </div>
     </fieldset>
   </form>
+-->
+    <a href="{{app.path}}edit/{{issue.id}}" class="btn">Edit Bug</a>
   </div>
   </div>
   <div id="message"></div>
@@ -92,7 +98,7 @@ $(document).ready(function () {
         var alert = $(this).find('.alert').slideUp('fast');
 
         e.preventDefault();
-        $.post('api/{{id}}', $(this).serialize())
+        $.post('{{app.path}}api/issue/{{issue.id}}', $(this).serialize())
             .done( function(data) {
                 // TODO: send the user off to view their bright shiny new bug based on the "data".
             }).fail(function (jqXHR, textStatus, errorThrown) {

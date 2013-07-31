@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-  <title>{{app.name}} - {{#bug}}Edit #{{id}: {{title}}{{/bug}}{{^bug}}New Issue{{/bug}}</title>
+  <title>{{app.name}} - {{#issue}}Edit #{{id}: {{title}}{{/issue}}{{^issue}}New Issue{{/issue}}</title>
   <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
   <link href="{{app.path}}js/mdd/mdd_styles.css" rel="stylesheet" />
   <link href="{{app.path}}css/tinybugs.css" rel="stylesheet" />
@@ -12,7 +12,7 @@
   <div class="span8">
   <form id='bugForm' method='post'>
     <fieldset>
-    <legend>{{bug}}Edit{{/bug}}{{^bug}}New{{/bug} Issue</legend>
+    <legend>{{#issue}}Edit{{/issue}}{{^issue}}New{{/issue}} Issue</legend>
 
     <div class="well well-small">
         <div class="row">
@@ -39,11 +39,11 @@
     </div>
 
     <label for='title'>Title</label>
-    <input id='title' name='title' type='text' class="span7" maxlength='140' placeholder="required" title="Please provide a short descriptive title for the issue." required value="{{bug.title}}"/>
+    <input id='title' name='title' type='text' class="span7" maxlength='140' placeholder="required" title="Please provide a short descriptive title for the issue." required value="{{issue.title}}"/>
 
     <label for='type'>Details</label>
     <div class="mdd_toolbar"></div>
-    <textarea id='text' name='text' rows='7' class='span7 mdd_editor' placeholder="required" title="Please provide a detailed explanation of the issue." required>{{{bug.text}}}</textarea>
+    <textarea id='text' name='text' rows='7' class='span7 mdd_editor' placeholder="required" title="Please provide a detailed explanation of the issue." required>{{{issue.text}}}</textarea>
     <!--<div class="mdd_resizer"></div>-->
     <div class="mdd_preview"></div>
 
@@ -51,13 +51,13 @@
       <div class="span3">
         <label for='assignto'>Assign To</label>
         <input id='assignto' name='assignto' type='text' class="typeahead"
-               data-url='{{app.path}}api/user/' autocomplete="off" value="{{bug.assignto}}"/>
+               data-url='{{app.path}}api/user/' autocomplete="off" value="{{issue.assignto}}"/>
       </div>
       <div class="control-row">
         <br />
         <label for='private' class="checkbox span4">
-          <input id='private' name='private' type='checkbox' {{bug.private}}checked="checked"{{/bug.private}}> Private
-            <span class="help-inline">(only you and administrators can see the bug)</span>
+          <input id='private' name='private' type='checkbox' {{#issue}}checked="checked"{{/issue}}> Private
+            <span class="help-inline">(only you and administrators can see the issue)</span>
         </label>
       </div>
     </div>
@@ -145,7 +145,7 @@
                 var alert = $('#bugerror').slideUp('fast');
 
                 //e.preventDefault();
-                $.post('{{app.path}}api/issue/{{bug.id}}', $(form).serialize())
+                $.post('{{app.path}}api/issue/{{issue.id}}', $(form).serialize())
                     .done(function (data) {
                         dirty = false;
                         window.location.href = data.location;
