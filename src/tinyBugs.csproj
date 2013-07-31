@@ -56,11 +56,11 @@
     <Compile Include="Controllers\CommentApiController.cs" />
     <Compile Include="Controllers\ControllerBase.cs" />
     <Compile Include="Controllers\ControllerContext.cs" />
-    <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\EverythingController.cs" />
     <Compile Include="Controllers\RootController.cs" />
     <Compile Include="Controllers\NotFoundController.cs" />
     <Compile Include="Controllers\UserApiController.cs" />
+    <Compile Include="ViewModels\AppViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Content Include="assets\bug.mustache">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -71,13 +71,13 @@
     <Content Include="assets\post.html.mustache">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="assets\root.html.mustache">
+    <Content Include="assets\root.mustache">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="assets\login.html.mustache">
+    <Content Include="assets\login.mustache">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="assets\notfound.html.mustache">
+    <Content Include="assets\notfound.mustache">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Compile Include="Models\CompleteIssue.cs" />
@@ -93,7 +93,6 @@
     <Compile Include="ViewModels\IssueApiViewModel.cs" />
     <Compile Include="ViewModels\IssuesApiViewModel.cs" />
     <Compile Include="ViewModels\RootViewModel.cs" />
-    <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\NotFoundViewModel.cs" />
     <Content Include="assets\css\tinybugs.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -122,12 +121,10 @@
     <Content Include="assets\js\mdd\mdd_toolbar.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="assets\login\index.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="assets\new\index.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <!--
+    <None Include="assets\login\index.html" />
+    <None Include="assets\new\index.html" />
+-->
     <Content Include="Global.asax">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -146,6 +143,9 @@
     <Compile Include="Services\UserService.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="assets\bugform.mustache">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
     <None Include="web.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

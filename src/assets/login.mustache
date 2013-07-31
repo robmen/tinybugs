@@ -1,8 +1,9 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <title>tinyBugs - Login</title>
+  <title>{{app.name}} - Login</title>
   <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+  <link href="{{app.path}}css/tinybugs.css" rel="stylesheet">
 </head>
 <body>
 <div class="container">
@@ -13,22 +14,22 @@
       <button type="button" class="close">&times;</button>
       <strong>Error!</strong> Invalid username/email or password. Please, try again.
     </div>
-
     <label for='username'>Username</label>
-    <input id='username' name='username' type='text' maxlength='50' placeholder="username or email" value="{{username}}" required='required' />
+    <input id='username' name='username' type='text' maxlength='50' placeholder="username or email" required='required' />
     <label for='password'>Password</label>
-    <input id='password' name='password' type='text' maxlength='50' required='required' />
+    <input id='password' name='password' type='password' maxlength='50' required='required' />
 
     <div class="form-actions">
       <input type='submit' name='submit' class="btn btn-primary" data-loading-text="Logging in..." value='Login'/>
+      <a href="{{app.path}}" class="btn">Cancel</a>
     </div>
   </form>
-  </div>
-  </div>
 </div>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+</div>
+</div>
+<script src="//ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script>
 <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
-<script src="{{approot}}/js/tinybugs.js"></script>
+<script src="{{app.path}}js/tinybugs.js"></script>
 <script>
 $(document).ready(function () {
     $('#loginForm').submit(function (e) {
@@ -37,9 +38,9 @@ $(document).ready(function () {
         var query = qs();
 
         e.preventDefault();
-        $.post('/api/session/', $(this).serialize())
+        $.post('{{app.path}}api/session/', $(this).serialize())
             .done(function () {
-                window.location.href = query.returnurl || '/';
+                window.location.href = query.returnurl || '{{app.path}}';
             }).fail(function (jqXHR, textStatus, errorThrown) {
                 alert.slideDown();
             }).always(function () {

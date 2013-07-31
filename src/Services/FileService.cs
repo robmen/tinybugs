@@ -8,6 +8,7 @@
     using System.Text;
     using Nustache.Core;
     using RobMensching.TinyBugs.Models;
+    using RobMensching.TinyBugs.ViewModels;
 
     public static class FileService
     {
@@ -48,22 +49,39 @@
 
         public static void WriteIssue(CompleteIssue issue)
         {
-            string folder = Path.Combine(RootPath, issue.Id.ToString());
-            string file = Path.Combine(folder, "index.html");
+            string file = Path.Combine(RootPath, issue.Id.ToString() + "\\index.html");
 
             Template template = LoadTemplate("bug.mustache");
-
-            Directory.CreateDirectory(folder);
-            using (var writer = File.CreateText(file))
-            {
-                template.Render(issue, writer, (p) => { p = Path.Combine(RootPath, p); if (!File.Exists(p)) { p += ".mustache"; } return LoadTemplate(p); });
-            }
+            RenderTemplateToFile(template, issue, file);
         }
 
         public static void RemoveIssue(int issueId)
         {
             string folder = Path.Combine(RootPath, issueId.ToString());
             Directory.Delete(folder, true);
+        }
+
+        public static void RenderTemplateToFile(Template template, object data, string file)
+        {
+            string folder = Path.GetDirectoryName(file);
+            Directory.CreateDirectory(folder);
+
+            using (var writer = File.CreateText(file))
+            {
+                template.Render(data, writer, (p) => { p = Path.Combine(RootPath, p); if (!File.Exists(p)) { p += ".mustache"; } return LoadTemplate(p); });
+            }
+        }
+
+        public static void PregenerateApp(AppViewModel app)
+        {
+            var vm = new { app = app };
+            var foos = new[] { new { template = "login.mustache", output = "login/index.html" },
+                               new { template = "bugform.mustache", output = "new/index.html" } };
+            foreach (var foo in foos)
+            {
+                Template template = LoadTemplate(foo.template);
+                RenderTemplateToFile(template, vm, Path.Combine(RootPath, foo.output));
+            }
         }
     }
 }

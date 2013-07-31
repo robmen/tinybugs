@@ -1,0 +1,185 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <title>{{app.name}} - {{#bug}}Edit #{{id}: {{title}}{{/bug}}{{^bug}}New Issue{{/bug}}</title>
+  <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+  <link href="{{app.path}}js/mdd/mdd_styles.css" rel="stylesheet" />
+  <link href="{{app.path}}css/tinybugs.css" rel="stylesheet" />
+</head>
+<body>
+<div class="container">
+  <div class="row">
+  <div class="span8">
+  <form id='bugForm' method='post'>
+    <fieldset>
+    <legend>{{bug}}Edit{{/bug}}{{^bug}}New{{/bug} Issue</legend>
+
+    <div class="well well-small">
+        <div class="row">
+          <label for='type' class="span2">Type</label>
+          <label for='release' class="span2">Release</label>
+          <label for='tags' class="span3">Area</label>
+        </div>
+        <div class="controls-row">
+          <select id='type' name='type' class="span2" required>
+            <option value='Bug'>Bug</option>
+            <option value='Feature'>Feature</option>
+          </select>
+          <select id='release' name='release' class="span2" title="Please provide the release where the issue was originally encountered." required>
+            <option></option>
+            <option value='v4.x'>v4.x</option>
+            <option value='v3.x'>v3.x</option>
+          </select>
+          <select id='area' name='area' class="span3" title="Please select the most appropriate area affected by the issue." required>
+            <option></option>
+            <option value='candle'>candle</option>
+            <option value='light'>light</option>
+          </select>
+        </div>
+    </div>
+
+    <label for='title'>Title</label>
+    <input id='title' name='title' type='text' class="span7" maxlength='140' placeholder="required" title="Please provide a short descriptive title for the issue." required value="{{bug.title}}"/>
+
+    <label for='type'>Details</label>
+    <div class="mdd_toolbar"></div>
+    <textarea id='text' name='text' rows='7' class='span7 mdd_editor' placeholder="required" title="Please provide a detailed explanation of the issue." required>{{{bug.text}}}</textarea>
+    <!--<div class="mdd_resizer"></div>-->
+    <div class="mdd_preview"></div>
+
+    <div class="row">
+      <div class="span3">
+        <label for='assignto'>Assign To</label>
+        <input id='assignto' name='assignto' type='text' class="typeahead"
+               data-url='{{app.path}}api/user/' autocomplete="off" value="{{bug.assignto}}"/>
+      </div>
+      <div class="control-row">
+        <br />
+        <label for='private' class="checkbox span4">
+          <input id='private' name='private' type='checkbox' {{bug.private}}checked="checked"{{/bug.private}}> Private
+            <span class="help-inline">(only you and administrators can see the bug)</span>
+        </label>
+      </div>
+    </div>
+
+    <div id="formError" class="alert alert-error hide">
+      <button type="button" class="close">&times;</button>
+      <strong>Error!</strong> Please fix the following:
+      <ul></ul>
+    </div>
+
+    <div id="bugerror" class="alert alert-error hide">
+      <button type="button" class="close">&times;</button>
+      <strong>Error!</strong> Something went awry while submitting your changes. Please, try again.
+    </div>
+
+    <div class="form-actions">
+      <button id='savebug' type="submit" class="btn btn-primary" data-loading-text="Saving...">Save changes</button>
+      <a href="{{app.path}}" class="btn">Cancel</a>
+    </div>
+    </fieldset>
+  </form>
+  </div>
+  </div>
+  <div id="message"></div>
+  <div id="loginModal" class="login modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      <h3 id="loginHeader">Login</h3>
+    </div>
+    <div id="loginerror" class="alert alert-error hide">
+      <button type="button" class="close">&times;</button>
+      <strong>Error!</strong> Invalid username/email or password. Please, try again.
+    </div>
+    <form id='loginForm' class="login" method='post'>
+    <div class="modal-body">
+        <label for='username'>Username</label>
+        <input id='username' name='username' type='text' placeholder="username or email" required='required' value="{{app.username}}" />
+        <label for='password'>Password</label>
+        <input id='password' name='password' type='password' required='required' />
+    </div>
+    <div class="modal-footer">
+        <button id='attemptlogin' type="submit" class="btn btn-primary" data-loading-text="Logging in...">Submit</button>
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+    </div>
+    </form>
+  </div>
+</div>
+<script src="//ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script>
+<script src="//ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+<script src="{{app.path}}js/mdd/markdowndeeplib.min.js"></script>
+<script src="{{app.path}}js/tinybugs.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#assignto').typeahead({
+            source: function (query, process) {
+                var url = $(this.$element).attr('data-url');
+                return $.get(url, { q: query }, function (data) {
+                    return process(data);
+                });
+            },
+        });
+
+        $("textarea.mdd_editor").MarkdownDeep({
+            resizebar: false,
+            help_location: "{{app.path}}js/mdd/mdd_help.htm",
+        });
+
+        $('#bugForm').validate({
+            validClass: 'success',
+            errorContainer: "#formError",
+            errorLabelContainer: "#formError ul",
+            wrapper: "li",
+            invalidHandler: function (event, validator) {
+                var errors = validator.numberOfInvalids();
+                if (errors) {
+                    $(this).slideDown();
+                }
+                else {
+                    $(this).find('.alert').slideUp('fast');
+                }
+            },
+            submitHandler: function (form) {
+                var submit = $(form).find(':submit').button('loading');
+                var alert = $('#bugerror').slideUp('fast');
+
+                //e.preventDefault();
+                $.post('{{app.path}}api/issue/{{bug.id}}', $(form).serialize())
+                    .done(function (data) {
+                        dirty = false;
+                        window.location.href = data.location;
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        if (errorThrown === 'Unauthorized' || errorThrown == 'Bad Gateway') {
+                            $('#loginModal').modal();
+                        }
+                        else {
+                            alert.slideDown();
+                        }
+                    }).always(function () {
+                        $('#savebug').button('reset');
+                    });
+            }
+        });
+
+        var dirty = false;
+
+        $(':input').change(function () {
+            dirty = true;
+        });
+
+        window.onbeforeunload = function (e) {
+            if (dirty) {
+                var message = "There are edits to this bug report.";
+                e = e || window.event;
+                if (e) {
+                    e.returnValue = message; // IE and Firefox
+                }
+
+                return message; // Webkit
+            }
+        };
+    });
+</script>
+</body>
+</html>
