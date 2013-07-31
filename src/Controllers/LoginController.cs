@@ -62,8 +62,10 @@
                 FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(userId, false, 30);
                 this.Context.Cookies.Add(new HttpCookie(FormsAuthentication.FormsCookieName, FormsAuthentication.Encrypt(ticket)));
 
+                vm.GravatarId = user.GravatarId;
                 vm.UserEmail = user.Email;
-                vm.UserName = user.Name;
+                vm.UserName = user.UserName;
+                vm.UserFullName = user.FullName;
 
                 // Forms authentication is a bit old fashioned and will automatically add "default.aspx" on to
                 // URLs lacking a filename. Remove that default document and let the web server find the default
@@ -73,7 +75,7 @@
             else
             {
                 vm.StatusCode = System.Net.HttpStatusCode.Unauthorized;
-                vm.Template = FileService.LoadTemplate("login/login.html.mustache");
+                vm.Template = FileService.LoadTemplate("login.html.mustache");
                 vm.UserName = username;
             }
 

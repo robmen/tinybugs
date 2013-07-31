@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>tinyBugs - Login</title>
+  <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+  <div class="row">
+  <div class="span12">
+  <form id='loginForm' method='post'>
+    <div class="alert alert-error hide">
+      <button type="button" class="close">&times;</button>
+      <strong>Error!</strong> Invalid username/email or password. Please, try again.
+    </div>
+
+    <label for='username'>Username</label>
+    <input id='username' name='username' type='text' maxlength='50' placeholder="username or email" value="{{username}}" required='required' />
+    <label for='password'>Password</label>
+    <input id='password' name='password' type='text' maxlength='50' required='required' />
+
+    <div class="form-actions">
+      <input type='submit' name='submit' class="btn btn-primary" data-loading-text="Logging in..." value='Login'/>
+    </div>
+  </form>
+  </div>
+  </div>
+</div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+<script src="{{approot}}/js/tinybugs.js"></script>
+<script>
+$(document).ready(function () {
+    $('#loginForm').submit(function (e) {
+        var submit = $(this).find(':submit').button('loading');
+        var alert = $(this).find('.alert').slideUp('fast');
+        var query = qs();
+
+        e.preventDefault();
+        $.post('/api/session/', $(this).serialize())
+            .done(function () {
+                window.location.href = query.returnurl || '/';
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                alert.slideDown();
+            }).always(function () {
+                submit.button('reset');
+            });
+    });
+});
+</script>
+</body>
+</html>
