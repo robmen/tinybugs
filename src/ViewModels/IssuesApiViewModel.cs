@@ -5,8 +5,8 @@
 
     public class IssuesApiViewModel : ViewModelBase
     {
-        public IEnumerable<CompleteIssue> Issues { get; set; }
+        public IEnumerable<IssueViewModel> Issues { get; set; }
 
-        public Pagination Page { get; set; }
+        public PaginationViewModel Page { get; set; }
     }
 }

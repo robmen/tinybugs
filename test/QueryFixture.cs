@@ -29,7 +29,7 @@
                 sb.OrderBy("Issue.Id");
 
                 var t = new SqlBuilder.Template(sb, @"SELECT /**select**/ FROM Issue /**join**/ /**leftjoin**/ /**where**/ /**orderby**/", null);
-                var iss = db.Query<CompleteIssue>(t.RawSql, t.Parameters);
+                var iss = db.Query<IssueViewModel>(t.RawSql, t.Parameters);
                 string sql = db.GetLastSql();
                 Assert.NotEmpty(iss);
                 Assert.Equal("foo@example.com", iss[0].AssignedToUserEmail);

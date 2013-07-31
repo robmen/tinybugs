@@ -36,14 +36,14 @@
                 {
                     case "GET":
                         {
-                            QueriedIssues issues = QueryService.QueryIssues(q);
+                            QueriedIssuesViewModel issues = QueryService.QueryIssues(q);
                             issues.Issues.ForEach(i => i.Location = this.Context.ApplicationPath + i.Id + "/"); // TODO: come up with a better way of handling this.
                             var pagePrefix = handlerPath + QueryService.RecreateQueryString(q) + "&page=";
 
                             IssuesApiViewModel vm = new IssuesApiViewModel()
                             {
                                 Issues = issues.Issues,
-                                Page = new Pagination(q.Page, q.Count, issues.Total, pagePrefix),
+                                Page = new PaginationViewModel(q.Page, q.Count, issues.Total, pagePrefix),
                             };
                             JsonSerializer.SerializeToWriter(vm, this.Context.GetOutput("application/json"));
                         }
@@ -57,7 +57,7 @@
                             }
                             else
                             {
-                                CompleteIssue ci = CreateIssueFromCollection(this.Context.User, this.Context.Form);
+                                IssueViewModel ci = CreateIssueFromCollection(this.Context.User, this.Context.Form);
                                 if (ci == null)
                                 {
                                     this.Context.SetStatusCode(HttpStatusCode.InternalServerError);
@@ -80,7 +80,7 @@
             }
             else // interact with existing issue.
             {
-                CompleteIssue issue;
+                IssueViewModel issue;
                 if (!QueryService.TryGetIssueWithComments(issueId, out issue))
                 {
                     this.Context.SetStatusCode(HttpStatusCode.NotFound);
@@ -101,7 +101,7 @@
                             }
                             else
                             {
-                                CompleteIssue ci = UpdateIssueFromCollection(this.Context.User, issue.Id, this.Context.Form);
+                                IssueViewModel ci = UpdateIssueFromCollection(this.Context.User, issue.Id, this.Context.Form);
                                 if (ci == null)
                                 {
                                     this.Context.SetStatusCode(HttpStatusCode.InternalServerError);
@@ -140,9 +140,9 @@
             }
         }
 
-        public CompleteIssue CreateIssueFromCollection(Guid userId, NameValueCollection data)
+        public IssueViewModel CreateIssueFromCollection(Guid userId, NameValueCollection data)
         {
-            CompleteIssue ci = null;
+            IssueViewModel ci = null;
             Issue issue = new Issue();
             issue.PopulateWithData(data);
             issue.CreatedAt = issue.UpdatedAt;
@@ -178,9 +178,9 @@
             return ci;
         }
 
-        public CompleteIssue UpdateIssueFromCollection(Guid userId, int issueId, NameValueCollection data)
+        public IssueViewModel UpdateIssueFromCollection(Guid userId, int issueId, NameValueCollection data)
         {
-            CompleteIssue ci = null;
+            IssueViewModel ci = null;
             Issue issue = new Issue();
             Dictionary<string, object> updates = issue.PopulateWithData(data);
 

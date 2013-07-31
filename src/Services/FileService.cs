@@ -47,7 +47,7 @@
             return File.OpenText(fullPath);
         }
 
-        public static void WriteIssue(AppViewModel app, CompleteIssue issue)
+        public static void WriteIssue(AppViewModel app, IssueViewModel issue)
         {
             string file = Path.Combine(RootPath, issue.Id.ToString() + "\\index.html");
 

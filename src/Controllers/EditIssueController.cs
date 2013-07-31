@@ -22,7 +22,7 @@
             }
 
             var app = new AppViewModel(this.Context.ApplicationPath);
-            CompleteIssue issue;
+            IssueViewModel issue;
             if (!QueryService.TryGetIssueWithComments(issueId, out issue))
             {
                 this.Context.SetStatusCode(HttpStatusCode.NotFound);

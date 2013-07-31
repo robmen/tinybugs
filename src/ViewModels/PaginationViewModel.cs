@@ -1,10 +1,10 @@
-﻿namespace RobMensching.TinyBugs.Models
+﻿namespace RobMensching.TinyBugs.ViewModels
 {
     using System;
 
-    public class Pagination
+    public class PaginationViewModel
     {
-        public Pagination(int page, int perPage, int totalItems, string pagedUrlPrefix = null)
+        public PaginationViewModel(int page, int perPage, int totalItems, string pagedUrlPrefix = null)
         {
             this.Current = (page == 0) ? 1 : page;
             this.ItemsPerPage = perPage;

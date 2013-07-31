@@ -1,10 +1,11 @@
-﻿namespace RobMensching.TinyBugs.Models
+﻿namespace RobMensching.TinyBugs.ViewModels
 {
     using System;
     using System.Collections.Generic;
+    using RobMensching.TinyBugs.Models;
     using ServiceStack.DataAnnotations;
 
-    public class CompleteIssueComment
+    public class IssueCommentViewModel
     {
         [BelongTo(typeof(IssueComment))]
         public long Id { get; set; }

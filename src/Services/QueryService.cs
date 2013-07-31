@@ -8,6 +8,7 @@
     using System.Text;
     using System.Web;
     using RobMensching.TinyBugs.Models;
+    using RobMensching.TinyBugs.ViewModels;
     using ServiceStack.OrmLite;
     using ServiceStack.Text;
 
@@ -124,7 +125,7 @@ LEFT JOIN User ON IssueComment.CommentByUserId=User.Id
             return sb.ToString();
         }
 
-        public static QueriedIssues QueryIssues(Query query)
+        public static QueriedIssuesViewModel QueryIssues(Query query)
         {
             SqlBuilder sql = new SqlBuilder();
             Dictionary<string, object> parameters = new Dictionary<string, object>();
@@ -166,15 +167,15 @@ LEFT JOIN User ON IssueComment.CommentByUserId=User.Id
             using (var db = DataService.Connect())
             {
                 int total = db.SqlScalar<int>(countTemplate.RawSql, parameters);
-                return new QueriedIssues()
+                return new QueriedIssuesViewModel()
                 {
-                    Issues = db.Query<CompleteIssue>(rawSql, parameters),
+                    Issues = db.Query<IssueViewModel>(rawSql, parameters),
                     Total = total,
                 };
             }
         }
 
-        public static List<CompleteIssueComment> CommentsForIssue(int issueId)
+        public static List<IssueCommentViewModel> CommentsForIssue(int issueId)
         {
             using (var db = DataService.Connect(true))
             {
@@ -182,13 +183,13 @@ LEFT JOIN User ON IssueComment.CommentByUserId=User.Id
             }
         }
 
-        public static List<CompleteIssueComment> CommentsForIssueUsingDb(int issueId, IDbConnection db)
+        public static List<IssueCommentViewModel> CommentsForIssueUsingDb(int issueId, IDbConnection db)
         {
             SqlBuilder sql = new SqlBuilder();
             sql.Where("IssueId=@issueId", new { issueId = issueId });
             var commentTemplate = sql.AddTemplate(CommentSqlQueryTemplate);
 
-            return db.Query<CompleteIssueComment>(commentTemplate.RawSql, commentTemplate.Parameters);
+            return db.Query<IssueCommentViewModel>(commentTemplate.RawSql, commentTemplate.Parameters);
         }
 
         public static User GetUserFromName(string value)
@@ -207,7 +208,7 @@ LEFT JOIN User ON IssueComment.CommentByUserId=User.Id
             }
         }
 
-        public static bool TryGetIssueWithComments(long issueId, out CompleteIssue issue)
+        public static bool TryGetIssueWithComments(long issueId, out IssueViewModel issue)
         {
             using (var db = DataService.Connect(true))
             {
@@ -215,13 +216,13 @@ LEFT JOIN User ON IssueComment.CommentByUserId=User.Id
             }
         }
 
-        public static bool TryGetIssueWithCommentsUsingDb(long issueId, IDbConnection db, out CompleteIssue issue)
+        public static bool TryGetIssueWithCommentsUsingDb(long issueId, IDbConnection db, out IssueViewModel issue)
         {
             SqlBuilder sql = new SqlBuilder();
             sql.Where("Issue.Id=@id", new { id = issueId });
             var issueTemplate = sql.AddTemplate(IssueSqlQueryTemplate);
 
-            issue = db.Query<CompleteIssue>(issueTemplate.RawSql, issueTemplate.Parameters).SingleOrDefault();
+            issue = db.Query<IssueViewModel>(issueTemplate.RawSql, issueTemplate.Parameters).SingleOrDefault();
             if (issue != null)
             {
                 issue.Comments = CommentsForIssueUsingDb(issue.Id, db);

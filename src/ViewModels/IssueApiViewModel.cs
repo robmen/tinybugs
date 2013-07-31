@@ -4,6 +4,6 @@
 
     public class IssueApiViewModel : ViewModelBase
     {
-        public CompleteIssue Issue { get; set; }
+        public IssueViewModel Issue { get; set; }
     }
 }

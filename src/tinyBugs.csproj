@@ -80,11 +80,11 @@
     <Content Include="assets\notfound.mustache">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Compile Include="Models\CompleteIssue.cs" />
-    <Compile Include="Models\CompleteIssueComment.cs" />
+    <Compile Include="ViewModels\IssueViewModel.cs" />
+    <Compile Include="ViewModels\IssueCommentViewModel.cs" />
     <Compile Include="Models\FullTextSearchIssue.cs" />
-    <Compile Include="Models\QueriedIssues.cs" />
-    <Compile Include="Models\Pagination.cs" />
+    <Compile Include="ViewModels\QueriedIssuesViewModel.cs" />
+    <Compile Include="ViewModels\PaginationViewModel.cs" />
     <Compile Include="Models\Query.cs" />
     <Compile Include="Models\QueryFilterColumn.cs" />
     <Compile Include="Models\QuerySortColumn.cs" />

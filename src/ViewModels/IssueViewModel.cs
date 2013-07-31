@@ -1,10 +1,11 @@
-﻿namespace RobMensching.TinyBugs.Models
+﻿namespace RobMensching.TinyBugs.ViewModels
 {
     using System;
     using System.Collections.Generic;
+    using RobMensching.TinyBugs.Models;
     using ServiceStack.DataAnnotations;
 
-    public class CompleteIssue
+    public class IssueViewModel
     {
         [BelongTo(typeof(Issue))]
         public int Id { get; set; }
@@ -62,6 +63,6 @@
 
         public string Location { get; set; }
 
-        public List<CompleteIssueComment> Comments { get; set; }
+        public List<IssueCommentViewModel> Comments { get; set; }
     }
 }
