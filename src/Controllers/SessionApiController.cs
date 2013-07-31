@@ -75,7 +75,7 @@
             }
             else
             {
-                vm.StatusCode = System.Net.HttpStatusCode.InternalServerError; // TODO: return a better error code that doesn't cause forms authentication to overwrite our response.
+                vm.StatusCode = System.Net.HttpStatusCode.BadGateway; // TODO: return a better error code that doesn't cause forms authentication to overwrite our response.
                 vm.UserName = username;
             }
 

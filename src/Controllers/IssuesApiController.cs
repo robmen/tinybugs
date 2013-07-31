@@ -53,7 +53,7 @@
                         {
                             if (!this.Context.Authenticated)
                             {
-                                this.Context.SetStatusCode(HttpStatusCode.Unauthorized);
+                                this.Context.SetStatusCode(HttpStatusCode.BadGateway); // TODO: return a better error code that doesn't cause forms authentication to overwrite our response
                             }
                             else
                             {

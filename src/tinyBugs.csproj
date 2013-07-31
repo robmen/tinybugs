@@ -101,7 +101,7 @@
     <Content Include="assets\js\tinybugs.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="assets\js\mdd\MarkdownDeepLib.min.js">
+    <Content Include="assets\js\mdd\markdowndeeplib.min.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="assets\js\mdd\mdd_ajax_loader.gif">
