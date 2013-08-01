@@ -168,8 +168,7 @@
 
                     if (QueryService.TryGetIssueWithCommentsUsingDb(issue.Id, db, out ci))
                     {
-                        var app = new AppViewModel(this.Context.ApplicationPath);
-                        FileService.WriteIssue(app, ci);
+                        FileService.WriteIssue(ci);
                         tx.Commit();
                     }
                 }
@@ -201,8 +200,7 @@
 
                 if (QueryService.TryGetIssueWithCommentsUsingDb(issueId, db, out ci))
                 {
-                    var app = new AppViewModel(this.Context.ApplicationPath);
-                    FileService.WriteIssue(app, ci);
+                    FileService.WriteIssue(ci);
                     tx.Commit();
                 }
             }

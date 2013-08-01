@@ -60,8 +60,8 @@
     <Compile Include="Controllers\RootController.cs" />
     <Compile Include="Controllers\NotFoundController.cs" />
     <Compile Include="Controllers\UserApiController.cs" />
-    <Compile Include="Models\Area.cs" />
-    <Compile Include="Models\Release.cs" />
+    <Compile Include="Models\Config.cs" />
+    <Compile Include="Services\ConfigService.cs" />
     <Compile Include="ViewModels\AppViewModel.cs" />
     <Compile Include="ViewModels\OptionViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />

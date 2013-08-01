@@ -1,17 +1,11 @@
 ﻿namespace RobMensching.TinyBugs.ViewModels
 {
-    using System.Web.Configuration;
+    using RobMensching.TinyBugs.Services;
 
     public class AppViewModel
     {
-        public AppViewModel(string path = null)
-        {
-            this.Name = WebConfigurationManager.AppSettings["app.name"] ?? "tinyBugs";
-            this.Path = path;
-        }
+        public string Path { get { return ConfigService.AppPath; } }
 
-        public string Path { get; set; }
-
-        public string Name { get; set; }
+        public string Name { get { return ConfigService.AppName; } }
     }
 }

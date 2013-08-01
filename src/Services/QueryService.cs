@@ -192,14 +192,14 @@ LEFT JOIN User ON IssueComment.CommentByUserId=User.Id
             return db.Query<IssueCommentViewModel>(commentTemplate.RawSql, commentTemplate.Parameters);
         }
 
-        public static IssueViewModel AreasAndReleasesForIssueUsingDb(IssueViewModel issue, IDbConnection db)
+        public static IssueViewModel AreasAndReleasesForIssue(IssueViewModel issue)
         {
-            issue.Areas = db.Each<Area>()
-                            .Select(a => new OptionViewModel() { Selected = a.Name.Equals(issue.Area, StringComparison.OrdinalIgnoreCase), Text = a.Name, Value = a.Name })
+            issue.Areas = ConfigService.Areas
+                            .Select(a => new OptionViewModel() { Selected = a.Equals(issue.Area, StringComparison.OrdinalIgnoreCase), Text = a, Value = a })
                             .ToList();
 
-            issue.Releases = db.Each<Release>()
-                               .Select(r => new OptionViewModel() { Selected = r.Name.Equals(issue.Release, StringComparison.OrdinalIgnoreCase), Text = r.Name, Value = r.Name })
+            issue.Releases = ConfigService.Releases
+                               .Select(r => new OptionViewModel() { Selected = r.Equals(issue.Release, StringComparison.OrdinalIgnoreCase), Text = r, Value = r })
                                .ToList();
             return issue;
         }
@@ -238,7 +238,8 @@ LEFT JOIN User ON IssueComment.CommentByUserId=User.Id
             if (issue != null)
             {
                 issue.Comments = CommentsForIssueUsingDb(issue.Id, db);
-                QueryService.AreasAndReleasesForIssueUsingDb(issue, db);
+
+                QueryService.AreasAndReleasesForIssue(issue);
             }
 
             return issue != null;

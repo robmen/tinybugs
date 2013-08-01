@@ -21,12 +21,11 @@
                 path = null;
             }
 
-            var app = new AppViewModel(this.Context.ApplicationPath);
             IssueViewModel issue;
             if (QueryService.TryGetIssueWithComments(issueId, out issue))
             {
                 Template template = FileService.LoadTemplate("bugform.mustache");
-                template.Render(new { app = app, issue = issue }, this.Context.GetOutput(), null);
+                template.Render(new { app = new AppViewModel(), issue = issue }, this.Context.GetOutput(), null);
             }
             else
             {

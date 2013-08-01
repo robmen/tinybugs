@@ -1,8 +1,6 @@
 ﻿namespace RobMensching.TinyBugs
 {
-    using System.Configuration;
     using System.Web;
-    using System.Web.Configuration;
     using RobMensching.TinyBugs.Models;
     using RobMensching.TinyBugs.Services;
     using RobMensching.TinyBugs.ViewModels;
@@ -12,7 +10,7 @@
 
     public class Application : HttpApplication
     {
-        private static bool FirstRequestInitialization = false;
+        private static bool FirstRequestInitialization = true;
         private static object FirstRequestInitializationLock = new object();
 
         protected void Application_OnStart()
@@ -23,24 +21,20 @@
             JsConfig<IssueType>.SerializeFn = (t => t.ToString().ToCamelCase());
             JsConfig<IssueStatus>.SerializeFn = (t => t.ToString().ToCamelCase());
 
-            ConnectionStringSettings conn = WebConfigurationManager.ConnectionStrings["db"] ?? new ConnectionStringSettings("db", "~/App_Data/bugs.sqlite", "SQLite");
-            DataService.ConnectionString = Server.MapPath(conn.ConnectionString);
-
-            DataService.Initialize(true);
-            FileService.Initialize(Server.MapPath("~/"));
+            ConfigService.ApplicationInitialization(this);
         }
 
         protected void Application_BeginRequest()
         {
-            if (!FirstRequestInitialization)
+            if (FirstRequestInitialization)
             {
-                lock (this)
+                lock (FirstRequestInitializationLock)
                 {
-                    if (!FirstRequestInitialization)
+                    if (FirstRequestInitialization)
                     {
-                        var app = new AppViewModel(this.Context.Request.ApplicationPath.WithTrailingSlash());
-                        FileService.PregenerateApp(app);
-                        FirstRequestInitialization = true;
+                        ConfigService.FirstRequestInitialiation(this);
+                        FileService.PregenerateApp();
+                        FirstRequestInitialization = false;
                     }
                 }
             }
