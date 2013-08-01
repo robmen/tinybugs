@@ -24,5 +24,10 @@
 
         [BelongTo(typeof(IssueComment))]
         public string Text { get; set; }
+
+        public string TextRendered
+        {
+            get { return new MarkdownDeep.Markdown() { NoFollowLinks = true, ExtraMode = true, SafeMode = true }.Transform(this.Text); }
+        }
     }
 }
