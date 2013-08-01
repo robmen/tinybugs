@@ -14,8 +14,10 @@
             Template template;
             if (!CompiledTemplates.TryGetValue(path, out template))
             {
+                string assetPath = Path.Combine("assets", path);
+
                 template = new Template();
-                using (var reader = FileService.ReadFile(path))
+                using (var reader = FileService.ReadFile(assetPath))
                 {
                     template.Load(reader);
                 }

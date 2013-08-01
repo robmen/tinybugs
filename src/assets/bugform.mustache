@@ -2,9 +2,9 @@
 <html>
 <head>
   <title>{{app.name}} - {{#issue}}Edit #{{id}}: {{title}}{{/issue}}{{^issue}}New Issue{{/issue}}</title>
-  <link href="{{app.path}}js/mdd/mdd_styles.css" rel="stylesheet" />
+  <link href="{{app.path}}assets/js/mdd/mdd_styles.css" rel="stylesheet" />
   <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
-  <link href="{{app.path}}css/tinybugs.css" rel="stylesheet" />
+  <link href="{{app.path}}assets/css/tinybugs.css" rel="stylesheet" />
 </head>
 <body>
 <div class="container">
@@ -183,8 +183,8 @@
 <script src="//ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script>
 <script src="//ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
 <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
-<script src="{{app.path}}js/mdd/markdowndeeplib.min.js"></script>
-<script src="{{app.path}}js/tinybugs.js"></script>
+<script src="{{app.path}}assets/js/mdd/markdowndeeplib.min.js"></script>
+<script src="{{app.path}}assets/js/tinybugs.js"></script>
 <script>
     $(document).ready(function () {
         $('#assignedtousername').typeahead({

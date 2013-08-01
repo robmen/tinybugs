@@ -1,9 +1,14 @@
 ﻿<html>
 <head>
-<title>tinyBugs - Issues</title>
+  <title>{{app.name}} - Issues</title>
+  <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
 </head>
 <body>
-    <p><a href="/new/">New issue...</a></p>
+<div class="container">
+<div class="row">
+<div class="span9">
+    <h1>{{app.name}} - Issues</h1>
+    <p><a href="/new/" class="btn">New issue...</a></p>
 <p>
 Issues:
 </p>
@@ -47,5 +52,11 @@ Some example queries:
 <dt><a href="?search=longer+old">?search=old</a></dt><dd>Return the list of issues that have "longer" and "old" in their title, text or comments.</dd>
 <dt><a href="?page=2&count=1">?page=2&count=1</a></dt><dd>Return the second page where there is only one issue per page.</dd>
 </dl>
+</div>
+</div>
+</div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+<script src="{{app.path}}assets/js/tinybugs.js"></script>
 </body>
 </html>

@@ -1,5 +1,6 @@
 ﻿namespace RobMensching.TinyBugs.Services
 {
+    using System;
     using System.Collections.Generic;
     using System.Configuration;
     using System.Linq;
@@ -53,10 +54,15 @@
                 }
                 else
                 {
-                    AppName = config.ApplicationName ?? WebConfigurationManager.AppSettings["app.name"] ?? "tinyBugs";
+                    AppName = config.ApplicationName;
                     areas = config.Areas;
                     releases = config.Releases;
                 }
+            }
+
+            if (String.IsNullOrEmpty(AppName))
+            {
+                AppName = WebConfigurationManager.AppSettings["app.name"] ?? "tinyBugs";
             }
 
             RootPath = application.Server.MapPath("~/");

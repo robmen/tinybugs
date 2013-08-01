@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <title>{{app.name}} - #{{issue.id}} | {{issue.title}}</title>
-  {{> header}}
+  <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
 </head>
 <body>
 <div class="container">
@@ -18,8 +18,8 @@
     <span class="label label-inverse">{{issue.area}}</span>
     <span class="badge label-warning">{{issue.votes}}</span>
     <div class="btn-group pull-right">
-    <a href="{{app.path}}edit/{{issue.id}}" class="btn btn-mini">QuickEdit</a>
-    <a href="{{app.path}}edit/{{issue.id}}" class="btn btn-mini">Edit Issue</a>
+      <a href="{{app.path}}edit/{{issue.id}}" class="btn btn-mini">Edit issue</a>
+      <a href="{{app.path}}edit/{{issue.id}}" class="btn btn-mini">Quick edit</a>
     </div>
     </div></div>
     <p>Opened at {{issue.createdat}} by {{issue.createdbyusername}}</p>
@@ -82,7 +82,7 @@
 </div>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
-<script src="/js/tinybugs.js"></script>
+<script src="{{app.path}}assets/js/tinybugs.js"></script>
 <script>
 $(document).ready(function () {
     $('#assignto').typeahead({
