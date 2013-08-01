@@ -36,6 +36,8 @@
         /// </summary>
         public static string RootPath { get; private set; }
 
+        public static bool NoConfig { get; private set; }
+
         public static void ApplicationInitialization(Application application)
         {
             DataService.ConnectionString = application.Server.MapPath(ConfigService.ConnectionStringSettings.ConnectionString);
@@ -45,9 +47,16 @@
             {
                 var config = db.Each<Config>().FirstOrDefault();
 
-                AppName =  config.ApplicationName ?? WebConfigurationManager.AppSettings["app.name"] ?? "tinyBugs";
-                areas = config.Areas;
-                releases = config.Releases;
+                if (config == null)
+                {
+                    NoConfig = true;
+                }
+                else
+                {
+                    AppName = config.ApplicationName ?? WebConfigurationManager.AppSettings["app.name"] ?? "tinyBugs";
+                    areas = config.Areas;
+                    releases = config.Releases;
+                }
             }
 
             RootPath = application.Server.MapPath("~/");
