@@ -3,6 +3,7 @@
     using System;
     using System.Data;
     using RobMensching.TinyBugs.Models;
+    using RobMensching.TinyBugs.ViewModels;
     using RobMensching.TinyBugs.Services;
     using ServiceStack.OrmLite;
     using Xunit;
