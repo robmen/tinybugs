@@ -12,11 +12,64 @@
     <fieldset>
     <legend>{{#issue}}Edit{{/issue}}{{^issue}}New{{/issue}} Issue</legend>
     <div class="row">
-    <div class="span8 well well-small">
+    <div class="span9 well well-small">
+        <div class="controls-row">
+        <div class="span2">
         <div class="row">
           <label for='type' class="span2">Type</label>
+          <select id='type' name='type' class="span2" required>
+            <option value='Bug'>Bug</option>
+            <option value='Feature'>Feature</option>
+          </select>
+            </div>
+        </div>
+        <div class="span2">
+        <div class="row">
           <label for='release' class="span2">Release</label>
-          <label for='tags' class="span3">Area</label>
+          <select id='release' name='release' class="span2" title="Please provide the release where the issue was originally encountered." required>
+            <option></option>
+            {{#issue.releases}}
+            <option value='{{value}}'{{#selected}} selected{{/selected}}>{{text}}</option>
+            {{/issue.releases}}
+            {{^issue.releases}}
+            {{#app.releases}}
+            <option value='{{value}}'>{{title}}</option>
+            {{/app.releases}}
+            {{/issue.releases}}
+          </select>
+            </div>
+            </div>
+        <div class="span2">
+        <div class="row">
+          <label for='tags' class="span2">Area</label>
+          <select id='area' name='area' class="span2" title="Please select the most appropriate area affected by the issue." required>
+            <option></option>
+            {{#issue.areas}}
+            <option value='{{value}}'{{#selected}} selected{{/selected}}>{{text}}</option>
+            {{/issue.areas}}
+            {{^issue.areas}}
+            {{#app.areas}}
+            <option value='{{value}}'>{{text}}</option>
+            {{/app.areas}}
+            {{/issue.areas}}
+          </select>
+            </div>
+            </div>
+        <div class="span2">
+        <div class="row">
+          <label class="span1">&nbsp;</label>
+
+        <label for='private' class="checkbox span2">
+            <input id='private' name='private' type='checkbox' {{#issue.private}}checked="checked"{{/issue.private}}> Private issue
+        </label>
+            </div>
+            </div>
+        </div>
+
+<!--        <div class="row">
+          <label for='type' class="span2">Type</label>
+          <label for='release' class="span2">Release</label>
+          <label for='tags' class="span2">Area</label>
         </div>
         <div class="controls-row">
           <select id='type' name='type' class="span2" required>
@@ -34,7 +87,7 @@
             {{/app.releases}}
             {{/issue.releases}}
           </select>
-          <select id='area' name='area' class="span3" title="Please select the most appropriate area affected by the issue." required>
+          <select id='area' name='area' class="span2" title="Please select the most appropriate area affected by the issue." required>
             <option></option>
             {{#issue.areas}}
             <option value='{{value}}'{{#selected}} selected{{/selected}}>{{text}}</option>
@@ -45,66 +98,60 @@
             {{/app.areas}}
             {{/issue.areas}}
           </select>
-        </div>
-    </div>
-        </div>
-
-    <div class="row">
-      <div class="span7">
-        <label for='title'>Title</label>
-        <input id='title' name='title' type='text' class="span7" maxlength='120' placeholder="required" title="Please provide a short descriptive title for the issue." required value="{{issue.title}}"/>
-      </div>
-    </div>
-    <div class="row">
-      <div class="span7">
-    <label for='type'>Details</label>
-    <div class="mdd_toolbar"></div>
-    <textarea id='text' name='text' rows='7' class='span7 mdd_editor' placeholder="required" title="Please provide a detailed explanation of the issue." required>{{{issue.text}}}</textarea>
-    <!--<div class="mdd_resizer"></div>-->
-    <div class="mdd_preview"></div>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="span3">
-        <label for='assignedtousername'>Assign To</label>
-        <input id='assignedtousername' name='assignedtousername' type='text' class="typeahead"
-               data-url='{{app.path}}api/user/' autocomplete="off" value="{{issue.assignedtousername}}"/>
-      </div>
-      <div class="control-row">
-        <br />
-        <label for='private' class="checkbox span4">
-          <input id='private' name='private' type='checkbox' {{#issue.private}}checked="checked"{{/issue.private}}> Private
-            <span class="help-inline">(only you and administrators can see the issue)</span>
+        <label for='private' class="checkbox span2">
+          <input id='private' name='private' type='checkbox' {{#issue.private}}checked="checked"{{/issue.private}}> Private issue
         </label>
-      </div>
+        </div>-->
     </div>
-{{#issue}}
-    <div class="row">
-      <div class="span3">
-        <label for='resolution'>Resolution</label>
-        <input id='resolution' name='resolution' type='text' class="typeahead"
-               data-url='{{app.path}}api/issue/resolution' autocomplete="off" value="{{resolution}}"/>
-        <input id="status" name="status" type="hidden" value="{{status}}" />
-      </div>
     </div>
-{{/issue}}
 
-    <div id="formError" class="alert alert-error hide">
+    <div id="formError" class="span9 alert alert-error hide">
       <button type="button" class="close">&times;</button>
       <strong>Error!</strong> Please fix the following:
       <ul></ul>
     </div>
 
-    <div id="bugerror" class="alert alert-error hide">
+    <div id="bugerror" class="span9 alert alert-error hide">
       <button type="button" class="close">&times;</button>
       <strong>Error!</strong> Something went awry while submitting your changes. Please, try again.
     </div>
 
-    <div class="form-actions">
+    <div class="row">
+
+      <div class="span2 well well-small">
+        <label for='assignedtousername'>Assign To</label>
+        <input id='assignedtousername' name='assignedtousername' type='text' class="typeahead span2"
+               data-url='{{app.path}}api/user/' autocomplete="off" value="{{issue.assignedtousername}}"/>
+
+{{#issue}}
+        <label for='resolution'>Resolution</label>
+        <input id='resolution' name='resolution' type='text' class="typeahead span2"
+               data-url='{{app.path}}api/issue/resolution' autocomplete="off" value="{{resolution}}"/>
+        <input id="status" name="status" type="hidden" value="{{status}}" />
+{{/issue}}
+              <div class="form-actions">
+      <button id='submit' type="submit" class=" btn btn-primary" data-loading-text="Saving...">Save issue</button>
+      <!--<a href="{{app.path}}" class="btn">Cancel</a>-->
+    </div>
+
+      </div>
+
+      <div class="span7">
+        <label for='title'>Title</label>
+        <input id='title' name='title' type='text' class="span7" maxlength='120' placeholder="required" title="Please provide a short descriptive title for the issue." required value="{{issue.title}}"/>
+
+        <div class="mdd_toolbar"></div>
+        <textarea id='text' name='text' rows='8' class='span7 mdd_editor' placeholder="required" title="Please provide a detailed explanation of the issue." required>{{{issue.text}}}</textarea>
+        <!--<div class="mdd_resizer"></div>-->
+        <div><br /><p><strong>Preview</strong></p></div>
+        <div class="mdd_preview"></div>
+      </div>
+    </div>
+
+<!--    <div class="form-actions">
       <button id='submit' type="submit" class="btn btn-primary" data-loading-text="Saving...">Save changes</button>
       <a href="{{app.path}}" class="btn">Cancel</a>
-    </div>
+    </div>-->
     </fieldset>
   </form>
   </div>
