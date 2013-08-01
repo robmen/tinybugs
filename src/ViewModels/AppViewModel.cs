@@ -6,7 +6,7 @@
     {
         public AppViewModel(string path = null)
         {
-            this.Name = WebConfigurationManager.AppSettings["app.name"] ?? "tinyBld";
+            this.Name = WebConfigurationManager.AppSettings["app.name"] ?? "tinyBugs";
             this.Path = path;
         }
 
