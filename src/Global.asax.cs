@@ -3,7 +3,6 @@
     using System.Web;
     using RobMensching.TinyBugs.Models;
     using RobMensching.TinyBugs.Services;
-    using RobMensching.TinyBugs.ViewModels;
     using ServiceStack.Logging;
     using ServiceStack.Logging.NLogger;
     using ServiceStack.Text;
