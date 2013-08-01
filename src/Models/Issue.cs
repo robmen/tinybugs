@@ -42,6 +42,7 @@
 
         public Dictionary<string, object> PopulateWithData(NameValueCollection data)
         {
+            bool privateVisited = false;
             Dictionary<string, object> updated = new Dictionary<string, object>();
 
             foreach (string name in data.AllKeys)
@@ -72,12 +73,7 @@
                         break;
 
                     case "private":
-                        bool priv;
-                        if (Boolean.TryParse(value, out priv))
-                        {
-                            this.Private = priv;
-                            updated.Add("Private", this.Private);
-                        }
+                        this.Private = true; // this field is always tracked as updated below.
                         break;
 
                     case "area":
@@ -145,6 +141,10 @@
                         break;
                 }
             }
+
+            // Always update the boolean since we don't know what state it was
+            // in originally.
+            updated.Add("Private", this.Private);
 
             this.UpdatedAt = DateTime.UtcNow;
             updated.Add("UpdatedAt", this.UpdatedAt);
