@@ -23,14 +23,14 @@
 
             var app = new AppViewModel(this.Context.ApplicationPath);
             IssueViewModel issue;
-            if (!QueryService.TryGetIssueWithComments(issueId, out issue))
-            {
-                this.Context.SetStatusCode(HttpStatusCode.NotFound);
-            }
-            else
+            if (QueryService.TryGetIssueWithComments(issueId, out issue))
             {
                 Template template = FileService.LoadTemplate("bugform.mustache");
                 template.Render(new { app = app, issue = issue }, this.Context.GetOutput(), null);
+            }
+            else
+            {
+                this.Context.SetStatusCode(HttpStatusCode.NotFound);
             }
         }
     }
