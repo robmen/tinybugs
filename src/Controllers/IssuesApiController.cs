@@ -199,7 +199,7 @@
                     db.Update<FullTextSearchIssue>(new { Text = issue.Text, Title = issue.Title }, s => s.DocId == issueId);
                 }
 
-                if (QueryService.TryGetIssueWithCommentsUsingDb(issue.Id, db, out ci))
+                if (QueryService.TryGetIssueWithCommentsUsingDb(issueId, db, out ci))
                 {
                     var app = new AppViewModel(this.Context.ApplicationPath);
                     FileService.WriteIssue(app, ci);
