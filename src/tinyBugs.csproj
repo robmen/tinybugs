@@ -64,6 +64,7 @@
     <Compile Include="Services\ConfigService.cs" />
     <Compile Include="ViewModels\AppViewModel.cs" />
     <Compile Include="ViewModels\OptionViewModel.cs" />
+    <Compile Include="ViewModels\ReleaseViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Content Include="assets\bug.mustache">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
