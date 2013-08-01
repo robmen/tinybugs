@@ -10,6 +10,8 @@
 
         public string Name { get { return ConfigService.AppName; } }
 
+        public string SubName { get { return ConfigService.AppSubName; } }
+
         public IEnumerable<ReleaseViewModel> Releases { get { return ConfigService.Releases.Select(r => new ReleaseViewModel() { Name = r }); } }
     }
 }

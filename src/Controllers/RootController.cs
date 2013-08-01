@@ -14,7 +14,6 @@
 
             RootViewModel vm = new RootViewModel()
             {
-                App = new AppViewModel(),
                 Issues = issuesPaged.Issues,
                 Page = new PaginationViewModel(q.Page, q.Count, issuesPaged.Total, pagePrefix),
             };

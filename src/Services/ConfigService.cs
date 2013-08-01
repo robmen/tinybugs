@@ -22,6 +22,8 @@
 
         public static string AppName { get; private set; }
 
+        public static string AppSubName { get; private set; }
+
         /// <summary>
         /// Gets the application path for tinyBugs. For example, `/bugs/` at http://wixtoolset/bugs/.
         /// </summary>
@@ -55,6 +57,7 @@
                 else
                 {
                     AppName = config.ApplicationName;
+                    AppSubName = config.ApplicationSubName;
                     areas = config.Areas;
                     releases = config.Releases;
                 }
@@ -63,6 +66,7 @@
             if (String.IsNullOrEmpty(AppName))
             {
                 AppName = WebConfigurationManager.AppSettings["app.name"] ?? "tinyBugs";
+                AppSubName = WebConfigurationManager.AppSettings["app.subname"] ?? "no issue is too small";
             }
 
             RootPath = application.Server.MapPath("~/");
