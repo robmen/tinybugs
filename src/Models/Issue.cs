@@ -32,8 +32,6 @@
 
         public string Text { get; set; }
 
-        public string TextRendered { get; set; }
-
         public string Title { get; set; }
 
         public IssueType Type { get; set; }
@@ -117,10 +115,7 @@
                     case "content":
                     case "text":
                         {
-                            MarkdownDeep.Markdown md = new MarkdownDeep.Markdown();
-                            md.SafeMode = true;
                             this.Text = value;
-                            this.TextRendered = md.Transform(unsafeValue);
                             updated.Add("Text", this.Text);
                         }
                         break;

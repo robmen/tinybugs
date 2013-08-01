@@ -1,20 +1,18 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-  <title>{{app.name}} - {{#issue}}Edit #{{id}: {{title}}{{/issue}}{{^issue}}New Issue{{/issue}}</title>
-  <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+  <title>{{app.name}} - {{#issue}}Edit #{{id}}: {{title}}{{/issue}}{{^issue}}New Issue{{/issue}}</title>
   <link href="{{app.path}}js/mdd/mdd_styles.css" rel="stylesheet" />
+  <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
   <link href="{{app.path}}css/tinybugs.css" rel="stylesheet" />
 </head>
 <body>
 <div class="container">
-  <div class="row">
-  <div class="span8">
   <form id='bugForm' method='post'>
     <fieldset>
     <legend>{{#issue}}Edit{{/issue}}{{^issue}}New{{/issue}} Issue</legend>
-
-    <div class="well well-small">
+    <div class="row">
+    <div class="span8 well well-small">
         <div class="row">
           <label for='type' class="span2">Type</label>
           <label for='release' class="span2">Release</label>
@@ -27,31 +25,51 @@
           </select>
           <select id='release' name='release' class="span2" title="Please provide the release where the issue was originally encountered." required>
             <option></option>
-            <option value='v4.x'>v4.x</option>
-            <option value='v3.x'>v3.x</option>
+            {{#issue.releases}}
+            <option value='{{value}}'{{#selected}} selected{{/selected}}>{{text}}</option>
+            {{/issue.releases}}
+            {{^issue.releases}}
+            {{#app.releases}}
+            <option value='{{value}}'>{{title}}</option>
+            {{/app.releases}}
+            {{/issue.releases}}
           </select>
           <select id='area' name='area' class="span3" title="Please select the most appropriate area affected by the issue." required>
             <option></option>
-            <option value='candle'>candle</option>
-            <option value='light'>light</option>
+            {{#issue.areas}}
+            <option value='{{value}}'{{#selected}} selected{{/selected}}>{{text}}</option>
+            {{/issue.areas}}
+            {{^issue.areas}}
+            {{#app.areas}}
+            <option value='{{value}}'>{{text}}</option>
+            {{/app.areas}}
+            {{/issue.areas}}
           </select>
         </div>
     </div>
+        </div>
 
-    <label for='title'>Title</label>
-    <input id='title' name='title' type='text' class="span7" maxlength='140' placeholder="required" title="Please provide a short descriptive title for the issue." required value="{{issue.title}}"/>
-
+    <div class="row">
+      <div class="span7">
+        <label for='title'>Title</label>
+        <input id='title' name='title' type='text' class="span7" maxlength='120' placeholder="required" title="Please provide a short descriptive title for the issue." required value="{{issue.title}}"/>
+      </div>
+    </div>
+    <div class="row">
+      <div class="span7">
     <label for='type'>Details</label>
     <div class="mdd_toolbar"></div>
     <textarea id='text' name='text' rows='7' class='span7 mdd_editor' placeholder="required" title="Please provide a detailed explanation of the issue." required>{{{issue.text}}}</textarea>
     <!--<div class="mdd_resizer"></div>-->
     <div class="mdd_preview"></div>
+      </div>
+    </div>
 
     <div class="row">
       <div class="span3">
-        <label for='assignto'>Assign To</label>
-        <input id='assignto' name='assignto' type='text' class="typeahead"
-               data-url='{{app.path}}api/user/' autocomplete="off" value="{{issue.assignto}}"/>
+        <label for='assignedtousername'>Assign To</label>
+        <input id='assignedtousername' name='assignedtousername' type='text' class="typeahead"
+               data-url='{{app.path}}api/user/' autocomplete="off" value="{{issue.assignedtousername}}"/>
       </div>
       <div class="control-row">
         <br />
@@ -61,6 +79,16 @@
         </label>
       </div>
     </div>
+{{#issue}}
+    <div class="row">
+      <div class="span3">
+        <label for='resolution'>Resolution</label>
+        <input id='resolution' name='resolution' type='text' class="typeahead"
+               data-url='{{app.path}}api/issue/resolution' autocomplete="off" value="{{resolution}}"/>
+        <input id="status" name="status" type="hidden" value="{{status}}" />
+      </div>
+    </div>
+{{/issue}}
 
     <div id="formError" class="alert alert-error hide">
       <button type="button" class="close">&times;</button>
@@ -74,7 +102,7 @@
     </div>
 
     <div class="form-actions">
-      <button id='savebug' type="submit" class="btn btn-primary" data-loading-text="Saving...">Save changes</button>
+      <button id='submit' type="submit" class="btn btn-primary" data-loading-text="Saving...">Save changes</button>
       <a href="{{app.path}}" class="btn">Cancel</a>
     </div>
     </fieldset>
@@ -112,7 +140,7 @@
 <script src="{{app.path}}js/tinybugs.js"></script>
 <script>
     $(document).ready(function () {
-        $('#assignto').typeahead({
+        $('#assignedtousername').typeahead({
             source: function (query, process) {
                 var url = $(this.$element).attr('data-url');
                 return $.get(url, { q: query }, function (data) {
@@ -124,6 +152,33 @@
         $("textarea.mdd_editor").MarkdownDeep({
             resizebar: false,
             help_location: "{{app.path}}js/mdd/mdd_help.htm",
+        });
+
+        $('#resolution').keyup(function (e) {
+            if ('{{issue.status}}' == 'Open') {
+                if (this.value && this.value != '{{issue.resolution}}') {
+                    $("#submit").text('Resolve issue');
+                    $("#status").val('Resolved');
+                }
+                else {
+                    $("#submit").text('Save changes');
+                    $("#status").val('{{issue.status}}');
+                }
+            }
+            else {
+                if (!this.value) {
+                    $("#submit").text('Reopen issue');
+                    $("#status").val('Open');
+                }
+                else if (this.value != '{{issue.resolution}}') {
+                    $("#submit").text('Resolve issue');
+                    $("#status").val('Resolved');
+                }
+                else {
+                    $("#submit").text('Save changes');
+                    $("#status").val('{{issue.status}}');
+                }
+            }
         });
 
         $('#bugForm').validate({
@@ -157,7 +212,7 @@
                             alert.slideDown();
                         }
                     }).always(function () {
-                        $('#savebug').button('reset');
+                        submit.button('reset');
                     });
             }
         });

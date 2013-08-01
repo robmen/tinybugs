@@ -47,9 +47,6 @@
         public string Text { get; set; }
 
         [BelongTo(typeof(Issue))]
-        public string TextRendered { get; set; }
-
-        [BelongTo(typeof(Issue))]
         public string Title { get; set; }
 
         [BelongTo(typeof(Issue))]
@@ -63,6 +60,15 @@
 
         public string Location { get; set; }
 
+        public List<OptionViewModel> Areas { get; set; }
+
+        public List<OptionViewModel> Releases { get; set; }
+
         public List<IssueCommentViewModel> Comments { get; set; }
+
+        public string TextRendered
+        {
+            get { return new MarkdownDeep.Markdown() { NoFollowLinks = true, ExtraMode = true, SafeMode = true }.Transform(this.Text); }
+        }
     }
 }

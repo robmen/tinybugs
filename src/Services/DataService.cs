@@ -31,11 +31,19 @@
                     fullTextSearchExists = false;
                 }
 
-                db.CreateTables(overwrite, typeof(User), typeof(Issue), typeof(IssueComment));
+                db.CreateTables(overwrite, typeof(User), typeof(Area), typeof(Release), typeof(Issue), typeof(IssueComment));
                 if (!fullTextSearchExists)
                 {
                     db.ExecuteSql("CREATE VIRTUAL TABLE FullTextSearchIssue USING fts4(Title, Text, Comments)");
                 }
+
+                db.Insert(new Release() { Name = "v3.7" });
+                db.Insert(new Release() { Name = "v3.8" });
+                db.Insert(new Release() { Name = "v3.x" });
+                db.Insert(new Release() { Name = "v4.x" });
+
+                db.Insert(new Area() { Name = "candle.exe" });
+                db.Insert(new Area() { Name = "light.exe" });
 
                 var fooUser = UserService.Create("foo@example.com", "bar.");
                 fooUser.FullName = "Foo User";

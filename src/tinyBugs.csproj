@@ -60,7 +60,10 @@
     <Compile Include="Controllers\RootController.cs" />
     <Compile Include="Controllers\NotFoundController.cs" />
     <Compile Include="Controllers\UserApiController.cs" />
+    <Compile Include="Models\Area.cs" />
+    <Compile Include="Models\Release.cs" />
     <Compile Include="ViewModels\AppViewModel.cs" />
+    <Compile Include="ViewModels\OptionViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Content Include="assets\bug.mustache">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
