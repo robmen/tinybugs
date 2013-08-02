@@ -48,25 +48,9 @@
 
             using (var db = DataService.Connect(true))
             {
-                var config = db.Each<Config>().FirstOrDefault();
-
-                if (config == null)
-                {
-                    NoConfig = true;
-                }
-                else
-                {
-                    AppName = config.ApplicationName;
-                    AppSubName = config.ApplicationSubName;
-                    areas = config.Areas;
-                    releases = config.Releases;
-                }
-            }
-
-            if (String.IsNullOrEmpty(AppName))
-            {
-                AppName = WebConfigurationManager.AppSettings["app.name"] ?? "tinyBugs";
-                AppSubName = WebConfigurationManager.AppSettings["app.subname"] ?? "no issue is too small";
+                var sql = DataService.DialectProvider.ExpressionVisitor<Config>();
+                var config = db.Select<Config>(sql.OrderByDescending(c => c.UpdatedAt).Limit(1)).FirstOrDefault();
+                InitializeWithConfig(config);
             }
 
             RootPath = application.Server.MapPath("~/");
@@ -75,6 +59,27 @@
         public static void FirstRequestInitialiation(Application application)
         {
             AppPath = application.Context.Request.ApplicationPath.WithTrailingSlash();
+        }
+
+        public static void InitializeWithConfig(Config config)
+        {
+            if (config == null)
+            {
+                NoConfig = true;
+            }
+            else
+            {
+                AppName = config.ApplicationName;
+                AppSubName = config.ApplicationSubName;
+                areas = config.Areas;
+                releases = config.Releases;
+            }
+
+            if (String.IsNullOrEmpty(AppName))
+            {
+                AppName = WebConfigurationManager.AppSettings["app.name"] ?? "tinyBugs";
+                AppSubName = WebConfigurationManager.AppSettings["app.subname"] ?? "no issue is too small";
+            }
         }
     }
 }

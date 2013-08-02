@@ -15,6 +15,8 @@
 
         public static string ConnectionString { get; set; }
 
+        public static IOrmLiteDialectProvider DialectProvider { get { return OrmLiteConfig.DialectProvider; } }
+
         public static IDbConnection Connect(bool readOnly = false)
         {
             return readOnly ? ConnectionString.OpenReadOnlyDbConnection() : ConnectionString.OpenDbConnection();

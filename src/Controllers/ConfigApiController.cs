@@ -36,7 +36,18 @@
                             }
                         }
 
-                        // TODO: update config
+                        var config = new Config();
+                        var updates = config.PopulateWithData(this.Context.Form);
+
+                        using (var db = DataService.Connect())
+                        {
+                            db.Insert(config);
+                        }
+
+                        ConfigService.InitializeWithConfig(config);
+                        FileService.PregenerateApp();
+
+                        JsonSerializer.SerializeToWriter(new AppViewModel(), this.Context.GetOutput("application/json"));
                     }
                     break;
 
