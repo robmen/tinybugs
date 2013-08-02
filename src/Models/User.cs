@@ -13,6 +13,8 @@
         [Index(Unique = true)]
         public string UserName { get; set; }
 
+        public UserRole Role { get; set; }
+
         public string FullName { get; set; }
 
         public string GravatarId { get; set; }

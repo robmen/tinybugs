@@ -65,8 +65,9 @@
         public static void PregenerateApp()
         {
             var vm = new { app = new AppViewModel() };
-            var foos = new[] { new { template = "login.mustache", output = "login/index.html" },
-                               new { template = "bugform.mustache", output = "new/index.html" } };
+            var foos = new[] { new { template = "admin.mustache", output = "admin/index.html" },
+                               new { template = "login.mustache", output = "login/index.html" },
+                               new { template = "bugform.mustache", output = "new/index.html" }, };
             foreach (var foo in foos)
             {
                 Template template = LoadTemplate(foo.template);

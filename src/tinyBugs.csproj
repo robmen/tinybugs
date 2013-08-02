@@ -50,6 +50,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Controllers\ConfigApiController.cs" />
     <Compile Include="Controllers\SessionApiController.cs" />
     <Compile Include="Controllers\EditIssueController.cs" />
     <Compile Include="Controllers\IssuesApiController.cs" />
@@ -61,6 +62,7 @@
     <Compile Include="Controllers\NotFoundController.cs" />
     <Compile Include="Controllers\UserApiController.cs" />
     <Compile Include="Models\Config.cs" />
+    <Compile Include="Models\UserRole.cs" />
     <Compile Include="Services\ConfigService.cs" />
     <Compile Include="ViewModels\AppViewModel.cs" />
     <Compile Include="ViewModels\OptionViewModel.cs" />
@@ -142,6 +144,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\bugform.mustache">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="assets\admin.mustache">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="packages.config" />

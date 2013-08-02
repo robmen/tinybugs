@@ -46,6 +46,7 @@
 
                 var fooUser = UserService.Create("foo@example.com", "bar.");
                 fooUser.FullName = "Foo User";
+                fooUser.Role = UserRole.Admin;
                 db.Save(fooUser);
 
                 var barUser = UserService.Create("bar@example.com", "foo");
