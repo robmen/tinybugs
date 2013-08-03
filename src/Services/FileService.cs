@@ -67,6 +67,8 @@
             var vm = new { app = new AppViewModel() };
             var foos = new[] { new { template = "admin.mustache", output = "admin/index.html" },
                                new { template = "login.mustache", output = "login/index.html" },
+                               new { template = "login_create.mustache", output = "login/create/index.html" },
+                               new { template = "login_verify.mustache", output = "login/verify/index.html" },
                                new { template = "bugform.mustache", output = "new/index.html" }, };
             foreach (var foo in foos)
             {

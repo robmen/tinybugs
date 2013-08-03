@@ -6,6 +6,8 @@
 
     public class AppViewModel
     {
+        public string Url { get { return ConfigService.AppFullUrl; } }
+
         public string Path { get { return ConfigService.AppPath; } }
 
         public string Name { get { return ConfigService.AppName; } }

@@ -2,6 +2,7 @@
 {
     public enum UserRole
     {
+        Unverfied,
         User,
         Contributor,
         Admin,

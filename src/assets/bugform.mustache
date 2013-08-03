@@ -33,7 +33,7 @@
             {{/issue.releases}}
             {{^issue.releases}}
             {{#app.releases}}
-            <option value='{{value}}'>{{title}}</option>
+            <option value='{{name}}'>{{name}}</option>
             {{/app.releases}}
             {{/issue.releases}}
           </select>
@@ -49,7 +49,7 @@
             {{/issue.areas}}
             {{^issue.areas}}
             {{#app.areas}}
-            <option value='{{value}}'>{{text}}</option>
+            <option value='{{name}}'>{{name}}</option>
             {{/app.areas}}
             {{/issue.areas}}
           </select>
@@ -258,7 +258,7 @@
                         else {
                             alert.slideDown();
                         }
-                    }).always(function () {
+
                         submit.button('reset');
                     });
             }

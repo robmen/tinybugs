@@ -144,7 +144,7 @@
         {
             IssueViewModel ci = null;
             Issue issue = new Issue();
-            issue.PopulateWithData(data);
+            issue.PopulateWithData(data, userId);
             issue.CreatedAt = issue.UpdatedAt;
             issue.CreatedByUserId = userId;
 
@@ -181,7 +181,7 @@
         {
             IssueViewModel ci = null;
             Issue issue = new Issue();
-            Dictionary<string, object> updates = issue.PopulateWithData(data);
+            Dictionary<string, object> updates = issue.PopulateWithData(data, userId);
 
             // TODO: validate issue.
 

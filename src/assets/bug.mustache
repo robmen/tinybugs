@@ -24,37 +24,16 @@
     </div>
     </div></div>
     <p>Opened at {{issue.createdat}} by {{issue.createdbyusername}}</p>
-
-    <p>Assigned to</p>
-    <p>{{issue.assignedtousername}}</p>
     <p>Last updated at {{issue.updatedat}}</p>
+    <p>Assigned to: {{issue.assignedtousername}}{{^issue.assignedtousername}}No one <input id="takeit" type="button" class="btn btn-mini" data-loading-text="acquiring..." value="take it!" />{{/issue.assignedtousername}}</p>
 
-    <p>Details</p>
+    <h4>Details</h4>
     <p>{{{issue.textrendered}}}</p>
 
     {{#issue.comments}}
       <p>Comment from {{commentbyusername}} at {{createdat}}</p>
       <p>{{{textrendered}}}</p>
     {{/issue.comments}}
-<!--
-    <form id='bugForm' method='post'>
-    <fieldset>
-    <legend>New Issue</legend>
-
-    <input type="hidden" value="{{bug.id}}" id="id" name="id" />
-
-    <div id="bugerror" class="alert alert-error hide">
-      <button type="button" class="close">&times;</button>
-      <strong>Error!</strong> Something went awry while submitting your changes. Please, try again.
-    </div>
-
-    <div class="form-actions">
-      <button id='savebug' type="submit" class="btn btn-primary" data-loading-text="Saving...">Save changes</button>
-      <a href="/" class="btn">Cancel</a>
-    </div>
-    </fieldset>
-  </form>
--->
   </div>
   </div>
   <div id="message"></div>
@@ -96,6 +75,24 @@ $(document).ready(function () {
         //matcher: function (item) {
         //    return this.query == item;
         //}
+    });
+
+    $('#takeit').on('click', function (e) {
+      var takeitButton = $('#takeit').button('loading');
+
+      $.post('{{app.path}}api/issue/{{issue.id}}', 'assignedto=[me]')
+          .done(function(data) {
+            location.reload();
+          }).fail(function (jqXHR, textStatus, errorThrown) {
+            if (errorThrown === 'Unauthorized') {
+              $('#loginModal').modal();
+            }
+            else {
+              alert.slideDown();
+            }
+          }).always(function () {
+            takeitButton.button('reset');
+          });
     });
 
     $('#bugForm').submit(function (e) {

@@ -23,6 +23,6 @@
 
         public string PasswordHash { get; set; }
 
-        public bool Verified { get; set; }
+        public string VerifyToken { get; set; }
     }
 }

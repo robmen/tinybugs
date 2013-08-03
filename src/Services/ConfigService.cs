@@ -20,9 +20,17 @@
         /// <remarks>This is the only property that can be accessed without calling the initialization routines.</remarks>
         public static ConnectionStringSettings ConnectionStringSettings { get { return WebConfigurationManager.ConnectionStrings["db"] ?? new ConnectionStringSettings("db", "~/App_Data/bugs.sqlite", "SQLite"); } }
 
+        public static string FromEmail { get { return WebConfigurationManager.AppSettings["mail.from"] ?? "noreply@tinybugs.com"; } }
+
         public static string AppName { get; private set; }
 
         public static string AppSubName { get; private set; }
+
+        /// <summary>
+        /// Gets the application url for tinyBugs. For example, `http://wixtoolset/bugs/` at http://wixtoolset/bugs/.
+        /// </summary>
+        /// <remarks>This property is invalid until the first request to the application is made.</remarks>
+        public static string AppFullUrl { get; set; }
 
         /// <summary>
         /// Gets the application path for tinyBugs. For example, `/bugs/` at http://wixtoolset/bugs/.
@@ -58,6 +66,8 @@
 
         public static void FirstRequestInitialiation(Application application)
         {
+            AppFullUrl = application.Context.Request.Url.GetLeftPart(UriPartial.Authority) + application.Context.Request.ApplicationPath.WithTrailingSlash();
+
             AppPath = application.Context.Request.ApplicationPath.WithTrailingSlash();
         }
 

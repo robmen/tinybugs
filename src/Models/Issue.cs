@@ -6,6 +6,7 @@
     using RobMensching.TinyBugs.Services;
     using ServiceStack.DataAnnotations;
     using Microsoft.Security.Application;
+    using ServiceStack.OrmLite;
 
     public class Issue
     {
@@ -40,9 +41,8 @@
 
         public int Votes { get; set; }
 
-        public Dictionary<string, object> PopulateWithData(NameValueCollection data)
+        public Dictionary<string, object> PopulateWithData(NameValueCollection data, Guid userId)
         {
-            bool privateVisited = false;
             Dictionary<string, object> updated = new Dictionary<string, object>();
 
             foreach (string name in data.AllKeys)
@@ -57,17 +57,26 @@
                     case "assignedtouser":
                     case "assignedtoname":
                     case "assignedtousername":
-                        this.AssignedToUserId = QueryService.GetUserFromName(value).Id;
-                        if (this.AssignedToUserId != null)
                         {
+                            User user;
+                            using (var db = DataService.Connect(true))
+                            {
+                                user = ("[me]".Equals(value, StringComparison.OrdinalIgnoreCase)) ?
+                                        db.GetById<User>(userId) :
+                                        db.FirstOrDefault<User>(u => u.UserName == value);
+                            }
+
+
+                            QueryService.GetUserFromName(value);
+                            this.AssignedToUserId = (user != null) ? user.Id : Guid.Empty;
                             updated.Add("AssignedToUserId", this.AssignedToUserId);
                         }
                         break;
 
                     case "assignedtoemail":
-                        this.AssignedToUserId = QueryService.GetUserFromEmail(value).Id;
-                        if (this.AssignedToUserId != null)
                         {
+                            User user = QueryService.GetUserFromEmail(value);
+                            this.AssignedToUserId = (user != null) ? user.Id : Guid.Empty;
                             updated.Add("AssignedToUserId", this.AssignedToUserId);
                         }
                         break;

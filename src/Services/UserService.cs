@@ -1,6 +1,7 @@
 ﻿namespace RobMensching.TinyBugs.Services
 {
     using System;
+    using System.Globalization;
     using System.Linq;
     using System.Security.Cryptography;
     using System.Text;
@@ -10,8 +11,9 @@
     public static class UserService
     {
         private const int PasswordHashIterations = 20000;
+        private const string TokenIssuedFormat = "yyyyMMddHHmm";
 
-        public static User Create(string email, string password = null)
+        public static User Create(string email, string password = null, string username = null)
         {
             byte[] salt = new byte[16];
             using (RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider())
@@ -19,14 +21,16 @@
                 rng.GetBytes(salt);
             }
 
+            username = String.IsNullOrEmpty(username) ? email.ToLowerInvariant() : username.ToLowerInvariant();
+
             return new User()
             {
                 Id = Guid.NewGuid(),
                 Email = email.ToLowerInvariant(),
-                UserName = email.ToLowerInvariant(),
+                UserName = username,
                 GravatarId = GenerateGravatarId(email),
                 Salt = Convert.ToBase64String(salt),
-                PasswordHash = CalculatePasswordHash(email, salt, password),
+                PasswordHash = CalculatePasswordHash(username, salt, password),
             };
         }
 
@@ -62,11 +66,22 @@
             }
         }
 
+        public static string GenerateVerifyToken()
+        {
+            byte[] salt = new byte[16];
+            using (RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider())
+            {
+                rng.GetBytes(salt);
+            }
+
+            return BytesToHex(salt) + DateTime.UtcNow.ToString(TokenIssuedFormat);
+        }
+
         public static string GetGravatarImageUrl(string id, bool secure = false, int size = 0)
         {
             string protocol = secure ? "https" : "http";
             string sizeQuery = size > 0 ? "&s=" + size : String.Empty;
-            return String.Format("{0}://www.gravatar.com/avatar/{1}?r=g&d=mm{2}", protocol, id, sizeQuery);
+            return String.Format("{0}://www.gravatar.com/avatar/{1}?r=pg&d=mm{2}", protocol, id, sizeQuery);
         }
 
         public static string GetGravatarImageUrlForEmail(string email, bool secure = false, int size = 0)
@@ -74,7 +89,7 @@
             string id = GenerateGravatarId(email);
             string protocol = secure ? "https" : "http";
             string sizeQuery = size > 0 ? "&s=" + size : String.Empty;
-            return String.Format("{0}://www.gravatar.com/avatar/{1}?r=g&d=mm{2}", protocol, id, sizeQuery);
+            return String.Format("{0}://www.gravatar.com/avatar/{1}?r=pg&d=mm{2}", protocol, id, sizeQuery);
         }
 
         public static bool TryAuthenticateUser(string username, string password, out User user)
@@ -92,6 +107,15 @@
 
             string hash = UserService.CalculatePasswordHash(user.UserName, user.Salt, password);
             return user.PasswordHash.Equals(hash, StringComparison.Ordinal);
+        }
+
+        public static bool TryValidateVerificationToken(string token, out DateTime issued)
+        {
+            issued = DateTime.MinValue;
+
+            return (!String.IsNullOrEmpty(token) &&
+                    DateTime.TryParseExact(token.Substring(token.Length - TokenIssuedFormat.Length), TokenIssuedFormat, null, DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal, out issued) &&
+                    DateTime.UtcNow < issued.AddMinutes(60));
         }
 
         private static string BytesToHex(byte[] bytes)
