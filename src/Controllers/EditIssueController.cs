@@ -1,36 +1,32 @@
 ﻿namespace RobMensching.TinyBugs.Controllers
 {
+    using System;
     using System.Net;
     using Nustache.Core;
-    using RobMensching.TinyBugs.Models;
     using RobMensching.TinyBugs.Services;
     using RobMensching.TinyBugs.ViewModels;
-    using ServiceStack.Text;
+    using RobMensching.TinyWebStack;
 
+    [Route("edit/{issue}")]
     public class EditIssueController : ControllerBase
     {
-        public override void Execute()
+        public override ViewBase Get(ControllerContext context)
         {
-            string handlerPath = this.Context.ApplicationPath + "edit/";
-            string path = this.Context.Url.AbsolutePath.WithTrailingSlash().Substring(handlerPath.Length).TrimEnd('/');
-            Query q = QueryService.ParseQuery(this.Context.QueryString);
-
-            long issueId = 0;
-            if (!long.TryParse(path, out issueId))
-            {
-                path = null;
-            }
+            string value = context.RouteData.Values["issue"] as string;
+            long issueId = Int64.Parse(value);
 
             IssueViewModel issue;
             if (QueryService.TryGetIssueWithComments(issueId, out issue))
             {
                 Template template = FileService.LoadTemplate("bugform.mustache");
-                template.Render(new { app = new AppViewModel(), issue = issue }, this.Context.GetOutput(), null);
+                template.Render(new { app = new AppViewModel(), issue = issue }, context.GetOutput(), null);
             }
             else
             {
-                this.Context.SetStatusCode(HttpStatusCode.NotFound);
+                context.SetStatusCode(HttpStatusCode.NotFound);
             }
+
+            return null;
         }
     }
 }

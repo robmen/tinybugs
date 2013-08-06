@@ -7,9 +7,9 @@
     using System.Web;
     using ServiceStack.Text;
 
-    public class ControllerContext
+    public class DeprecatedControllerContext
     {
-        public ControllerContext(HttpContext context)
+        public DeprecatedControllerContext(HttpContext context)
         {
             this.Context = context;
         }

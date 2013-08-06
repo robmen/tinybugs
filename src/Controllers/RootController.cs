@@ -3,14 +3,16 @@
     using RobMensching.TinyBugs.Models;
     using RobMensching.TinyBugs.Services;
     using RobMensching.TinyBugs.ViewModels;
+    using RobMensching.TinyWebStack;
 
+    [Route("")]
     public class RootController : ControllerBase
     {
-        public override void Execute()
+        public override ViewBase Get(ControllerContext context)
         {
-            Query q = QueryService.ParseQuery(this.Context.QueryString);
+            Query q = QueryService.ParseQuery(context.QueryString);
             var issuesPaged = QueryService.QueryIssues(q);
-            var pagePrefix = this.Context.ApplicationPath + QueryService.RecreateQueryString(q) + "&page=";
+            var pagePrefix = context.ControllerPath + QueryService.RecreateQueryString(q) + "&page=";
 
             RootViewModel vm = new RootViewModel()
             {
@@ -20,7 +22,8 @@
 
             string path = q.Template ?? "root.mustache";
             var template = FileService.LoadTemplate(path);
-            template.Render(vm, this.Context.GetOutput(), null);
+            template.Render(vm, context.GetOutput(), null);
+            return null;
         }
     }
 }

@@ -45,7 +45,7 @@
             RenderTemplateToFile(template, new { app = app ?? new AppViewModel(), issue = issue }, file);
         }
 
-        public static void RemoveIssue(int issueId)
+        public static void RemoveIssue(long issueId)
         {
             string folder = Path.Combine(ConfigService.RootPath, issueId.ToString());
             Directory.Delete(folder, true);

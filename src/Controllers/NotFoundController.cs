@@ -4,17 +4,19 @@
     using System.Net;
     using RobMensching.TinyBugs.Services;
     using RobMensching.TinyBugs.ViewModels;
+    using RobMensching.TinyWebStack;
     using ServiceStack.Logging;
 
+    [Route("notfound")]
     public class NotFoundController : ControllerBase
     {
         private static ILog Log = LogManager.GetLogger("notfound");
 
-        public override void Execute()
+        public override ViewBase Get(ControllerContext context)
         {
-            var query = this.Context.QueryString;
+            var query = context.QueryString;
             HttpStatusCode statusCode = HttpStatusCode.NotFound;
-            string referrer = this.Context.Referrer != null ? this.Context.Referrer.AbsoluteUri : String.Empty;
+            string referrer = context.Referrer != null ? context.Referrer.AbsoluteUri : String.Empty;
 
             if (query.Count > 0)
             {
@@ -26,13 +28,14 @@
                 }
             }
 
-            Log.InfoFormat("url: {0}  referrer: {1}", this.Context.Url.AbsoluteUri, referrer);
+            Log.InfoFormat("url: {0}  referrer: {1}", context.Url.AbsoluteUri, referrer);
 
             var viewModel = new NotFoundViewModel() { ReferralUri = referrer, StatusCode = statusCode };
             var template = FileService.LoadTemplate("notfound.mustache");
 
-            this.Context.SetStatusCode(statusCode);
-            template.Render(viewModel, this.Context.GetOutput(), null);
+            context.SetStatusCode(statusCode);
+            template.Render(viewModel, context.GetOutput(), null);
+            return null;
         }
     }
 }

@@ -59,17 +59,22 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Controllers\ConfigApiController.cs" />
+    <Compile Include="Controllers\UsersApiController.cs" />
+    <Compile Include="Controllers\IssueApiController.cs" />
     <Compile Include="Controllers\VerifyApiController.cs" />
     <Compile Include="Controllers\SessionApiController.cs" />
     <Compile Include="Controllers\EditIssueController.cs" />
     <Compile Include="Controllers\IssuesApiController.cs" />
     <Compile Include="Controllers\CommentApiController.cs" />
-    <Compile Include="Controllers\ControllerBase.cs" />
-    <Compile Include="Controllers\ControllerContext.cs" />
+    <Compile Include="Controllers\DeprecatedControllerBase.cs" />
+    <Compile Include="Controllers\DeprecatedControllerContext.cs" />
     <Compile Include="Controllers\EverythingController.cs" />
     <Compile Include="Controllers\RootController.cs" />
     <Compile Include="Controllers\NotFoundController.cs" />
     <Compile Include="Controllers\UserApiController.cs" />
+    <Compile Include="WebStack\RedirectView.cs" />
+    <Compile Include="WebStack\StatusCodeView.cs" />
+    <Compile Include="WebStack\ViewBase.cs" />
     <Compile Include="Models\Config.cs" />
     <Compile Include="Models\UserRole.cs" />
     <Compile Include="Services\ConfigService.cs" />
@@ -78,6 +83,10 @@
     <Compile Include="ViewModels\OptionViewModel.cs" />
     <Compile Include="ViewModels\ReleaseViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
+    <Compile Include="WebStack\ControllerBase.cs" />
+    <Compile Include="WebStack\ControllerContext.cs" />
+    <Compile Include="WebStack\RouteAttribute.cs" />
+    <Compile Include="WebStack\Routing.cs" />
     <Content Include="assets\bug.mustache">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

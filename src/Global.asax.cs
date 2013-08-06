@@ -3,6 +3,7 @@
     using System.Web;
     using RobMensching.TinyBugs.Models;
     using RobMensching.TinyBugs.Services;
+    using RobMensching.TinyWebStack;
     using ServiceStack.Logging;
     using ServiceStack.Logging.NLogger;
     using ServiceStack.Text;
@@ -21,6 +22,8 @@
             JsConfig<IssueStatus>.SerializeFn = (t => t.ToString().ToCamelCase());
 
             ConfigService.ApplicationInitialization(this);
+
+            Routing.RegisterRoutes();
         }
 
         protected void Application_BeginRequest()

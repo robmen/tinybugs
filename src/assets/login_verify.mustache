@@ -41,7 +41,7 @@ $(document).ready(function () {
     var query = qs();
 
     e.preventDefault();
-    $.post('{{app.path}}api/verify/' + query.t, $(this).serialize())
+    $.get('{{app.path}}api/verify/' + query.t)
         .done(function () {
           $('#formwrapper').slideUp('fast');
           success.slideDown();

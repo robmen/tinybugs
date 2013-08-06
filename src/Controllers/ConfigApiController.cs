@@ -1,60 +1,57 @@
 ﻿namespace RobMensching.TinyBugs.Controllers
 {
-    using System;
-    using System.Linq;
     using System.Net;
+    using System.Web.Routing;
     using RobMensching.TinyBugs.Models;
     using RobMensching.TinyBugs.Services;
     using RobMensching.TinyBugs.ViewModels;
+    using RobMensching.TinyWebStack;
     using ServiceStack.OrmLite;
     using ServiceStack.Text;
 
+    [Route("api/config")]
     public class ConfigApiController : ControllerBase
     {
-        public override void Execute()
+        public override ViewBase Get(ControllerContext context)
         {
-            switch (this.Context.Method)
+            JsonSerializer.SerializeToWriter(new AppViewModel(), context.GetOutput("application/json"));
+            return null;
+        }
+
+        //[Authenticate(Forms, "/login/")] // Basic, Digest, Oauth, Api
+        public override ViewBase Post(ControllerContext context)
+        {
+            if (!context.Authenticated)
             {
-                case "GET":
-                    JsonSerializer.SerializeToWriter(new AppViewModel(), this.Context.GetOutput("application/json"));
-                    break;
-
-                case "POST":
-                    if (!this.Context.Authenticated)
-                    {
-                        this.Context.SetStatusCode(HttpStatusCode.BadGateway); // TODO: return a better error code that doesn't cause forms authentication to overwrite our response
-                    }
-                    else
-                    {
-                        using (var db = DataService.Connect(true))
-                        {
-                            User me = db.GetById<User>(this.Context.User);
-                            if (me.Role < UserRole.Admin)
-                            {
-                                this.Context.SetStatusCode(HttpStatusCode.Forbidden);
-                                break;
-                            }
-                        }
-
-                        var config = new Config();
-                        var updates = config.PopulateWithData(this.Context.Form);
-
-                        using (var db = DataService.Connect())
-                        {
-                            db.Insert(config);
-                        }
-
-                        ConfigService.InitializeWithConfig(config);
-                        FileService.PregenerateApp();
-
-                        JsonSerializer.SerializeToWriter(new AppViewModel(), this.Context.GetOutput("application/json"));
-                    }
-                    break;
-
-                default:
-                    this.Context.SetStatusCode(HttpStatusCode.MethodNotAllowed);
-                    break;
+                context.SetStatusCode(HttpStatusCode.BadGateway); // TODO: return a better error code that doesn't cause forms authentication to overwrite our response
             }
+            else
+            {
+                using (var db = DataService.Connect(true))
+                {
+                    User me = db.GetById<User>(context.User);
+                    if (me.Role < UserRole.Admin)
+                    {
+                        context.SetStatusCode(HttpStatusCode.Forbidden);
+                        return null;
+                    }
+                }
+
+                var config = new Config();
+                var updates = config.PopulateWithData(context.Form);
+
+                using (var db = DataService.Connect())
+                {
+                    db.Insert(config);
+                }
+
+                ConfigService.InitializeWithConfig(config);
+                FileService.PregenerateApp();
+
+                JsonSerializer.SerializeToWriter(new AppViewModel(), context.GetOutput("application/json"));
+            }
+
+            return null;
         }
     }
 }

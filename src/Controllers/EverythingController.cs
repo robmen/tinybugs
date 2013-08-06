@@ -1,6 +1,6 @@
 ﻿namespace RobMensching.TinyBugs.Controllers
 {
-    public class EverythingController : ControllerBase
+    public class EverythingController : DeprecatedControllerBase
     {
         public override void Execute()
         {

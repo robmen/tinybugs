@@ -4,12 +4,15 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
+    using RobMensching.TinyWebStack;
 
+    [Route("api/comment")]
     public class CommentApiController : ControllerBase
     {
-        public override void Execute()
+        public override ViewBase Get(ControllerContext context)
         {
-            this.Context.GetOutput().Write("<html><head><title>Comments</title></head><body><h1>Comments</h1></body></html>");
+            context.GetOutput().Write("<html><head><title>Comments</title></head><body><h1>Comments</h1></body></html>");
+            return null;
         }
     }
 }
