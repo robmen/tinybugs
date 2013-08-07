@@ -30,8 +30,8 @@ Issues:
 <tbody>
 {{#issues}}
 <tr>
-<td><a href="/edit/{{id}}">{{id}}</a></td>
-<td><a href="/{{id}}/">{{title}}</a></td>
+<td><a href="{{app.path}}edit/{{id}}">{{id}}</a></td>
+<td><a href="{{app.path}}{{id}}/">{{title}}</a></td>
 <td>
 <a href="{{app.path}}?filter=status:{{status}}"><span class="label label-info" style="margin-bottom:4px">{{status}}</span></a>
 {{#resolution}}<a href="{{app.path}}?filter=status:{{status}}&filter=resolution:{{resolution}}"><span class="label label-info">{{resolution}}</span></a> {{/resolution}}
@@ -85,7 +85,7 @@ Some example queries:
 </div>
 <div class="span3">
 <div class="well well-small">
-  <p><a href="/new/" class="btn">New issue...</a></p>
+  <p><a href="{{app.path}}new/" class="btn">New issue...</a></p>
   <h4>Releases</h4>
   <ul>
     <li><a href="{{app.path}}">All releases</a></li>
