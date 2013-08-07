@@ -34,16 +34,16 @@
       </div>
 
       <label for='name'>Name</label>
-      <input id='name' name='name' type='text' class="span6" title="Please provide a short descriptive title for this application." required value="{{app.name}}"/>
+      <input id='name' name='name' type='text' class="span6" title="Please provide a short descriptive title for this application." required value="{{app.name}}" />
 
       <label for='subname'>Sub-name</label>
-      <input id='subname' name='subname' type='text' class="span6" title="Optional short witty quip about your issues." required value="{{app.subname}}"/>
+      <input id='subname' name='subname' type='text' class="span6" title="Optional short witty quip about your issues." required value="{{app.subname}}" />
 
       <label for='areas'>Areas</label>
-      <input id='areas' name='areas' type='text' class="span6" placeholder="Comma separated list of areas for issues." title="Comma separated list of areas." required value="{{#app.areas}}{{name}}, {{/app.areas}}"/>
+      <input id='areas' name='areas' type='text' class="span6" placeholder="Comma separated list of areas for issues." title="Comma separated list of areas." required value="{{#app.areas}}{{name}}, {{/app.areas}}" />
 
       <label for='releases'>Releases</label>
-      <input id='releases' name='releases' type='text' class="span6" placeholder="Comma separated list of releases for issues." title="Comma separated list of releases." required value="{{#app.releases}}{{name}}, {{/app.releases}}"/>
+      <input id='releases' name='releases' type='text' class="span6" placeholder="Comma separated list of releases for issues." title="Comma separated list of releases." required value="{{#app.releases}}{{name}}, {{/app.releases}}" />
 
       <div class="form-actions">
         <button id='updateConfig' type="submit" class="btn btn-primary" data-loading-text="Saving...">Update configuration</button>

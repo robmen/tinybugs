@@ -121,12 +121,12 @@
       <div class="span2 well well-small">
         <label for='assignedtousername'>Assign To</label>
         <input id='assignedtousername' name='assignedtousername' type='text' class="typeahead span2"
-               data-url='{{app.path}}api/user/' autocomplete="off" value="{{issue.assignedtousername}}"/>
+               data-url='{{app.path}}api/user/' autocomplete="off" value="{{issue.assignedtousername}}" />
 
 {{#issue}}
         <label for='resolution'>Resolution</label>
         <input id='resolution' name='resolution' type='text' class="typeahead span2"
-               data-url='{{app.path}}api/issue/resolution' autocomplete="off" value="{{resolution}}"/>
+               data-url='{{app.path}}api/issue/resolution' autocomplete="off" value="{{resolution}}" />
         <input id="status" name="status" type="hidden" value="{{status}}" />
 {{/issue}}
               <div class="form-actions">
@@ -138,7 +138,7 @@
 
       <div class="span7">
         <label for='title'>Title</label>
-        <input id='title' name='title' type='text' class="span7" maxlength='120' placeholder="required" title="Please provide a short descriptive title for the issue." required value="{{issue.title}}"/>
+        <input id='title' name='title' type='text' class="span7" maxlength='120' placeholder="required" title="Please provide a short descriptive title for the issue." required value="{{issue.title}}" />
 
         <div class="mdd_toolbar"></div>
         <textarea id='text' name='text' rows='8' class='span7 mdd_editor' placeholder="required" title="Please provide a detailed explanation of the issue." required>{{{issue.text}}}</textarea>
