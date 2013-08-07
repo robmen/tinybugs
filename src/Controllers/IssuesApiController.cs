@@ -1,7 +1,6 @@
 ﻿namespace RobMensching.TinyBugs.Controllers
 {
     using System;
-    using System.Collections.Generic;
     using System.Collections.Specialized;
     using System.Net;
     using RobMensching.TinyBugs.Models;
@@ -9,7 +8,6 @@
     using RobMensching.TinyBugs.ViewModels;
     using RobMensching.TinyWebStack;
     using ServiceStack.OrmLite;
-    using ServiceStack.Text;
 
     [Route("api/issue")]
     public class IssuesApiController : ControllerBase
@@ -27,35 +25,29 @@
                 Page = new PaginationViewModel(q.Page, q.Count, issues.Total, pagePrefix),
             };
 
-            JsonSerializer.SerializeToWriter(vm, context.GetOutput("application/json"));
-            return null;
+            return new JsonView(vm);
         }
 
         public override ViewBase Post(ControllerContext context)
         {
             if (!context.Authenticated)
             {
-                context.SetStatusCode(HttpStatusCode.BadGateway); // TODO: return a better error code that doesn't cause forms authentication to overwrite our response
-                return null;
+                return new StatusCodeView(HttpStatusCode.BadGateway); // TODO: return a better error code that doesn't cause forms authentication to overwrite our response
             }
 
-            IssueViewModel ci = CreateIssueFromCollection(context.User, context.Form);
-            if (ci == null)
+            IssueViewModel vm = CreateIssueFromCollection(context.User, context.Form);
+            if (vm == null)
             {
-                context.SetStatusCode(HttpStatusCode.InternalServerError);
-                return null;
+                return new StatusCodeView(HttpStatusCode.InternalServerError);
             }
 
-            context.SetStatusCode(HttpStatusCode.Created);
-            ci.Location = context.ApplicationPath + ci.Id + "/";
-            JsonSerializer.SerializeToWriter(ci, context.GetOutput("application/json"));
-
-            return null;
+            vm.Location = context.ApplicationPath + vm.Id + "/";
+            return new JsonView(vm, HttpStatusCode.Created);
         }
 
         public IssueViewModel CreateIssueFromCollection(Guid userId, NameValueCollection data)
         {
-            IssueViewModel ci = null;
+            IssueViewModel vm = null;
             Issue issue = new Issue();
             issue.PopulateWithData(data, userId);
             issue.CreatedAt = issue.UpdatedAt;
@@ -79,15 +71,15 @@
                     };
                     db.InsertParam(issueSearch);
 
-                    if (QueryService.TryGetIssueWithCommentsUsingDb(issue.Id, db, out ci))
+                    if (QueryService.TryGetIssueWithCommentsUsingDb(issue.Id, db, out vm))
                     {
-                        FileService.WriteIssue(ci);
+                        FileService.WriteIssue(vm);
                         tx.Commit();
                     }
                 }
             }
 
-            return ci;
+            return vm;
         }
     }
 }

@@ -72,6 +72,7 @@
     <Compile Include="Controllers\RootController.cs" />
     <Compile Include="Controllers\NotFoundController.cs" />
     <Compile Include="Controllers\UserApiController.cs" />
+    <Compile Include="WebStack\JsonView.cs" />
     <Compile Include="WebStack\RedirectView.cs" />
     <Compile Include="WebStack\StatusCodeView.cs" />
     <Compile Include="WebStack\ViewBase.cs" />
@@ -134,9 +135,9 @@
     <Content Include="assets\css\tinybugs.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="assets\js\tinybugs.js">
+    <None Include="assets\tinybugs.js.mustache">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    </None>
     <Content Include="assets\js\mdd\markdowndeeplib.min.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

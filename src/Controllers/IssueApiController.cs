@@ -19,20 +19,17 @@
             long issueId;
             if (!this.TryGetIssueIdFromContext(context, out issueId))
             {
-                context.SetStatusCode(HttpStatusCode.BadRequest);
-                return null;
+                return new StatusCodeView(HttpStatusCode.BadRequest);
             }
 
             IssueViewModel issue;
             if (!QueryService.TryGetIssueWithComments(issueId, out issue))
             {
-                context.SetStatusCode(HttpStatusCode.NotFound);
-                return null;
+                return new StatusCodeView(HttpStatusCode.NotFound);
             }
 
             issue.Location = context.ApplicationPath + issue.Id + "/";
-            JsonSerializer.SerializeToWriter(issue, context.GetOutput("application/json"));
-            return null;
+            return new JsonView(issue);
         }
 
         public override ViewBase Post(ControllerContext context)
@@ -45,15 +42,13 @@
         {
             if (!context.Authenticated)
             {
-                context.SetStatusCode(HttpStatusCode.Unauthorized);
-                return null;
+                return new StatusCodeView(HttpStatusCode.BadGateway); // TODO: return a better error code that doesn't cause forms authentication to overwrite our response
             }
 
             long issueId;
             if (!this.TryGetIssueIdFromContext(context, out issueId))
             {
-                context.SetStatusCode(HttpStatusCode.BadRequest);
-                return null;
+                return new StatusCodeView(HttpStatusCode.BadRequest);
             }
 
             IssueViewModel ci = UpdateIssueFromCollection(context.User, issueId, context.Form);
@@ -66,23 +61,20 @@
                 ci.Location = context.ApplicationPath + ci.Id + "/";
             }
 
-            JsonSerializer.SerializeToWriter(ci, context.GetOutput("application/json"));
-            return null;
+            return new JsonView(ci);
         }
 
         public override ViewBase Delete(ControllerContext context)
         {
             if (!context.Authenticated)
             {
-                context.SetStatusCode(HttpStatusCode.Unauthorized);
-                return null;
+                return new StatusCodeView(HttpStatusCode.BadGateway); // TODO: return a better error code that doesn't cause forms authentication to overwrite our response
             }
 
             long issueId;
             if (!this.TryGetIssueIdFromContext(context, out issueId))
             {
-                context.SetStatusCode(HttpStatusCode.BadRequest);
-                return null;
+                return new StatusCodeView(HttpStatusCode.BadRequest);
             }
 
             this.DeleteIssue(issueId);
@@ -97,7 +89,7 @@
 
         public IssueViewModel UpdateIssueFromCollection(Guid userId, long issueId, NameValueCollection data)
         {
-            IssueViewModel ci = null;
+            IssueViewModel vm = null;
             Issue issue = new Issue();
             Dictionary<string, object> updates = issue.PopulateWithData(data, userId);
 
@@ -116,14 +108,14 @@
                     db.Update<FullTextSearchIssue>(new { Text = issue.Text, Title = issue.Title }, s => s.DocId == issueId);
                 }
 
-                if (QueryService.TryGetIssueWithCommentsUsingDb(issueId, db, out ci))
+                if (QueryService.TryGetIssueWithCommentsUsingDb(issueId, db, out vm))
                 {
-                    FileService.WriteIssue(ci);
+                    FileService.WriteIssue(vm);
                     tx.Commit();
                 }
             }
 
-            return ci;
+            return vm;
         }
 
         public void DeleteIssue(long issueId)
