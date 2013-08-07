@@ -65,7 +65,8 @@
         public static void PregenerateApp()
         {
             var vm = new { app = new AppViewModel() };
-            var foos = new[] { new { template = "admin.mustache", output = "admin/index.html" },
+            var foos = new[] { new { template = "tinybugs.js.mustache", output = "js/tinybugs.js" },
+                               new { template = "admin.mustache", output = "admin/index.html" },
                                new { template = "login.mustache", output = "login/index.html" },
                                new { template = "login_create.mustache", output = "login/create/index.html" },
                                new { template = "login_verify.mustache", output = "login/verify/index.html" },
