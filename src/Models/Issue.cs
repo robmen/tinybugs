@@ -5,7 +5,6 @@
     using System.Collections.Specialized;
     using RobMensching.TinyBugs.Services;
     using ServiceStack.DataAnnotations;
-    using Microsoft.Security.Application;
     using ServiceStack.OrmLite;
 
     public class Issue
