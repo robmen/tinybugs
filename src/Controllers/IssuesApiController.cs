@@ -35,17 +35,16 @@
                 return new StatusCodeView(HttpStatusCode.BadGateway); // TODO: return a better error code that doesn't cause forms authentication to overwrite our response
             }
 
-            IssueViewModel vm = CreateIssueFromCollection(context.User, context.Form);
+            IssueViewModel vm = CreateIssueFromCollection(context, context.User, context.Form);
             if (vm == null)
             {
                 return new StatusCodeView(HttpStatusCode.InternalServerError);
             }
 
-            vm.Location = context.ApplicationPath + vm.Id + "/";
             return new JsonView(vm, HttpStatusCode.Created);
         }
 
-        public IssueViewModel CreateIssueFromCollection(Guid userId, NameValueCollection data)
+        public IssueViewModel CreateIssueFromCollection(ControllerContext context, Guid userId, NameValueCollection data)
         {
             IssueViewModel vm = null;
             Issue issue = new Issue();
@@ -73,7 +72,10 @@
 
                     if (QueryService.TryGetIssueWithCommentsUsingDb(issue.Id, db, out vm))
                     {
-                        FileService.WriteIssue(vm);
+                        vm.Location = context.ApplicationPath + vm.Id + "/";
+                        var breadcrumbs = new BreadcrumbsViewModel(new BreadcrumbViewModel("Issues", context.ApplicationPath), new BreadcrumbViewModel("Issue #" + vm.Id + " - " + vm.Title, vm.Location));
+
+                        FileService.WriteIssue(vm, breadcrumbs);
                         tx.Commit();
                     }
                 }

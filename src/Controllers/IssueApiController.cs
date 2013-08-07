@@ -51,14 +51,10 @@
                 return new StatusCodeView(HttpStatusCode.BadRequest);
             }
 
-            IssueViewModel ci = UpdateIssueFromCollection(context.User, issueId, context.Form);
+            IssueViewModel ci = UpdateIssueFromCollection(context, context.User, issueId, context.Form);
             if (ci == null)
             {
                 context.SetStatusCode(HttpStatusCode.InternalServerError);
-            }
-            else
-            {
-                ci.Location = context.ApplicationPath + ci.Id + "/";
             }
 
             return new JsonView(ci);
@@ -87,7 +83,7 @@
             return Int64.TryParse(value, out issueId);
         }
 
-        public IssueViewModel UpdateIssueFromCollection(Guid userId, long issueId, NameValueCollection data)
+        public IssueViewModel UpdateIssueFromCollection(ControllerContext context, Guid userId, long issueId, NameValueCollection data)
         {
             IssueViewModel vm = null;
             Issue issue = new Issue();
@@ -110,7 +106,10 @@
 
                 if (QueryService.TryGetIssueWithCommentsUsingDb(issueId, db, out vm))
                 {
-                    FileService.WriteIssue(vm);
+                    vm.Location = context.ApplicationPath + vm.Id + "/";
+                    var breadcrumbs = new BreadcrumbsViewModel(new BreadcrumbViewModel("Issues", context.ApplicationPath), new BreadcrumbViewModel("Issue #" + vm.Id + " - " + vm.Title, vm.Location));
+
+                    FileService.WriteIssue(vm, breadcrumbs);
                     tx.Commit();
                 }
             }

@@ -7,6 +7,16 @@
 </head>
 <body>
 <div class="container">
+  {{#breadcrumbs}}
+  <div class="row">
+    <div class="span9">
+    <ul class="breadcrumb">
+    {{#parents}}<li><a href="{{url}}">{{title}}</a> <span class="divider">/</span></li>{{/parents}}
+    {{#current}}<li class="active">{{title}}</li>{{/current}}
+    </ul>
+    </div>
+  </div>
+  {{/breadcrumbs}}
   <div class="row">
   <div class="span9">
     <h3><small>{{issue.type}} {{issue.id}} |</small> {{issue.title}}</h3>

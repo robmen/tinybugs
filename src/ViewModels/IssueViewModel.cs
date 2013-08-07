@@ -60,6 +60,8 @@
 
         public string Location { get; set; }
 
+        public BreadcrumbsViewModel Breadcrumbs { get; set; }
+
         public List<OptionViewModel> Areas { get; set; }
 
         public List<OptionViewModel> Releases { get; set; }

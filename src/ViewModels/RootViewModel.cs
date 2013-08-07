@@ -5,6 +5,8 @@
 
     public class RootViewModel : ViewModelBase
     {
+        public BreadcrumbsViewModel Breadcrumbs { get; set; }
+
         public List<IssueViewModel> Issues { get; set; }
 
         public PaginationViewModel Page { get; set; }

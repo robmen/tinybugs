@@ -16,6 +16,7 @@
 
             RootViewModel vm = new RootViewModel()
             {
+                Breadcrumbs = new BreadcrumbsViewModel(new BreadcrumbViewModel("Issues", context.ControllerPath)),
                 Issues = issuesPaged.Issues,
                 Page = new PaginationViewModel(q.Page, q.Count, issuesPaged.Total, pagePrefix),
             };
