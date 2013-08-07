@@ -73,7 +73,7 @@
                     if (QueryService.TryGetIssueWithCommentsUsingDb(issue.Id, db, out vm))
                     {
                         vm.Location = context.ApplicationPath + vm.Id + "/";
-                        var breadcrumbs = new BreadcrumbsViewModel(new BreadcrumbViewModel("Issues", context.ApplicationPath), new BreadcrumbViewModel("Issue #" + vm.Id + " - " + vm.Title, vm.Location));
+                        var breadcrumbs = new BreadcrumbsViewModel(new Breadcrumb("Issues", context.ApplicationPath), new Breadcrumb("Issue #" + vm.Id + " - " + vm.Title, vm.Location));
 
                         FileService.WriteIssue(vm, breadcrumbs);
                         tx.Commit();

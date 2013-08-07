@@ -2,17 +2,19 @@
 {
     using System;
     using System.Linq;
+    using RobMensching.TinyBugs.Models;
+    using RobMensching.TinyBugs.Services;
 
     public class BreadcrumbsViewModel
     {
-        public BreadcrumbsViewModel(params BreadcrumbViewModel[] crumbs)
+        public BreadcrumbsViewModel(params Breadcrumb[] crumbs)
         {
-            this.Parents = crumbs.Take(crumbs.Length - 1).ToArray();
+            this.Parents = ConfigService.ExternalBreadcrumbs.Concat(crumbs.Take(crumbs.Length - 1)).ToArray();
             this.Current = crumbs[crumbs.Length - 1];
         }
 
-        public BreadcrumbViewModel[] Parents { get; set; }
+        public Breadcrumb[] Parents { get; set; }
 
-        public BreadcrumbViewModel Current { get; set; }
+        public Breadcrumb Current { get; set; }
     }
 }

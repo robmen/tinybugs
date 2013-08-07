@@ -45,6 +45,9 @@
       <label for='releases'>Releases</label>
       <input id='releases' name='releases' type='text' class="span6" placeholder="Comma separated list of releases for issues." title="Comma separated list of releases." required value="{{#app.releases}}{{name}}, {{/app.releases}}" />
 
+      <label for='releases'>External Breadcrumbs</label>
+      <input id='breadcrumbs' name='breadcrumbs' type='text' class="span6" placeholder="Semicolon separated list of comma separated 'title,url'." title="Semicolon separated list of comma separated 'title,url'." required value="{{#breadcrumbs}}{{title}}, {{url}};{{/breadcrumbs}}" />
+
       <div class="form-actions">
         <button id='updateConfig' type="submit" class="btn btn-primary" data-loading-text="Saving...">Update configuration</button>
       </div>

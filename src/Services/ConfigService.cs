@@ -13,6 +13,7 @@
     {
         private static string[] areas;
         private static string[] releases;
+        private static Breadcrumb[] breadcrumbs;
 
         /// <summary>
         /// Gets the connection string to use for tinyBugs.
@@ -41,6 +42,8 @@
         public static IEnumerable<string> Areas { get { return areas; } }
 
         public static IEnumerable<string> Releases { get { return releases; } }
+
+        public static IEnumerable<Breadcrumb> ExternalBreadcrumbs { get { return breadcrumbs; } }
 
         /// <summary>
         /// Gets the physical root path for tinyBugs.
@@ -83,6 +86,7 @@
                 AppSubName = config.ApplicationSubName;
                 areas = config.Areas;
                 releases = config.Releases;
+                breadcrumbs = config.ExternalBreadcrumbs;
             }
 
             if (String.IsNullOrEmpty(AppName))

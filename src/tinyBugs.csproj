@@ -73,7 +73,7 @@
     <Compile Include="Controllers\NotFoundController.cs" />
     <Compile Include="Controllers\UserApiController.cs" />
     <Compile Include="ViewModels\BreadcrumbsViewModel.cs" />
-    <Compile Include="ViewModels\BreadcrumbViewModel.cs" />
+    <Compile Include="Models\Breadcrumb.cs" />
     <Compile Include="WebStack\JsonView.cs" />
     <Compile Include="WebStack\RedirectView.cs" />
     <Compile Include="WebStack\StatusCodeView.cs" />

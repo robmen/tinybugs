@@ -7,15 +7,22 @@
 
     public class Config
     {
+        public Config()
+        {
+            this.ExternalBreadcrumbs = new Breadcrumb[0];
+        }
+
+        public DateTime UpdatedAt { get; set; }
+
         public string ApplicationName { get; set; }
 
         public string ApplicationSubName { get; set; }
 
+        public Breadcrumb[] ExternalBreadcrumbs { get; set; }
+
         public string[] Areas { get; set; }
 
         public string[] Releases { get; set; }
-
-        public DateTime UpdatedAt { get; set; }
 
         public Dictionary<string, object> PopulateWithData(NameValueCollection data)
         {
@@ -46,6 +53,13 @@
                     case "releases":
                         this.Releases = value.Split(new[] { ',', ';', ' ' }, StringSplitOptions.RemoveEmptyEntries);
                         updated.Add("Releases", this.Releases);
+                        break;
+
+                    case "breadcrumbs":
+                        this.ExternalBreadcrumbs = value.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
+                                                        .Select(s => { var a = s.Split(new[] { ',' }, 2, StringSplitOptions.None); return new Breadcrumb(a[0].Trim(), a[1].Trim()); })
+                                                        .ToArray();
+                        updated.Add("ExternalBreadcrumbs", this.ExternalBreadcrumbs);
                         break;
                 }
             }

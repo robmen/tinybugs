@@ -1,12 +1,12 @@
-﻿namespace RobMensching.TinyBugs.ViewModels
+﻿namespace RobMensching.TinyBugs.Models
 {
-    public class BreadcrumbViewModel
+    public class Breadcrumb
     {
-        public BreadcrumbViewModel()
+        public Breadcrumb()
         {
         }
 
-        public BreadcrumbViewModel(string title, string url)
+        public Breadcrumb(string title, string url)
         {
             this.Title = title;
             this.Url = url;
