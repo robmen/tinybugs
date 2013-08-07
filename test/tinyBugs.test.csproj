@@ -100,6 +100,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataFixture.cs" />
+    <Compile Include="RelativeDateFixture.cs" />
     <Compile Include="MailServiceFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueryFixture.cs" />

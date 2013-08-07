@@ -23,7 +23,7 @@
         public void CanGenerateGravatarImageUrl()
         {
             var url = UserService.GetGravatarImageUrlForEmail("rob@robmensching.com");
-            Assert.Equal("http://www.gravatar.com/avatar/179453ce28338e22260a03651e80ac44?r=g&d=mm", url);
+            Assert.Equal("http://www.gravatar.com/avatar/179453ce28338e22260a03651e80ac44?r=pg&d=mm", url);
         }
 
         [Fact]

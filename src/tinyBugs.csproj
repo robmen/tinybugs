@@ -74,6 +74,7 @@
     <Compile Include="Controllers\UserApiController.cs" />
     <Compile Include="ViewModels\BreadcrumbsViewModel.cs" />
     <Compile Include="Models\Breadcrumb.cs" />
+    <Compile Include="ViewModels\RelativeDateViewModel.cs" />
     <Compile Include="WebStack\JsonView.cs" />
     <Compile Include="WebStack\RedirectView.cs" />
     <Compile Include="WebStack\StatusCodeView.cs" />

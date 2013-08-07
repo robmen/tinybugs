@@ -19,31 +19,33 @@
   {{/breadcrumbs}}
   <div class="row">
   <div class="span9">
-    <h3><small>{{issue.type}} {{issue.id}} |</small> {{issue.title}}</h3>
+    {{#issue}}
+    <h3><small>{{type}} {{id}} |</small> {{title}}</h3>
     <div class="row">
     <div class="span7">
-    {{#issue.private}}<span class="label label-important">Private</span>{{/issue.private}}
-    <span class="label label-info">{{issue.status}}</span>
-    {{#issue.resolution}} <span class="label label-info">{{issue.resolution}}</span>{{/issue.resolution}}
-    <span class="label label-success">{{issue.release}}</span>
-    <span class="label label-inverse">{{issue.area}}</span>
-    <span class="badge label-warning">{{issue.votes}}</span>
+    {{#private}}<span class="label label-important">Private</span>{{/private}}
+    <span class="label label-info">{{status}}</span>
+    {{#resolution}} <span class="label label-info">{{resolution}}</span>{{/resolution}}
+    <span class="label label-success">{{release}}</span>
+    <span class="label label-inverse">{{area}}</span>
+    <span class="badge label-warning">{{votes}}</span>
     <div class="btn-group pull-right">
-      <a href="{{app.path}}edit/{{issue.id}}" class="btn btn-mini">Edit issue</a>
-      <a href="{{app.path}}edit/{{issue.id}}" class="btn btn-mini">Quick edit</a>
+      <a href="{{app.path}}edit/{{id}}" class="btn btn-mini">Edit issue</a>
+      <a href="{{app.path}}edit/{{id}}" class="btn btn-mini">Quick edit</a>
     </div>
     </div></div>
-    <p>Opened at {{issue.createdat}} by {{issue.createdbyusername}}</p>
-    <p>Last updated at {{issue.updatedat}}</p>
-    <p>Assigned to: {{issue.assignedtousername}}{{^issue.assignedtousername}}No one <input id="takeit" type="button" class="btn btn-mini" data-loading-text="acquiring..." value="take it!" />{{/issue.assignedtousername}}</p>
+    <p>Opened <span data-toggle='tooltip' title="{{createdrelative.friendly}}">{{createdrelative}}</span> by {{createdbyusername}}</p>
+    <p>Last updated <span data-toggle='tooltip' title="{{updatedrelative.friendly}}">{{updatedrelative}}</span></p>
+    <p>Assigned to: {{assignedtousername}}{{^assignedtousername}}No one <input id="takeit" type="button" class="btn btn-mini" data-loading-text="acquiring..." value="take it!" />{{/assignedtousername}}</p>
 
     <h4>Details</h4>
-    <p>{{{issue.textrendered}}}</p>
+    <p>{{{textrendered}}}</p>
 
-    {{#issue.comments}}
-      <p>Comment from {{commentbyusername}} at {{createdat}}</p>
+    {{#comments}}
+      <p>Comment from {{commentbyusername}} <span data-toggle='tooltip' title="{{createdrelative.friendly}}">{{createdrelative}}</span></p>
       <p>{{{textrendered}}}</p>
-    {{/issue.comments}}
+    {{/comments}}
+    {{/issue}}
   </div>
   </div>
   {{> modal_login.mustache }}
@@ -68,7 +70,7 @@ $(document).ready(function () {
     $('#takeit').on('click', function (e) {
       var takeitButton = $('#takeit').button('loading');
 
-      $.post('{{app.path}}api/issue/{{issue.id}}', 'assignedto=[me]')
+      $.post('{{app.path}}api/issue/{{id}}', 'assignedto=[me]')
           .done(function(data) {
             location.reload();
           }).fail(function (jqXHR, textStatus, errorThrown) {
@@ -88,7 +90,7 @@ $(document).ready(function () {
         var alert = $(this).find('.alert').slideUp('fast');
 
         e.preventDefault();
-        $.post('{{app.path}}api/issue/{{issue.id}}', $(this).serialize())
+        $.post('{{app.path}}api/issue/{{id}}', $(this).serialize())
             .done( function(data) {
                 // TODO: send the user off to view their bright shiny new bug based on the "data".
             }).fail(function (jqXHR, textStatus, errorThrown) {

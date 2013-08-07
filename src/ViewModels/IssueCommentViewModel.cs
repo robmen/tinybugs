@@ -25,6 +25,8 @@
         [BelongTo(typeof(IssueComment))]
         public string Text { get; set; }
 
+        public RelativeDateViewModel CreatedRelative { get { return new RelativeDateViewModel(this.CreatedAt); } }
+
         public string TextRendered
         {
             get { return new MarkdownDeep.Markdown() { NoFollowLinks = true, ExtraMode = true, SafeMode = true }.Transform(this.Text); }

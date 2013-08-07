@@ -60,6 +60,10 @@
 
         public string Location { get; set; }
 
+        public RelativeDateViewModel CreatedRelative { get { return new RelativeDateViewModel(this.CreatedAt); } }
+
+        public RelativeDateViewModel UpdatedRelative { get { return new RelativeDateViewModel(this.UpdatedAt); } }
+
         public BreadcrumbsViewModel Breadcrumbs { get; set; }
 
         public List<OptionViewModel> Areas { get; set; }

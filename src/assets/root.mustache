@@ -48,8 +48,8 @@ Issues:
 <a href="{{app.path}}?filter=release:{{release}}"><span class="label label-success">{{release}}</span></a>
 </td>
 <td>{{assignedtousername}}</td>
-<td>{{createdat}}</td>
-<td>{{updatedat}}</td>
+<td><span data-toggle='tooltip' title="{{createdrelative.friendly}}">{{createdrelative}}</span></td>
+<td><span data-toggle='tooltip' title="{{updatedrelative.friendly}}">{{updatedrelative}}</span></td>
 </tr>
 {{/issues}}
 {{^issues}}
