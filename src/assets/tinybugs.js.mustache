@@ -24,11 +24,12 @@ $(function () {
     // support for modal login form.
     $('.login.modal').submit(function (e) {
         var dlg = $(this);
+        var form = dlg.find('form');
         var submit = dlg.find(':submit').button('loading');
         var alert = dlg.find('.alert').slideUp('fast');
 
         e.preventDefault();
-        $.post('{{app.path}}api/session/', dlg.find('form').serialize())
+        $.post(form.attr('action'), form.serialize())
             .done(function () {
                 dlg.modal('hide');
             }).fail(function (jqXHR, textStatus, errorThrown) {

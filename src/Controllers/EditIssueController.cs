@@ -19,7 +19,7 @@
             if (QueryService.TryGetIssueWithComments(issueId, out issue))
             {
                 Template template = FileService.LoadTemplate("bugform.mustache");
-                template.Render(new { app = new AppViewModel(), issue = issue }, context.GetOutput(), null);
+                FileService.RenderTemplateToWriter(template, new { app = new AppViewModel(), issue = issue }, context.GetOutput());
             }
             else
             {

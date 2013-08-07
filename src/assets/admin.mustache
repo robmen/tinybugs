@@ -90,29 +90,7 @@
   </form>
   </div>
   </div>
-
-  <div id="loginModal" class="login modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-header">
-      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-      <h3 id="loginHeader">Login</h3>
-    </div>
-    <div id="loginerror" class="alert alert-error hide">
-      <button type="button" class="close">&times;</button>
-      <strong>Error!</strong> Invalid username/email or password. Please, try again.
-    </div>
-    <form id='loginForm' class="login" method='post'>
-    <div class="modal-body">
-        <label for='username'>Username</label>
-        <input id='username' name='username' type='text' placeholder="username or email" required='required' value="{{app.username}}" />
-        <label for='password'>Password</label>
-        <input id='password' name='password' type='password' required='required' />
-    </div>
-    <div class="modal-footer">
-        <button id='attemptlogin' type="submit" class="btn btn-primary" data-loading-text="Logging in...">Submit</button>
-        <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-    </div>
-    </form>
-  </div>
+  {{> modal_login.mustache }}
 </div>
 <script src="//ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script>
 <script src="//ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>

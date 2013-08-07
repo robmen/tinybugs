@@ -58,14 +58,19 @@
 
             using (var writer = File.CreateText(file))
             {
-                template.Render(data, writer, (p) => { p = Path.Combine(ConfigService.RootPath, p); if (!File.Exists(p)) { p += ".mustache"; } return LoadTemplate(p); });
+                RenderTemplateToWriter(template, data, writer);
             }
+        }
+
+        public static void RenderTemplateToWriter(Template template, object data, TextWriter writer)
+        {
+            template.Render(data, writer, (p) => { return LoadTemplate(p); });
         }
 
         public static void PregenerateApp()
         {
             var vm = new { app = new AppViewModel() };
-            var foos = new[] { new { template = "tinybugs.js.mustache", output = "js/tinybugs.js" },
+            var foos = new[] { new { template = "tinybugs.js.mustache", output = "assets/js/tinybugs.js" },
                                new { template = "admin.mustache", output = "admin/index.html" },
                                new { template = "login.mustache", output = "login/index.html" },
                                new { template = "login_create.mustache", output = "login/create/index.html" },
