@@ -87,18 +87,6 @@
     <Compile Include="WebStack\ControllerContext.cs" />
     <Compile Include="WebStack\RouteAttribute.cs" />
     <Compile Include="WebStack\Routing.cs" />
-    <Content Include="assets\bug.mustache">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="assets\root.mustache">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="assets\login.mustache">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="assets\notfound.mustache">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Compile Include="ViewModels\IssueViewModel.cs" />
     <Compile Include="ViewModels\IssueCommentViewModel.cs" />
     <Compile Include="Models\FullTextSearchIssue.cs" />
@@ -113,6 +101,36 @@
     <Compile Include="ViewModels\IssuesApiViewModel.cs" />
     <Compile Include="ViewModels\RootViewModel.cs" />
     <Compile Include="ViewModels\NotFoundViewModel.cs" />
+    <Content Include="Global.asax">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Models\Issue.cs" />
+    <Compile Include="Models\IssueChange.cs" />
+    <Compile Include="Models\IssueStatus.cs" />
+    <Compile Include="Models\IssueType.cs" />
+    <Compile Include="Models\IssueComment.cs" />
+    <Compile Include="Models\User.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\DataService.cs" />
+    <Compile Include="Services\UserService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="assets\bug.mustache">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="assets\root.mustache">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="assets\login.mustache">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="assets\notfound.mustache">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="assets\css\tinybugs.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -140,28 +158,6 @@
     <Content Include="assets\js\mdd\mdd_toolbar.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <!--
-    <None Include="assets\login\index.html" />
-    <None Include="assets\new\index.html" />
--->
-    <Content Include="Global.asax">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Compile Include="Global.asax.cs">
-      <DependentUpon>Global.asax</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Models\Issue.cs" />
-    <Compile Include="Models\IssueChange.cs" />
-    <Compile Include="Models\IssueStatus.cs" />
-    <Compile Include="Models\IssueType.cs" />
-    <Compile Include="Models\IssueComment.cs" />
-    <Compile Include="Models\User.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\DataService.cs" />
-    <Compile Include="Services\UserService.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="assets\bugform.mustache">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -181,12 +177,14 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="AntiXssLibrary">
-      <HintPath>..\packages\AntiXSS.4.2.1\lib\net40\AntiXssLibrary.dll</HintPath>
-    </Reference>
-    <Reference Include="HtmlSanitizationLibrary">
-      <HintPath>..\packages\AntiXSS.4.2.1\lib\net40\HtmlSanitizationLibrary.dll</HintPath>
-    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="MarkdownDeep">
       <HintPath>..\packages\MarkdownDeep.Full.1.5\lib\.NetFramework 3.5\MarkdownDeep.dll</HintPath>
     </Reference>
@@ -208,15 +206,6 @@
     <Reference Include="ServiceStack.Text">
       <HintPath>..\packages\ServiceStack.Text.3.9.55\lib\net35\ServiceStack.Text.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.configuration" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup Condition=" '$(Platform)' != 'x64' ">
     <Reference Include="ServiceStack.OrmLite">
