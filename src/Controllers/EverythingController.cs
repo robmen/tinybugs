@@ -1,10 +1,14 @@
 ﻿namespace RobMensching.TinyBugs.Controllers
 {
-    public class EverythingController : DeprecatedControllerBase
+    using RobMensching.TinyWebStack;
+
+    //[Route("{*everything}")]
+    public class EverythingController : ControllerBase
     {
-        public override void Execute()
+        public override ViewBase Get(ControllerContext context)
         {
-            this.Context.GetOutput().Write("<html><head><title>Everything</title></head><body><h1>Everything</h1></body></html>");
+            context.GetOutput().Write("<html><head><title>Everything</title></head><body><h1>Everything</h1></body></html>");
+            return null;
         }
     }
 }
