@@ -104,7 +104,6 @@
     <Compile Include="ViewModels\IssueApiViewModel.cs" />
     <Compile Include="ViewModels\IssuesApiViewModel.cs" />
     <Compile Include="ViewModels\RootViewModel.cs" />
-    <Compile Include="ViewModels\NotFoundViewModel.cs" />
     <Content Include="Global.asax">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -139,6 +138,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="assets\modal_login.mustache">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="assets\accessdenied.mustache">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="assets\tinybugs.js.mustache">

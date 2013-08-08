@@ -71,6 +71,7 @@
         {
             var vm = new { app = new AppViewModel(), breadcrumbs = ConfigService.ExternalBreadcrumbs, mail = ConfigService.Mail };
             var foos = new[] { new { template = "tinybugs.js.mustache", output = "assets/js/tinybugs.js" },
+                               new { template = "accessdenied.mustache", output = "accessdenied/index.html" },
                                new { template = "admin.mustache", output = "admin/index.html" },
                                new { template = "login.mustache", output = "login/index.html" },
                                new { template = "login_create.mustache", output = "login/create/index.html" },

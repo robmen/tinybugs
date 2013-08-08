@@ -21,31 +21,32 @@
                 rng.GetBytes(salt);
             }
 
+            Guid id = Guid.NewGuid();
             username = String.IsNullOrEmpty(username) ? email.ToLowerInvariant() : username.ToLowerInvariant();
 
             return new User()
             {
-                Id = Guid.NewGuid(),
+                Id = id,
                 Email = email.ToLowerInvariant(),
                 UserName = username,
                 GravatarId = GenerateGravatarId(email),
                 Salt = Convert.ToBase64String(salt),
-                PasswordHash = CalculatePasswordHash(username, salt, password),
+                PasswordHash = CalculatePasswordHash(id, salt, password),
             };
         }
 
-        public static string CalculatePasswordHash(string username, string salt, string password)
+        public static string CalculatePasswordHash(Guid id, string salt, string password)
         {
             byte[] saltBytes = Convert.FromBase64String(salt);
-            return CalculatePasswordHash(username, saltBytes, password);
+            return CalculatePasswordHash(id, saltBytes, password);
         }
 
-        public static string CalculatePasswordHash(string username, byte[] salt, string password)
+        public static string CalculatePasswordHash(Guid id, byte[] salt, string password)
         {
             byte[] passwordBytes;
             using (SHA256 sha = SHA256.Create())
             {
-                string namePassword = username.Trim().ToLowerInvariant() + password;
+                string namePassword = id.ToString("N") + password;
                 passwordBytes = sha.ComputeHash(Encoding.UTF8.GetBytes(namePassword));
             }
 
@@ -101,8 +102,23 @@
                 return false;
             }
 
-            string hash = UserService.CalculatePasswordHash(user.UserName, user.Salt, password);
+            string hash = UserService.CalculatePasswordHash(user.Id, user.Salt, password);
             return user.PasswordHash.Equals(hash, StringComparison.Ordinal);
+        }
+
+        public static bool TryAuthenticateUser(Guid userId, out User user)
+        {
+            using (var db = DataService.Connect(true))
+            {
+                user = db.GetByIdOrDefault<User>(userId);
+            }
+
+            return user != null;
+        }
+
+        public static bool TryAuthorizeUser(User user, UserRole role)
+        {
+            return user.Role >= role;
         }
 
         public static bool TryValidateVerificationToken(string token, out DateTime issued)
