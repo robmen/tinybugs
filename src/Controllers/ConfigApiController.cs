@@ -23,7 +23,7 @@
         {
             if (!context.Authenticated)
             {
-                context.SetStatusCode(HttpStatusCode.BadGateway); // TODO: return a better error code that doesn't cause forms authentication to overwrite our response
+                return new StatusCodeView(HttpStatusCode.BadGateway); // TODO: return a better error code that doesn't cause forms authentication to overwrite our response
             }
             else
             {
@@ -32,8 +32,7 @@
                     User me = db.GetById<User>(context.User);
                     if (me.Role < UserRole.Admin)
                     {
-                        context.SetStatusCode(HttpStatusCode.Forbidden);
-                        return null;
+                        return new StatusCodeView(HttpStatusCode.Forbidden);
                     }
                 }
 
@@ -41,17 +40,18 @@
                 var updates = config.PopulateWithData(context.Form);
 
                 using (var db = DataService.Connect())
+                using (var tx = db.OpenTransaction())
                 {
                     db.Insert(config);
+
+                    ConfigService.InitializeWithConfig(config);
+                    FileService.PregenerateApp();
+
+                    tx.Commit();
                 }
 
-                ConfigService.InitializeWithConfig(config);
-                FileService.PregenerateApp();
-
-                JsonSerializer.SerializeToWriter(new AppViewModel(), context.GetOutput("application/json"));
+                return new JsonView(new AppViewModel());
             }
-
-            return null;
         }
     }
 }

@@ -4,6 +4,7 @@
     using System.Linq;
     using System.Collections.Generic;
     using System.Collections.Specialized;
+    using RobMensching.TinyBugs.Services;
 
     public class Config
     {
@@ -23,6 +24,18 @@
         public string[] Areas { get; set; }
 
         public string[] Releases { get; set; }
+
+        public string MailFrom { get; set; }
+
+        public string MailServer { get; set; }
+
+        public int MailPort { get; set; }
+
+        public bool MailSsl { get; set; }
+
+        public string MailUsername { get; set; }
+
+        public string MailPassword { get; set; }
 
         public Dictionary<string, object> PopulateWithData(NameValueCollection data)
         {
@@ -60,6 +73,43 @@
                                                         .Select(s => { var a = s.Split(new[] { ',' }, 2, StringSplitOptions.None); return new Breadcrumb(a[0].Trim(), a[1].Trim()); })
                                                         .ToArray();
                         updated.Add("ExternalBreadcrumbs", this.ExternalBreadcrumbs);
+                        break;
+
+                    case "mail.from":
+                        this.MailFrom = value;
+                        updated.Add("MailFrom", this.MailFrom);
+                        break;
+
+                    case "mailserver":
+                        this.MailServer = value;
+                        updated.Add("MailServer", this.MailServer);
+                        break;
+
+                    case "mailport":
+                        {
+                            int port;
+                            if (!Int32.TryParse(value, out port))
+                            {
+                                port = 25;
+                            }
+                            this.MailPort = port;
+                            updated.Add("MailPort", this.MailPort);
+                        }
+                        break;
+
+                    case "mailusername":
+                        this.MailUsername = value;
+                        updated.Add("MailUsername", this.MailUsername);
+                        break;
+
+                    case "mailpassword":
+                        this.MailPassword = value;
+                        updated.Add("MailPassword", this.MailPassword);
+                        break;
+
+                    case "mailssl":
+                        this.MailSsl = true;
+                        updated.Add("MailSsl", this.MailSsl);
                         break;
                 }
             }

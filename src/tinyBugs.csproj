@@ -66,12 +66,11 @@
     <Compile Include="Controllers\EditIssueController.cs" />
     <Compile Include="Controllers\IssuesApiController.cs" />
     <Compile Include="Controllers\CommentApiController.cs" />
-    <Compile Include="Controllers\DeprecatedControllerBase.cs" />
-    <Compile Include="Controllers\DeprecatedControllerContext.cs" />
     <Compile Include="Controllers\EverythingController.cs" />
     <Compile Include="Controllers\RootController.cs" />
     <Compile Include="Controllers\NotFoundController.cs" />
     <Compile Include="Controllers\UserApiController.cs" />
+    <Compile Include="Models\MailConfig.cs" />
     <Compile Include="ViewModels\BreadcrumbsViewModel.cs" />
     <Compile Include="Models\Breadcrumb.cs" />
     <Compile Include="ViewModels\RelativeDateViewModel.cs" />

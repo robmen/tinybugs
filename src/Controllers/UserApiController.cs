@@ -15,15 +15,13 @@
             string username;
             if (!this.TryGetUserNameFromContext(context, out username))
             {
-                context.SetStatusCode(HttpStatusCode.BadRequest);
-                return null;
+                return new StatusCodeView(HttpStatusCode.BadRequest);
             }
 
             var user = QueryService.GetUserFromName(username);
             if (user == null)
             {
-                context.SetStatusCode(HttpStatusCode.NotFound);
-                return null;
+                return new StatusCodeView(HttpStatusCode.NotFound);
             }
 
             // TODO: create user view model and serialize that.
@@ -42,14 +40,12 @@
             string username;
             if (!this.TryGetUserNameFromContext(context, out username))
             {
-                context.SetStatusCode(HttpStatusCode.BadRequest);
-                return null;
+                return new StatusCodeView(HttpStatusCode.BadRequest);
             }
 
             if (!context.Authenticated)
             {
-                context.SetStatusCode(HttpStatusCode.BadGateway); // TODO: return a better error code that doesn't cause forms authentication to overwrite our response
-                return null;
+                return new StatusCodeView(HttpStatusCode.BadGateway); // TODO: return a better error code that doesn't cause forms authentication to overwrite our response
             }
 
             using (var db = DataService.Connect(true))
@@ -57,16 +53,14 @@
                 User me = db.GetById<User>(context.User);
                 if (me.Role < UserRole.Admin)
                 {
-                    context.SetStatusCode(HttpStatusCode.Forbidden);
-                    return null;
+                    return new StatusCodeView(HttpStatusCode.Forbidden);
                 }
             }
 
             User user = QueryService.GetUserFromName(username);
             if (user == null)
             {
-                context.SetStatusCode(HttpStatusCode.NotFound);
-                return null;
+                return new StatusCodeView(HttpStatusCode.NotFound);
             }
 
             UserRole role;

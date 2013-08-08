@@ -45,8 +45,27 @@
       <label for='releases'>Releases</label>
       <input id='releases' name='releases' type='text' class="span6" placeholder="Comma separated list of releases for issues." title="Comma separated list of releases." required value="{{#app.releases}}{{name}}, {{/app.releases}}" />
 
-      <label for='releases'>External Breadcrumbs</label>
-      <input id='breadcrumbs' name='breadcrumbs' type='text' class="span6" placeholder="Semicolon separated list of comma separated 'title,url'." title="Semicolon separated list of comma separated 'title,url'." required value="{{#breadcrumbs}}{{title}}, {{url}};{{/breadcrumbs}}" />
+      <label for='breadcrumbs'>External Breadcrumbs</label>
+      <input id='breadcrumbs' name='breadcrumbs' type='text' class="span6" placeholder="Semicolon separated list of comma separated 'title,url'." title="Semicolon separated list of comma separated 'title,url'." value="{{#breadcrumbs}}{{title}}, {{url}};{{/breadcrumbs}}" />
+
+      <label for='mailserver'>Mail Server</label>
+      <input id='mailserver' name='mailserver' type='text' class="span6" value="{{mail.server}}" />
+
+      <label for='mailport'>Mail Port</label>
+      <input id='mailport' name='mailport' type='text' class="span2" value="{{mail.port}}" />
+
+      <label for='mailssl' class="checkbox span2">
+        <input id='mailssl' name='mailssl' type='checkbox' {{#mail.requiressl}}checked{{/mail.requiressl}} /> Require SSL
+      </label>
+
+      <label for='mailusername'>Mail Username</label>
+      <input id='mailusername' name='mailusername' type='text' class="span6" value="{{mail.username}}" />
+
+      <label for='mailpassword'>Mail Password</label>
+      <input id='mailpassword' name='mailpassword' type='text' class="span6" value="" />
+
+      <label for='mailfrom'>Mail From</label>
+      <input id='mailfrom' name='mail.from' type='text' class="span6" value="{{mail.from}}" />
 
       <div class="form-actions">
         <button id='updateConfig' type="submit" class="btn btn-primary" data-loading-text="Saving...">Update configuration</button>

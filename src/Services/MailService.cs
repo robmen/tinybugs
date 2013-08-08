@@ -8,7 +8,7 @@
     public class MailService
     {
         private const string Subject = "{{app.name}} Password Assistance";
-        private const string Body = 
+        private const string Body =
 @"We received a request to reset the password associated with this e-mail address. If you made this request, please follow the instructions below.
 
 Click the link below to reset your password using our secure server:
@@ -25,16 +25,18 @@ If clicking the link doesn't seem to work, you can copy and paste the link into 
             string subject = Render.StringToString(Subject, vm);
             string body = Render.StringToString(Body, vm);
 
-            using (var smtp = new SmtpClient("mail.robmensching.com", 587))
-            using (var message = new MailMessage(ConfigService.FromEmail, email))
+            using (var message = new MailMessage(ConfigService.Mail.From, email))
             {
-                smtp.EnableSsl = false;
-                smtp.Credentials = new NetworkCredential("test@robmensching.com", "test");
-
                 message.Subject = subject;
                 message.Body = body;
 
-                smtp.Send(message);
+                using (var smtp = new SmtpClient(ConfigService.Mail.Server, ConfigService.Mail.Port))
+                {
+                    smtp.EnableSsl = ConfigService.Mail.RequireSsl;
+                    smtp.Credentials = new NetworkCredential(ConfigService.Mail.Username, ConfigService.Mail.Password);
+
+                    smtp.Send(message);
+                }
             }
         }
     }

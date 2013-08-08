@@ -23,17 +23,6 @@
 
         public override ViewBase Post(ControllerContext context)
         {
-            return this.Login(context);
-        }
-
-        public override ViewBase Delete(ControllerContext context)
-        {
-            FormsAuthentication.SignOut();
-            return new RedirectView(context.ApplicationPath);
-        }
-
-        public ViewBase Login(ControllerContext context)
-        {
             ViewBase view;
             string username = context.Form["username"];
             string password = context.Form["password"];
@@ -58,6 +47,12 @@
             }
 
             return view;
+        }
+
+        public override ViewBase Delete(ControllerContext context)
+        {
+            FormsAuthentication.SignOut();
+            return new RedirectView(context.ApplicationPath);
         }
     }
 }

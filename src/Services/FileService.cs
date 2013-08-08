@@ -69,7 +69,7 @@
 
         public static void PregenerateApp()
         {
-            var vm = new { app = new AppViewModel(), breadcrumbs = ConfigService.ExternalBreadcrumbs };
+            var vm = new { app = new AppViewModel(), breadcrumbs = ConfigService.ExternalBreadcrumbs, mail = ConfigService.Mail };
             var foos = new[] { new { template = "tinybugs.js.mustache", output = "assets/js/tinybugs.js" },
                                new { template = "admin.mustache", output = "admin/index.html" },
                                new { template = "login.mustache", output = "login/index.html" },
