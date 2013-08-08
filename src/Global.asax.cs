@@ -1,5 +1,6 @@
 ﻿namespace RobMensching.TinyBugs
 {
+    using System;
     using System.Web;
     using RobMensching.TinyBugs.Models;
     using RobMensching.TinyBugs.Services;
@@ -40,6 +41,14 @@
                     }
                 }
             }
+        }
+
+        protected void Application_OnError(object sender, EventArgs e)
+        {
+            Application app = (Application)sender;
+            Exception exception = Server.GetLastError().GetBaseException();
+
+            LogManager.GetLogger("error").Error(String.Format("  page: {0}\r\n  referrer: {1}", app.Request.Url, app.Request.UrlReferrer), exception);
         }
     }
 }

@@ -176,6 +176,10 @@
     <Content Include="assets\login_verify.mustache">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="web.nlog">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <None Include="web.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -189,6 +193,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.WebPages, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="MarkdownDeep">
@@ -251,8 +256,9 @@
       <CopyBinFiles Include="bin\$(Platform)\$(Configuration)\*.pdb" />
     </ItemGroup>
     <ItemGroup>
-      <CopyFiles Include="bin\$(Platform)\$(Configuration)\web.config" />
       <CopyFiles Include="bin\$(Platform)\$(Configuration)\Global.asax" />
+      <CopyFiles Include="bin\$(Platform)\$(Configuration)\web.config" />
+      <CopyFiles Include="bin\$(Platform)\$(Configuration)\web.nlog" />
       <CopyAssetFiles Include="assets\**" />
     </ItemGroup>
     <Copy SourceFiles="@(CopyBinFiles)" DestinationFolder="..\build\publish\$(Platform)\bin\" SkipUnchangedFiles="true" />

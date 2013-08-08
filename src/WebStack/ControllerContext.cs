@@ -5,6 +5,7 @@
     using System.IO;
     using System.Net;
     using System.Web;
+    using System.Web.Helpers;
     using System.Web.Routing;
     using ServiceStack.Text;
 
@@ -35,6 +36,10 @@
         public NameValueCollection QueryString { get { return this.Context.Request.QueryString; } }
 
         public NameValueCollection Form { get { return this.Context.Request.Form; } }
+
+        public NameValueCollection UnvalidatedQueryString { get { return this.Context.Request.Unvalidated().QueryString; } }
+
+        public NameValueCollection UnvalidatedForm { get { return this.Context.Request.Unvalidated().Form; } }
 
         public Uri Referrer { get { return this.Context.Request.UrlReferrer; } }
 

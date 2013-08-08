@@ -51,7 +51,7 @@
                 return new StatusCodeView(HttpStatusCode.BadRequest);
             }
 
-            IssueViewModel ci = UpdateIssueFromCollection(context, context.User, issueId, context.Form);
+            IssueViewModel ci = UpdateIssueFromCollection(context, context.User, issueId, context.UnvalidatedForm);
             if (ci == null)
             {
                 context.SetStatusCode(HttpStatusCode.InternalServerError);
