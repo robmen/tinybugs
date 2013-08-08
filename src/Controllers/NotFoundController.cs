@@ -30,11 +30,10 @@
 
             Log.InfoFormat("url: {0}  referrer: {1}", context.Url.AbsoluteUri, referrer);
 
-            var viewModel = new NotFoundViewModel() { ReferralUri = referrer, StatusCode = statusCode };
             var template = FileService.LoadTemplate("notfound.mustache");
 
             context.SetStatusCode(statusCode);
-            template.Render(viewModel, context.GetOutput(), null);
+            FileService.RenderTemplateToWriter(template, new { ReferralUri = referrer, StatusCode = statusCode }, context.GetOutput());
             return null;
         }
     }
