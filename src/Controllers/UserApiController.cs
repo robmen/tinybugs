@@ -18,7 +18,7 @@
                 return new StatusCodeView(HttpStatusCode.BadRequest);
             }
 
-            var user = QueryService.GetUserFromName(username);
+            var user = QueryService.GetUserByName(Guid.Empty, username);
             if (user == null)
             {
                 return new StatusCodeView(HttpStatusCode.NotFound);
@@ -57,7 +57,7 @@
                 }
             }
 
-            User user = QueryService.GetUserFromName(username);
+            User user = QueryService.GetUserByName(Guid.Empty, username);
             if (user == null)
             {
                 return new StatusCodeView(HttpStatusCode.NotFound);

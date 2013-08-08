@@ -29,8 +29,12 @@
             {
                 using (var db = DataService.Connect(true))
                 {
-                    User me = db.GetById<User>(context.User);
-                    if (me.Role < UserRole.Admin)
+                    User me = db.GetByIdOrDefault<User>(context.User);
+                    if (me == null)
+                    {
+                        return new StatusCodeView(HttpStatusCode.BadGateway); // TODO: return a better error code that doesn't cause forms authentication to overwrite our response
+                    }
+                    else if (me.Role < UserRole.Admin)
                     {
                         return new StatusCodeView(HttpStatusCode.Forbidden);
                     }

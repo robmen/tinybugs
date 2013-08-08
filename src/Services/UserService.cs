@@ -96,13 +96,9 @@
         {
             username = String.IsNullOrEmpty(username) ? String.Empty : username.ToLowerInvariant();
 
-            using (var db = DataService.Connect())
+            if (!QueryService.TryGetUser(username, out user))
             {
-                user = db.SelectParam<User>(u => u.UserName == username).SingleOrDefault();
-                if (user == null)
-                {
-                    return false;
-                }
+                return false;
             }
 
             string hash = UserService.CalculatePasswordHash(user.UserName, user.Salt, password);

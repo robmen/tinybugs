@@ -20,8 +20,9 @@
     <input id='password' name='password' type='password' maxlength='50' required='required' />
     <label for='verifypassword'>Confirm Password</label>
     <input id='verifypassword' name='verifypassword' type='password' maxlength='50' />
-    <label for='username'>Username</label>
+    <label for='username'>Username <small>(optional)</small></label>
     <input id='username' name='username' type='text' maxlength='50' placeholder="defaults to email" />
+    <span class="help-inline">(3 to 15 letters and/or numbers)</span>
 
     <div class="form-actions">
       <input type='submit' name='submit' class="btn btn-primary" data-loading-text="Creating account..." value='Create' />
@@ -53,6 +54,9 @@ $(document).ready(function () {
       },
       verifypassword: {
         equalTo: "#password"
+      },
+      username: {
+        rangelength: [3, 15]
       }
     },
     messages: {
@@ -60,7 +64,8 @@ $(document).ready(function () {
       password: "Your password must be at least 5 characters long",
       verifypassword: {
         equalTo: "Confirmation password must match"
-      }
+      },
+      username: "Usernames must be 3 to 15 characters long and contain only letters and numbers"
     },
     submitHandler: function (form) {
       var submit = $(form).find(':submit').button('loading');

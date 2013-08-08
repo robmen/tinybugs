@@ -47,8 +47,7 @@
             foreach (string name in data.AllKeys)
             {
                 string[] values = data.GetValues(name);
-                string unsafeValue = values[values.Length - 1];
-                string value = unsafeValue; // Encoder.HtmlEncode(unsafeValue);
+                string value = values[values.Length - 1];
                 switch (name.ToLowerInvariant())
                 {
                     case "assigned":
@@ -57,16 +56,7 @@
                     case "assignedtoname":
                     case "assignedtousername":
                         {
-                            User user;
-                            using (var db = DataService.Connect(true))
-                            {
-                                user = ("[me]".Equals(value, StringComparison.OrdinalIgnoreCase)) ?
-                                        db.GetById<User>(userId) :
-                                        db.FirstOrDefault<User>(u => u.UserName == value);
-                            }
-
-
-                            QueryService.GetUserFromName(value);
+                            User user = QueryService.GetUserByName(userId, value);
                             this.AssignedToUserId = (user != null) ? user.Id : Guid.Empty;
                             updated.Add("AssignedToUserId", this.AssignedToUserId);
                         }
@@ -74,7 +64,7 @@
 
                     case "assignedtoemail":
                         {
-                            User user = QueryService.GetUserFromEmail(value);
+                            User user = QueryService.GetUserByEmail(value);
                             this.AssignedToUserId = (user != null) ? user.Id : Guid.Empty;
                             updated.Add("AssignedToUserId", this.AssignedToUserId);
                         }
