@@ -1,6 +1,7 @@
 ﻿namespace RobMensching.TinyWebStack
 {
     using System.Web;
+    using ServiceStack.Text;
 
     public class RedirectView : ViewBase
     {
@@ -16,13 +17,15 @@
 
         public override void Execute(HttpContextBase context)
         {
+            string url = this.Url.StartsWith("~/") ? context.Request.ApplicationPath.WithTrailingSlash() + this.Url.Substring(2) : this.Url;
+
             if (this.Permanent)
             {
-                context.Response.RedirectPermanent(this.Url, false);
+                context.Response.RedirectPermanent(url, false);
             }
             else
             {
-                context.Response.Redirect(this.Url, false);
+                context.Response.Redirect(url, false);
             }
 
             context.ApplicationInstance.CompleteRequest();
