@@ -43,18 +43,15 @@
                 return new StatusCodeView(HttpStatusCode.BadRequest);
             }
 
-            if (!context.Authenticated)
+            User me;
+            if (!UserService.TryAuthenticateUser(context.User, out me))
             {
                 return new StatusCodeView(HttpStatusCode.BadGateway); // TODO: return a better error code that doesn't cause forms authentication to overwrite our response
             }
 
-            using (var db = DataService.Connect(true))
+            if (!UserService.TryAuthorizeUser(me, UserRole.Admin))
             {
-                User me = db.GetById<User>(context.User);
-                if (me.Role < UserRole.Admin)
-                {
-                    return new StatusCodeView(HttpStatusCode.Forbidden);
-                }
+                return new StatusCodeView(HttpStatusCode.Forbidden);
             }
 
             User user = QueryService.GetUserByName(Guid.Empty, username);

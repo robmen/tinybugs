@@ -181,7 +181,7 @@ $(document).ready(function () {
     submitHandler: function (form) {
       var submit = $(form).find(':submit').button('loading');
       var alert = $('#userPostError').slideUp('fast');
-      var username = $(form).find('input[name="textbox"]').val();
+      var username = $(form).find('input[name="username"]').val();
 
       $.post('{{app.path}}api/user/' + username, $(form).serialize())
           .done(function (data) {
