@@ -180,7 +180,7 @@
     <Content Include="assets\login_create.mustache">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="assets\login_verify.mustache">
+    <Content Include="assets\login_activate.mustache">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="web.nlog">

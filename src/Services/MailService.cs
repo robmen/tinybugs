@@ -11,7 +11,7 @@
         private const string PasswordResetBody =
 @"We received a request to reset the password associated with this e-mail address. If you made this request, please follow the instructions below.
 
-Click the link below to reset your password using our secure server:
+Click the link below to reset your password:
 
 {{app.url}}login/reset?t={{token}}
 
@@ -19,17 +19,15 @@ If you did not request to have your password reset you can safely ignore this em
 
 If clicking the link doesn't seem to work, you can copy and paste the link into your browser's address window, or retype it there. Once you have returned to {{app.name}}, we will give instructions for resetting your password.";
 
-        private const string VerifyUserSubject = "{{app.name}} Password Assistance";
+        private const string VerifyUserSubject = "{{app.name}} Account Creation";
         private const string VerifyUserBody =
-@"We received a request to reset the password associated with this e-mail address. If you made this request, please follow the instructions below.
+@"We received a request to create an account at {{app.name}}. If you made this request, please click the link below to activate your account:
 
-Click the link below to reset your password using our secure server:
+{{app.url}}login/activate?t={{token}}
 
-{{app.url}}login/verify?t={{token}}
+If you did not request a new account you can safely ignore this email.
 
-If you did not request to have your password reset you can safely ignore this email. Rest assured your account is safe. 
-
-If clicking the link doesn't seem to work, you can copy and paste the link into your browser's address window, or retype it there. Once you have returned to {{app.name}}, we will give instructions for resetting your password.";
+If clicking the link doesn't seem to work, you can copy and paste the link into your browser's address window, or retype it there. Once you have returned to {{app.name}}, we will give instructions for activating your account.";
 
         public static void SendPasswordReset(string email, string token)
         {
