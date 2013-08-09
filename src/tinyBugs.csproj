@@ -71,6 +71,7 @@
     <Compile Include="Controllers\NotFoundController.cs" />
     <Compile Include="Controllers\UserApiController.cs" />
     <Compile Include="Models\MailConfig.cs" />
+    <Compile Include="Models\PopulateResults.cs" />
     <Compile Include="Models\ValidationError.cs" />
     <Compile Include="ViewModels\BreadcrumbsViewModel.cs" />
     <Compile Include="Models\Breadcrumb.cs" />

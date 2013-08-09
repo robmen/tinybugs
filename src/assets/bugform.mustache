@@ -92,8 +92,8 @@
       </div>
 
       <div class="span2 well well-small">
-        <label for='assignedtousername'>Assign To</label>
-        <input id='assignedtousername' name='assignedtousername' type='text' class="typeahead span2"
+        <label for='assignedto'>Assign To</label>
+        <input id='assignedto' name='assignedto' type='text' class="typeahead span2"
                data-url='{{app.path}}api/user/' autocomplete="off" value="{{issue.assignedtousername}}" />
 
 {{#issue}}
@@ -119,7 +119,7 @@
 <script src="{{app.path}}assets/js/tinybugs.js"></script>
 <script>
   $(function () {
-    $('#assignedtousername').typeahead({
+    $('#assignedto').typeahead({
       source: function (query, process) {
         var url = $(this.$element).attr('data-url');
         return $.get(url, { q: query }, function (data) {

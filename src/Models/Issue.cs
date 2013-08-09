@@ -3,12 +3,16 @@
     using System;
     using System.Collections.Generic;
     using System.Collections.Specialized;
+    using System.Linq;
+    using System.Text.RegularExpressions;
     using RobMensching.TinyBugs.Services;
     using ServiceStack.DataAnnotations;
     using ServiceStack.OrmLite;
 
     public class Issue
     {
+        private static Regex ResolutionValidation = new Regex("[A-Za-z0-9 -_]{2,30}", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+
         [AutoIncrement]
         public long Id { get; set; }
 
@@ -40,54 +44,69 @@
 
         public int Votes { get; set; }
 
-        public Dictionary<string, object> PopulateWithData(NameValueCollection data, Guid userId)
+        public PopulateResults PopulateWithData(NameValueCollection data, Guid userId, bool checkRequired = false)
         {
-            Dictionary<string, object> updated = new Dictionary<string, object>();
+            PopulateResults results = new PopulateResults();
 
             foreach (string name in data.AllKeys)
             {
                 string[] values = data.GetValues(name);
-                string value = values[values.Length - 1];
+                string value = values[values.Length - 1].Trim();
                 switch (name.ToLowerInvariant())
                 {
-                    case "assigned":
                     case "assignedto":
-                    case "assignedtouser":
-                    case "assignedtoname":
-                    case "assignedtousername":
                         {
-                            User user = QueryService.GetUserByName(userId, value);
-                            this.AssignedToUserId = (user != null) ? user.Id : Guid.Empty;
-                            updated.Add("AssignedToUserId", this.AssignedToUserId);
-                        }
-                        break;
-
-                    case "assignedtoemail":
-                        {
-                            User user = QueryService.GetUserByEmail(value);
-                            this.AssignedToUserId = (user != null) ? user.Id : Guid.Empty;
-                            updated.Add("AssignedToUserId", this.AssignedToUserId);
+                            User user = null;
+                            if (String.IsNullOrEmpty(value) || QueryService.TryGetUser(userId, value, out user))
+                            {
+                                this.AssignedToUserId = (user != null) ? user.Id : Guid.Empty;
+                                results.Updates.Add("AssignedToUserId", this.AssignedToUserId);
+                            }
+                            else
+                            {
+                                results.Errors.Add(new ValidationError() { Field = name, Message = "Unknown username." });
+                            }
                         }
                         break;
 
                     case "private":
-                        this.Private = true; // this field is always tracked as updated below.
+                        this.Private = true; // this field is always tracked as results.Updates below.
                         break;
 
                     case "area":
-                        this.Area = value;
-                        updated.Add("Area", this.Area);
+                        this.Area = ConfigService.Areas.Where(a => a.Equals(value, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                        if (String.IsNullOrEmpty(value) || !String.IsNullOrEmpty(this.Area))
+                        {
+                            results.Updates.Add("Area", this.Area);
+                        }
+                        else
+                        {
+                            results.Errors.Add(new ValidationError() { Field = name, Message = "Unknown area." });
+                        }
                         break;
 
-                    case "milestone":
                     case "release":
-                        this.Release = value;
-                        updated.Add("Release", this.Release);
+                        this.Release = ConfigService.Releases.Where(r => r.Equals(value, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                        if (String.IsNullOrEmpty(value) || !String.IsNullOrEmpty(this.Release))
+                        {
+                            results.Updates.Add("Release", this.Release);
+                        }
+                        else
+                        {
+                            results.Errors.Add(new ValidationError() { Field = name, Message = "Unknown release." });
+                        }
                         break;
 
                     case "resolution":
-                        this.Resolution = value;
-                        updated.Add("Resolution", this.Resolution);
+                        if (String.IsNullOrEmpty(value) || ResolutionValidation.IsMatch(value))
+                        {
+                            this.Resolution = value;
+                            results.Updates.Add("Resolution", this.Resolution);
+                        }
+                        else
+                        {
+                            results.Errors.Add(new ValidationError() { Field = name, Message = "Resolution must be 2 to 30 characters long and contain only spaces, underscores, dashes or alphanumerics." });
+                        }
                         break;
 
                     case "status":
@@ -95,7 +114,11 @@
                         if (Enum.TryParse(value, true, out status))
                         {
                             this.Status = status;
-                            updated.Add("Status", this.Status);
+                            results.Updates.Add("Status", this.Status);
+                        }
+                        else
+                        {
+                            results.Errors.Add(new ValidationError() { Field = name, Message = "Unknown issue status." });
                         }
                         break;
 
@@ -103,20 +126,31 @@
                     //case "tags":
                     //    this.Tags.Clear();
                     //    this.Tags.AddRange(values);
-                    //    updated.Add("Tags", this.Tags);
+                    //    results.Updates.Add("Tags", this.Tags);
                     //    break;
 
-                    case "content":
                     case "text":
+                        if (!String.IsNullOrEmpty(value))
                         {
                             this.Text = value;
-                            updated.Add("Text", this.Text);
+                            results.Updates.Add("Text", this.Text);
+                        }
+                        else
+                        {
+                            results.Errors.Add(new ValidationError() { Field = name, Message = "Required." });
                         }
                         break;
 
                     case "title":
-                        this.Title = value;
-                        updated.Add("Title", this.Title);
+                        if (!String.IsNullOrEmpty(value))
+                        {
+                            this.Title = value;
+                            results.Updates.Add("Title", this.Title);
+                        }
+                        else
+                        {
+                            results.Errors.Add(new ValidationError() { Field = name, Message = "Required." });
+                        }
                         break;
 
                     case "type":
@@ -124,30 +158,50 @@
                         if (Enum.TryParse(value, true, out type))
                         {
                             this.Type = type;
-                            updated.Add("Type", this.Type);
+                            results.Updates.Add("Type", this.Type);
+                        }
+                        else
+                        {
+                            results.Errors.Add(new ValidationError() { Field = name, Message = "Unknown issue type." });
                         }
                         break;
 
-                    case "vote":
-                    case "votes":
-                        int votes;
-                        if (Int32.TryParse(value, out votes))
-                        {
-                            this.Votes = votes;
-                            updated.Add("Votes", this.Votes);
-                        }
+                    //case "votes":
+                    //    int votes;
+                    //    if (Int32.TryParse(value, out votes))
+                    //    {
+                    //        this.Votes = votes;
+                    //        results.Updates.Add("Votes", this.Votes);
+                    //    }
+                    //    break;
+
+                    default:
+                        results.Errors.Add(new ValidationError() { Field = name, Message = "Unknown field." });
                         break;
+                }
+            }
+
+            if (checkRequired)
+            {
+                if (String.IsNullOrEmpty(this.Title))
+                {
+                    results.Errors.Add(new ValidationError() { Field = "title", Message = "Required." });
+                }
+
+                if (String.IsNullOrEmpty(this.Text))
+                {
+                    results.Errors.Add(new ValidationError() { Field = "text", Message = "Required." });
                 }
             }
 
             // Always update the boolean since we don't know what state it was
             // in originally.
-            updated.Add("Private", this.Private);
+            results.Updates.Add("Private", this.Private);
 
             this.UpdatedAt = DateTime.UtcNow;
-            updated.Add("UpdatedAt", this.UpdatedAt);
+            results.Updates.Add("results.UpdatesAt", this.UpdatedAt);
 
-            return updated;
+            return results;
         }
     }
 }

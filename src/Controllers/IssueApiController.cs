@@ -40,40 +40,81 @@
 
         public override ViewBase Put(ControllerContext context)
         {
-            if (!context.Authenticated)
-            {
-                return new StatusCodeView(HttpStatusCode.BadGateway); // TODO: return a better error code that doesn't cause forms authentication to overwrite our response
-            }
-
             long issueId;
             if (!this.TryGetIssueIdFromContext(context, out issueId))
             {
                 return new StatusCodeView(HttpStatusCode.BadRequest);
             }
 
-            IssueViewModel ci = UpdateIssueFromCollection(context, context.User, issueId, context.UnvalidatedForm);
-            if (ci == null)
+            User user;
+            if (!UserService.TryAuthenticateUser(context.User, out user))
             {
-                context.SetStatusCode(HttpStatusCode.InternalServerError);
+                return new StatusCodeView(HttpStatusCode.BadGateway); // TODO: return a better error code that doesn't cause forms authentication to overwrite our response
             }
 
-            return new JsonView(ci);
+            Issue issue;
+            using (var db = DataService.Connect(true))
+            {
+                issue = db.GetByIdOrDefault<Issue>(issueId);
+                if (issue == null)
+                {
+                    return new StatusCodeView(HttpStatusCode.NotFound);
+                }
+            }
+
+            if (user.Id != issue.AssignedToUserId &&
+                user.Id != issue.CreatedByUserId &&
+                !user.IsInRole(UserRole.Contributor))
+            {
+                return new StatusCodeView(HttpStatusCode.Forbidden);
+            }
+
+            PopulateResults results = issue.PopulateWithData(context.UnvalidatedForm, user.Id);
+            if (results.Errors.Count > 0)
+            {
+                return new JsonView(results.Errors, HttpStatusCode.BadRequest);
+            }
+
+            IssueViewModel vm = UpdateIssue(context, issue, results.Updates);
+            if (vm == null)
+            {
+                return new StatusCodeView(HttpStatusCode.InternalServerError);
+            }
+
+            return new JsonView(vm);
         }
 
         public override ViewBase Delete(ControllerContext context)
         {
-            if (!context.Authenticated)
-            {
-                return new StatusCodeView(HttpStatusCode.BadGateway); // TODO: return a better error code that doesn't cause forms authentication to overwrite our response
-            }
-
             long issueId;
             if (!this.TryGetIssueIdFromContext(context, out issueId))
             {
                 return new StatusCodeView(HttpStatusCode.BadRequest);
             }
 
-            this.DeleteIssue(issueId);
+            User user;
+            if (!UserService.TryAuthenticateUser(context.User, out user))
+            {
+                return new StatusCodeView(HttpStatusCode.BadGateway); // TODO: return a better error code that doesn't cause forms authentication to overwrite our response
+            }
+
+            Issue issue;
+            using (var db = DataService.Connect(true))
+            {
+                issue = db.GetByIdOrDefault<Issue>(issueId);
+                if (issue == null)
+                {
+                    return new StatusCodeView(HttpStatusCode.NotFound);
+                }
+            }
+
+            if (user.Id != issue.CreatedByUserId &&
+                !user.IsInRole(UserRole.Contributor))
+            {
+                return new StatusCodeView(HttpStatusCode.Forbidden);
+            }
+
+            this.DeleteIssue(issue.Id);
             return null;
         }
 
@@ -83,13 +124,9 @@
             return Int64.TryParse(value, out issueId);
         }
 
-        public IssueViewModel UpdateIssueFromCollection(ControllerContext context, Guid userId, long issueId, NameValueCollection data)
+        public IssueViewModel UpdateIssue(ControllerContext context, Issue issue, Dictionary<string, object> updates)
         {
             IssueViewModel vm = null;
-            Issue issue = new Issue();
-            Dictionary<string, object> updates = issue.PopulateWithData(data, userId);
-
-            // TODO: validate issue.
 
             // TODO: create an IssueChange for each update key/value pair.
             //       create IssueComment from data.comment and IssueChange list
@@ -97,17 +134,17 @@
             using (var db = DataService.Connect())
             using (var tx = db.BeginTransaction())
             {
-                db.UpdateOnly(issue, v => v.Update(updates.Keys.ToArray()).Where(i => i.Id == issueId));
+                db.UpdateOnly(issue, v => v.Update(updates.Keys.ToArray()).Where(i => i.Id == issue.Id));
 
                 if (updates.ContainsKey("Text") || updates.ContainsKey("Title"))
                 {
-                    db.Update<FullTextSearchIssue>(new { Text = issue.Text, Title = issue.Title }, s => s.DocId == issueId);
+                    db.Update<FullTextSearchIssue>(new { Text = issue.Text, Title = issue.Title }, s => s.DocId == issue.Id);
                 }
 
-                if (QueryService.TryGetIssueWithCommentsUsingDb(issueId, db, out vm))
+                if (QueryService.TryGetIssueWithCommentsUsingDb(issue.Id, db, out vm))
                 {
                     vm.Location = context.ApplicationPath + vm.Id + "/";
-                    var breadcrumbs = new BreadcrumbsViewModel(new Breadcrumb("Issues", context.ApplicationPath), new Breadcrumb("Issue #" + vm.Id + " - " + vm.Title, vm.Location));
+                    var breadcrumbs = new BreadcrumbsViewModel(new Breadcrumb("Issues", context.ApplicationPath), new Breadcrumb("#" + vm.Id + " - " + vm.Title, vm.Location));
 
                     FileService.WriteIssue(vm, breadcrumbs);
                     tx.Commit();

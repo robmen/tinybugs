@@ -30,12 +30,28 @@
 
         public override ViewBase Post(ControllerContext context)
         {
-            if (!context.Authenticated)
+            User user;
+            if (!UserService.TryAuthenticateUser(context.User, out user))
             {
                 return new StatusCodeView(HttpStatusCode.BadGateway); // TODO: return a better error code that doesn't cause forms authentication to overwrite our response
             }
+            else if (!UserService.TryAuthorizeUser(user, UserRole.User))
+            {
+                return new StatusCodeView(HttpStatusCode.Forbidden);
+            }
 
-            IssueViewModel vm = CreateIssueFromCollection(context, context.User, context.Form);
+            Issue issue = new Issue();
+
+            PopulateResults results = issue.PopulateWithData(context.UnvalidatedForm, user.Id, true);
+            if (results.Errors.Count > 0)
+            {
+                return new JsonView(results.Errors, HttpStatusCode.BadRequest);
+            }
+
+            issue.CreatedAt = issue.UpdatedAt;
+            issue.CreatedByUserId = user.Id;
+
+            IssueViewModel vm = SaveIssue(context, issue);
             if (vm == null)
             {
                 return new StatusCodeView(HttpStatusCode.InternalServerError);
@@ -44,40 +60,30 @@
             return new JsonView(vm, HttpStatusCode.Created);
         }
 
-        public IssueViewModel CreateIssueFromCollection(ControllerContext context, Guid userId, NameValueCollection data)
+        public IssueViewModel SaveIssue(ControllerContext context, Issue issue)
         {
             IssueViewModel vm = null;
-            Issue issue = new Issue();
-            issue.PopulateWithData(data, userId);
-            issue.CreatedAt = issue.UpdatedAt;
-            issue.CreatedByUserId = userId;
-
-            // TODO: validate issue.
-
-            if (!String.IsNullOrEmpty(issue.Title))
+            using (var db = DataService.Connect())
+            using (var tx = db.BeginTransaction())
             {
-                using (var db = DataService.Connect())
-                using (var tx = db.BeginTransaction())
+                db.Insert(issue);
+                issue.Id = db.GetLastInsertId();
+
+                var issueSearch = new FullTextSearchIssue()
                 {
-                    db.Insert(issue);
-                    issue.Id = db.GetLastInsertId();
+                    DocId = issue.Id,
+                    Text = issue.Text,
+                    Title = issue.Title,
+                };
+                db.InsertParam(issueSearch);
 
-                    var issueSearch = new FullTextSearchIssue()
-                    {
-                        DocId = issue.Id,
-                        Text = issue.Text,
-                        Title = issue.Title,
-                    };
-                    db.InsertParam(issueSearch);
+                if (QueryService.TryGetIssueWithCommentsUsingDb(issue.Id, db, out vm))
+                {
+                    vm.Location = context.ApplicationPath + vm.Id + "/";
+                    var breadcrumbs = new BreadcrumbsViewModel(new Breadcrumb("Issues", context.ApplicationPath), new Breadcrumb("#" + vm.Id + " - " + vm.Title, vm.Location));
 
-                    if (QueryService.TryGetIssueWithCommentsUsingDb(issue.Id, db, out vm))
-                    {
-                        vm.Location = context.ApplicationPath + vm.Id + "/";
-                        var breadcrumbs = new BreadcrumbsViewModel(new Breadcrumb("Issues", context.ApplicationPath), new Breadcrumb("Issue #" + vm.Id + " - " + vm.Title, vm.Location));
-
-                        FileService.WriteIssue(vm, breadcrumbs);
-                        tx.Commit();
-                    }
+                    FileService.WriteIssue(vm, breadcrumbs);
+                    tx.Commit();
                 }
             }
 

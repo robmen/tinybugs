@@ -7,55 +7,43 @@
     using RobMensching.TinyBugs.ViewModels;
     using RobMensching.TinyWebStack;
     using ServiceStack.OrmLite;
-    using ServiceStack.Text;
 
     [Route("api/config")]
     public class ConfigApiController : ControllerBase
     {
         public override ViewBase Get(ControllerContext context)
         {
-            JsonSerializer.SerializeToWriter(new AppViewModel(), context.GetOutput("application/json"));
-            return null;
+            return new JsonView(new AppViewModel());
         }
 
         //[Authenticate(Forms, "/login/")] // Basic, Digest, Oauth, Api
         public override ViewBase Post(ControllerContext context)
         {
-            if (!context.Authenticated)
+            User user;
+            if (!UserService.TryAuthenticateUser(context.User, out user))
             {
                 return new StatusCodeView(HttpStatusCode.BadGateway); // TODO: return a better error code that doesn't cause forms authentication to overwrite our response
             }
-            else
+            else if (!UserService.TryAuthorizeUser(user, UserRole.Admin))
             {
-                using (var db = DataService.Connect(true))
-                {
-                    User me = db.GetByIdOrDefault<User>(context.User);
-                    if (me == null)
-                    {
-                        return new StatusCodeView(HttpStatusCode.BadGateway); // TODO: return a better error code that doesn't cause forms authentication to overwrite our response
-                    }
-                    else if (me.Role < UserRole.Admin)
-                    {
-                        return new StatusCodeView(HttpStatusCode.Forbidden);
-                    }
-                }
-
-                var config = new Config();
-                var updates = config.PopulateWithData(context.Form);
-
-                using (var db = DataService.Connect())
-                using (var tx = db.OpenTransaction())
-                {
-                    db.Insert(config);
-
-                    ConfigService.InitializeWithConfig(config);
-                    FileService.PregenerateApp();
-
-                    tx.Commit();
-                }
-
-                return new JsonView(new AppViewModel());
+                return new StatusCodeView(HttpStatusCode.Forbidden);
             }
+
+            var config = new Config();
+            var updates = config.PopulateWithData(context.Form);
+
+            using (var db = DataService.Connect())
+            using (var tx = db.OpenTransaction())
+            {
+                db.Insert(config);
+
+                ConfigService.InitializeWithConfig(config);
+                FileService.PregenerateApp();
+
+                tx.Commit();
+            }
+
+            return new JsonView(new AppViewModel());
         }
     }
 }
