@@ -155,14 +155,18 @@
             using (var db = DataService.Connect())
             using (var tx = db.BeginTransaction())
             {
-                db.UpdateOnly(issue, v => v.Update(updates.Keys.ToArray()).Where(i => i.Id == issue.Id));
-
-                if (updates.ContainsKey("Text") || updates.ContainsKey("Title"))
+                // If there is some sort of recognizable change.
+                if (!String.IsNullOrEmpty(comment.Text) || comment.Changes.Count > 0)
                 {
-                    db.Update<FullTextSearchIssue>(new { Text = issue.Text, Title = issue.Title }, s => s.DocId == issue.Id);
-                }
+                    db.UpdateOnly(issue, v => v.Update(updates.Keys.ToArray()).Where(i => i.Id == issue.Id));
 
-                db.Insert(comment);
+                    if (updates.ContainsKey("Text") || updates.ContainsKey("Title"))
+                    {
+                        db.Update<FullTextSearchIssue>(new { Text = issue.Text, Title = issue.Title }, s => s.DocId == issue.Id);
+                    }
+
+                    db.Insert(comment);
+                }
 
                 if (QueryService.TryGetIssueWithCommentsUsingDb(issue.Id, db, out vm))
                 {
