@@ -9,7 +9,7 @@
 <div class="container">
   {{#breadcrumbs}}
   <div class="row">
-    <div class="span9">
+    <div class="span12">
     <ul class="breadcrumb">
     {{#parents}}<li><a href="{{url}}">{{title}}</a> <span class="divider">/</span></li>{{/parents}}
     {{#current}}<li class="active">{{title}}</li>{{/current}}
@@ -17,12 +17,14 @@
     </div>
   </div>
   {{/breadcrumbs}}
+  {{#issue}}
   <div class="row">
-  <div class="span9">
-    {{#issue}}
+  <div class="span12">
     <h3><small>{{type}} {{id}} |</small> {{title}}</h3>
-    <div class="row">
-    <div class="span7">
+  </div>
+  </div>
+<!--  <div class="row">
+  <div class="span11">
     {{#private}}<span class="label label-important">Private</span>{{/private}}
     <span class="label label-info">{{status}}</span>
     {{#resolution}} <span class="label label-info">{{resolution}}</span>{{/resolution}}
@@ -33,36 +35,101 @@
       <a href="{{app.path}}edit/{{id}}" class="btn btn-mini">Edit issue</a>
       <a href="{{app.path}}edit/{{id}}" class="btn btn-mini">Quick edit</a>
     </div>
-    </div></div>
-    <p>Opened <span data-toggle='tooltip' title="{{createdrelative.friendly}}">{{createdrelative}}</span> by {{createdbyusername}}</p>
-    <p>Last updated <span data-toggle='tooltip' title="{{updatedrelative.friendly}}">{{updatedrelative}}</span></p>
-    <p>Assigned to: {{assignedtousername}}{{^assignedtousername}}No one <input id="takeit" type="button" class="btn btn-mini" data-loading-text="acquiring..." value="take it!" />{{/assignedtousername}}</p>
-
-    <h4>Details</h4>
-    <p>{{{textrendered}}}</p>
-
-    {{#comments}}
+  </div>
+  </div>-->
+<!--  <div class="row">
+  <div class="span12">
+    <p>&nbsp;</p>
+  </div>
+  </div>-->
+  <div class="row">
+  <div class="span12">
+<!--    <div class="well well-small">
     <div class="row">
-    <div class="span10">
-      <hr />
-      {{#text}}
-      <p>Comment from {{commentbyusername}} <span data-toggle='tooltip' title="{{createdrelative.friendly}}">{{createdrelative}}</span></p>
-      <p>{{{textrendered}}}</p>
-      {{/text}}
-      {{^text}}
-      <p>Edited by {{commentbyusername}} <span data-toggle='tooltip' title="{{createdrelative.friendly}}">{{createdrelative}}</span></p>
-      {{/text}}
-      <ul>
-      {{#changes}}
-      <li>Updated <code>{{column}}</code> from {{#old}}<code>{{old}}</code>{{/old}}{{^old}}blank{{/old}} to {{#new}}<code>{{new}}</code>{{/new}}{{^new}}blank{{/new}}</li>
-      {{/changes}}
-      </ul>
+    <div class="span4">
+    <p><small>Assigned to</small> <strong><a href="#">{{assignedtousername}}</a>{{^assignedtousername}}No one <input id="takeit" type="button" class="btn btn-mini" data-loading-text="acquiring..." value="take it!" />{{/assignedtousername}}</strong></p>
+    </div>
+    <div class="span5">
+    <p><small>Opened by</small> <strong><a href="#">{{createdbyusername}}</a></strong> <small>on</small> <strong>{{createdrelative.date}} @ {{createdrelative.time}}</strong></p>
+    </div>
+    <div class="span2">
+    <p><small>Last updated</small> <strong>{{updatedrelative.date}}</strong> <small>@</small> <strong>{{updatedrelative.time}}</strong></p>
     </div>
     </div>
-    {{/comments}}
-    {{/issue}}
+  </div>
+-->
+    <table class="table table-hover table-striped">
+    <tr>
+    <td>{{#private}}<span class="label label-important">Private</span>{{/private}}
+    <span class="label label-info">{{status}}</span>
+    {{#resolution}} <span class="label label-info">{{resolution}}</span>{{/resolution}}
+    <span class="label label-success">{{release}}</span>
+    <span class="label label-inverse">{{area}}</span>
+    <span class="badge label-warning">{{votes}}</span>
+</td>
+    <td><small>Assigned to</small> <strong><a href="#">{{assignedtousername}}</a>{{^assignedtousername}}No one <input id="takeit" type="button" class="btn btn-mini" data-loading-text="acquiring..." value="take it!" />{{/assignedtousername}}</strong></td>
+    <td><small>Updated</small> <strong>{{updatedrelative.date}}</strong> <small>@</small> <strong>{{updatedrelative.time}}</strong></td>
+    <td><small>Opened</small> <strong>{{createdrelative.date}}</strong> <small>@</small> <strong>{{createdrelative.time}}</strong> <small>by</small> <strong><a href="#">{{createdbyusername}}</a></strong></td>
+    </tr></table>
+    </div>
+  </div>
+
+  <div class="row">
+  <div class="span12">
+    <div class="btn-group pull-right">
+      <a href="{{app.path}}edit/{{id}}" class="btn btn-mini">Edit issue</a>
+      <a href="{{app.path}}edit/{{id}}" class="btn btn-mini">Quick edit</a>
+    </div>
   </div>
   </div>
+  <div class="row">
+  <div class="span12">
+    <strong>{{title}}</strong>
+    <p>{{{textrendered}}}</p>
+  </div>
+  </div>
+
+  <div class="row">
+  <div class="span11 form-actions">
+  <input id="addcomment" type="button" class="btn btn-success" value="Add a Comment" />
+  </div>
+  </div>
+
+  <div class="row">
+  <div class="span10">
+  {{#comments}}
+  <div class="row">
+  <div class="span10">
+    <table class="table table-hover">
+    <tr>
+    <td>
+    {{#text}}
+    <small>Comment from</small> <strong><a href="#">{{commentbyusername}}</a></strong>
+        <strong>{{createdrelative.date}}</strong> <small>@</small> <strong>{{createdrelative.time}}</strong> <!--<small>by</small> <strong><a href="#">{{createdbyusername}}</a></strong>-->
+    {{/text}}
+    {{^text}}
+    <small>Edited by</small> <strong><a href="#">{{commentbyusername}}</a></strong>
+        <strong>{{createdrelative.date}}</strong> <small>@</small> <strong>{{createdrelative.time}}</strong> <!--<small>by</small> <strong><a href="#">{{createdbyusername}}</a></strong>-->
+    {{/text}}
+    <ul class="inline">
+    {{#changes}}
+    <li><code>{{column}}</code> {{#old}}changed from <code>{{old}}</code>{{/old}}{{^old}}set{{/old}} to {{#new}}<code>{{new}}</code>{{/new}}{{^new}}blank{{/new}}</li>
+    {{/changes}}
+    </ul>
+    </td>
+    </tr>
+    </table>
+    {{{textrendered}}}
+  </div>
+  </div>
+  {{/comments}}
+  {{^comments}}
+  <p>No comments.</p>
+  {{/comments}}
+  </div>
+  </div>
+  {{/issue}}
+
   {{> modal_login.mustache }}
 </div>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>

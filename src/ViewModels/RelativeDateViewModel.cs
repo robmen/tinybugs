@@ -16,6 +16,8 @@
             return vm.datetime;
         }
 
+        public string Time { get { return this.datetime.ToString("HH:mm"); } }
+
         public string Date { get { return this.datetime.ToString("yyyy-MM-dd"); } }
 
         public string Friendly { get { return this.datetime == DateTime.MinValue ? "never" : this.datetime.ToString("D"); } }
