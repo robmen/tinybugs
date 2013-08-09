@@ -144,6 +144,9 @@
     <Content Include="assets\accessdenied.mustache">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="assets\login_reset.mustache">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="assets\tinybugs.js.mustache">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

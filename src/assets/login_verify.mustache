@@ -12,7 +12,7 @@
   <form id='verifyForm' method='post'>
     <div class="alert alert-error hide">
       <button type="button" class="close">&times;</button>
-      <strong>Error!</strong> your verification ticket expired. Get a <a href="{{app.path}}api/verify/">new verification ticket via email</a>.
+      <strong>Error!</strong> Your verification ticket expired. Get a <a href="{{app.path}}user/0/">new verification ticket</a>.
     </div>
 
     <div class="form-actions">
@@ -23,7 +23,7 @@
   <div class="span6">
     <div class="alert alert-success hide">
       <button type="button" class="close">&times;</button>
-      <strong>Success!</strong> your ticket has been verfied. You are now ready to <a href="{{app.path}}">take care of some issues</a>.
+      <strong>Success!</strong> Your login has been verfied. You are now ready to <a href="{{app.path}}">take care of some issues</a>.
     </div>
 </div>
 
@@ -41,7 +41,7 @@ $(document).ready(function () {
     var query = qs();
 
     e.preventDefault();
-    $.get('{{app.path}}api/verify/' + query.t)
+    $.get('{{app.path}}api/verify/t' + query.t)
         .done(function () {
           $('#formwrapper').slideUp('fast');
           success.slideDown();
