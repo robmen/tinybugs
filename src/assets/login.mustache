@@ -10,6 +10,8 @@
   <div class="row">
   <div class="span5">
   <form id='loginForm' method='post'>
+    <fieldset>
+    <legend>Login</legend>
     <div class="alert alert-error hide">
       <button type="button" class="close">&times;</button>
       <strong>Error!</strong> Invalid username/email or password. Please, try again.
@@ -24,10 +26,12 @@
       <input type='submit' name='submit' class="btn btn-primary" data-loading-text="Logging in..." value='Login' />
       <a href="{{app.path}}" class="btn">Cancel</a>
     </div>
+    </fieldset>
   </form>
 </div>
 <div class="span6">
-  <p>Alternatively, if you do not have an account or cannot remember your password:</p>
+  <h3>Alternatively...</h3>
+  <p>If you do not have an account or cannot remember your password:</p>
   <p class="center"><a href="{{app.path}}login/create/" class="btn">Create an account</a></p>
   <p class="center">-- OR --</p>
   <form id='resetForm' method='post' class="form-inline">

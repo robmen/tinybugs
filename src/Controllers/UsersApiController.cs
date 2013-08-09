@@ -27,10 +27,17 @@
 
         public override ViewBase Post(ControllerContext context)
         {
+            string fullname = context.Form["fullname"];
             string email = context.Form["email"];
             string password = context.Form["password"];
             string verifyPassword = context.Form["verifypassword"];
             string username = context.Form["username"];
+
+            // Default username to email.
+            if (String.IsNullOrEmpty(username))
+            {
+                username = email;
+            }
 
             var errors = VerifyData(email, password, verifyPassword, username);
             if (errors.Length > 0)
@@ -39,6 +46,7 @@
             }
 
             User user = UserService.Create(email, password, username);
+            user.FullName = String.IsNullOrEmpty(fullname) ? null : fullname;
             user.VerifyToken = UserService.GenerateVerifyToken();
 
             using (var db = DataService.Connect())
@@ -68,9 +76,9 @@
                 errors.Add(new ValidationError() { Field = "email", Message = "Please provide valid email address." });
             }
 
-            if (String.IsNullOrEmpty(password) || password.Length < 5)
+            if (String.IsNullOrEmpty(password))
             {
-                errors.Add(new ValidationError() { Field = "password", Message = "Password must be at least 5 characters." });
+                errors.Add(new ValidationError() { Field = "password", Message = "Password should be at least 5 characters." });
             }
             else if (verifyPassword != password)
             {

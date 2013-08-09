@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-  <title>{{app.name}} - Create Login</title>
+  <title>{{app.name}} - Create Account</title>
   <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
   <link href="{{app.path}}assets/css/tinybugs.css" rel="stylesheet">
 </head>
@@ -10,24 +10,29 @@
   <div class="row">
   <div id='loginwrapper' class="span6">
   <form id='loginForm' method='post'>
+    <fieldset>
+    <legend>Create Account</legend>
     <div class="alert alert-error hide">
       <button type="button" class="close">&times;</button>
       <strong>Error!</strong> Invalid username/email or password. Please, try again.
     </div>
+    <label for='fullname'>Full name</label>
+    <input id='fullname' name='fullname' type='text' maxlength='50' placeholder="your name e.g. Rob Mensching" />
     <label for='email'>Email</label>
-    <input id='email' name='email' type='email' maxlength='50' placeholder="email" required />
+    <input id='email' name='email' type='email' maxlength='50' required />
     <label for='password'>Password</label>
     <input id='password' name='password' type='password' maxlength='50' required='required' />
     <label for='verifypassword'>Confirm Password</label>
     <input id='verifypassword' name='verifypassword' type='password' maxlength='50' />
     <label for='username'>Username <small>(optional)</small></label>
-    <input id='username' name='username' type='text' maxlength='50' placeholder="defaults to email" />
+    <input id='username' name='username' type='text' maxlength='15' placeholder="defaults to email" />
     <span class="help-inline">(3 to 15 letters and/or numbers)</span>
 
     <div class="form-actions">
-      <input type='submit' name='submit' class="btn btn-primary" data-loading-text="Creating account..." value='Create' />
+      <input type='submit' name='submit' class="btn btn-primary" data-loading-text="Creating account..." value='Create account' />
       <a href="{{app.path}}" class="btn">Cancel</a>
     </div>
+    </fieldset>
   </form>
 </div>
   <div class="span6">
