@@ -42,8 +42,23 @@
     <p>{{{textrendered}}}</p>
 
     {{#comments}}
+    <div class="row">
+    <div class="span10">
+      <hr />
+      {{#text}}
       <p>Comment from {{commentbyusername}} <span data-toggle='tooltip' title="{{createdrelative.friendly}}">{{createdrelative}}</span></p>
       <p>{{{textrendered}}}</p>
+      {{/text}}
+      {{^text}}
+      <p>Edited by {{commentbyusername}} <span data-toggle='tooltip' title="{{createdrelative.friendly}}">{{createdrelative}}</span></p>
+      {{/text}}
+      <ul>
+      {{#changes}}
+      <li>Updated <code>{{column}}</code> from {{#old}}<code>{{old}}</code>{{/old}}{{^old}}blank{{/old}} to {{#new}}<code>{{new}}</code>{{/new}}{{^new}}blank{{/new}}</li>
+      {{/changes}}
+      </ul>
+    </div>
+    </div>
     {{/comments}}
     {{/issue}}
   </div>

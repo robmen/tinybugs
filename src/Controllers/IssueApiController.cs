@@ -75,7 +75,9 @@
                 return new JsonView(results.Errors, HttpStatusCode.BadRequest);
             }
 
-            IssueViewModel vm = UpdateIssue(context, issue, results.Updates);
+            string comment = context.UnvalidatedForm.Get("comment");
+
+            IssueViewModel vm = UpdateIssue(context, issue, user.Id, comment, results.Updates);
             if (vm == null)
             {
                 return new StatusCodeView(HttpStatusCode.InternalServerError);
@@ -124,12 +126,31 @@
             return Int64.TryParse(value, out issueId);
         }
 
-        public IssueViewModel UpdateIssue(ControllerContext context, Issue issue, Dictionary<string, object> updates)
+        public IssueViewModel UpdateIssue(ControllerContext context, Issue issue, Guid userId, string commentText, Dictionary<string, PopulateResults.UpdatedValue> updates)
         {
             IssueViewModel vm = null;
 
-            // TODO: create an IssueChange for each update key/value pair.
-            //       create IssueComment from data.comment and IssueChange list
+            IssueComment comment = new IssueComment();
+            comment.IssueId = issue.Id;
+            comment.CommentByUserId = userId;
+            comment.CreatedAt = issue.UpdatedAt;
+            comment.Text = commentText;
+            foreach (var kvp in updates)
+            {
+                if (kvp.Key.Equals("UpdatedAt", StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                object oldValue = kvp.Value.FriendlyOld ?? kvp.Value.Old ?? String.Empty;
+                object newValue = kvp.Value.FriendlyNew ?? kvp.Value.New ?? String.Empty;
+
+                IssueChange change = new IssueChange();
+                change.Column = kvp.Value.FriendlyName ?? kvp.Key;
+                change.Old = oldValue.ToString();
+                change.New = newValue.ToString();
+                comment.Changes.Add(change);
+            }
 
             using (var db = DataService.Connect())
             using (var tx = db.BeginTransaction())
@@ -140,6 +161,8 @@
                 {
                     db.Update<FullTextSearchIssue>(new { Text = issue.Text, Title = issue.Title }, s => s.DocId == issue.Id);
                 }
+
+                db.Insert(comment);
 
                 if (QueryService.TryGetIssueWithCommentsUsingDb(issue.Id, db, out vm))
                 {

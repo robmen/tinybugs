@@ -12,7 +12,7 @@
     <fieldset>
     <legend>{{#issue}}Edit{{/issue}}{{^issue}}New{{/issue}} Issue</legend>
     <div class="row">
-    <div class="span9 well well-small">
+    <div class="span12 well well-small">
         <div class="controls-row">
         <div class="span2">
           <div class="row">
@@ -23,10 +23,10 @@
             </select>
           </div>
         </div>
-        <div class="span2">
+        <div class="span3">
           <div class="row">
-            <label for='release' class="span2">Release</label>
-            <select id='release' name='release' class="span2" title="Please provide the release where the issue was originally encountered." required>
+            <label for='release' class="span3">Release</label>
+            <select id='release' name='release' class="span3" title="Please provide the release where the issue was originally encountered." required>
               <option></option>
               {{#issue.releases}}
               <option value='{{value}}'{{#selected}} selected{{/selected}}>{{text}}</option>
@@ -39,10 +39,10 @@
             </select>
           </div>
         </div>
-        <div class="span2">
+        <div class="span3">
           <div class="row">
-            <label for='tags' class="span2">Area</label>
-            <select id='area' name='area' class="span2" title="Please select the most appropriate area affected by the issue." required>
+            <label for='tags' class="span3">Area</label>
+            <select id='area' name='area' class="span3" title="Please select the most appropriate area affected by the issue." required>
               <option></option>
               {{#issue.areas}}
               <option value='{{value}}'{{#selected}} selected{{/selected}}>{{text}}</option>
@@ -67,41 +67,45 @@
     </div>
     </div>
 
-    <div id="formError" class="span9 alert alert-error hide">
+    <div id="formError" class="span10 alert alert-error hide">
       <button type="button" class="close">&times;</button>
       <strong>Error!</strong> Please fix the following:
       <ul></ul>
     </div>
 
-    <div id="bugerror" class="span9 alert alert-error hide">
+    <div id="bugerror" class="span10 alert alert-error hide">
       <button type="button" class="close">&times;</button>
       <strong>Error!</strong> Something went awry while submitting your changes. Please, try again.
     </div>
 
     <div class="row">
 
-      <div class="span7">
+      <div class="span9">
         <label for='title'>Title</label>
-        <input id='title' name='title' type='text' class="span7" maxlength='120' placeholder="required" title="Please provide a short descriptive title for the issue." required value="{{issue.title}}" />
+        <input id='title' name='title' type='text' class="span9" maxlength='120' placeholder="required" title="Please provide a short descriptive title for the issue." required value="{{issue.title}}" />
 
         <div class="mdd_toolbar"></div>
-        <textarea id='text' name='text' rows='8' class='span7 mdd_editor' placeholder="required" title="Please provide a detailed explanation of the issue." required>{{{issue.text}}}</textarea>
+        <textarea id='text' name='text' rows='8' class='span9 mdd_editor' placeholder="required" title="Please provide a detailed explanation of the issue." required>{{{issue.text}}}</textarea>
         <!--<div class="mdd_resizer"></div>-->
         <div><br /><p><strong>Preview</strong></p></div>
         <div class="mdd_preview"></div>
       </div>
 
-      <div class="span2 well well-small">
+      <div class="span3 well well-small">
         <label for='assignedto'>Assign To</label>
-        <input id='assignedto' name='assignedto' type='text' class="typeahead span2"
+        <input id='assignedto' name='assignedto' type='text' class="typeahead span3"
                data-url='{{app.path}}api/user/' autocomplete="off" value="{{issue.assignedtousername}}" />
 
 {{#issue}}
         <label for='resolution'>Resolution</label>
-        <input id='resolution' name='resolution' type='text' class="typeahead span2"
+        <input id='resolution' name='resolution' type='text' class="typeahead span3"
                data-url='{{app.path}}api/issue/resolution' autocomplete="off" value="{{resolution}}" />
         <input id="status" name="status" type="hidden" value="{{status}}" />
+
+        <label for='comment'>Comment</label>
+        <textarea id='comment' name='comment' rows='4' class='span3'></textarea>
 {{/issue}}
+
         <div class="form-actions">
           <button id='submit' type="submit" class="btn btn-block btn-primary" data-loading-text="Saving...">Save</button>
           <a href="{{app.path}}" class="btn btn-block">Cancel</a>

@@ -47,6 +47,7 @@
         public PopulateResults PopulateWithData(NameValueCollection data, Guid userId, bool checkRequired = false)
         {
             PopulateResults results = new PopulateResults();
+            bool privateIssue = false;
 
             foreach (string name in data.AllKeys)
             {
@@ -56,11 +57,27 @@
                 {
                     case "assignedto":
                         {
-                            User user = null;
-                            if (String.IsNullOrEmpty(value) || QueryService.TryGetUser(userId, value, out user))
+                            User newUser = null;
+                            if (String.IsNullOrEmpty(value) || QueryService.TryGetUser(userId, value, out newUser))
                             {
-                                this.AssignedToUserId = (user != null) ? user.Id : Guid.Empty;
-                                results.Updates.Add("AssignedToUserId", this.AssignedToUserId);
+                                Guid assignedTo = (newUser != null) ? newUser.Id : Guid.Empty;
+                                if (assignedTo != this.AssignedToUserId)
+                                {
+                                    User oldUser;
+                                    using (var db = DataService.Connect(true))
+                                    {
+                                        oldUser = db.GetByIdOrDefault<User>(this.AssignedToUserId);
+                                    }
+
+                                    results.Updates.Add("AssignedToUserId", new PopulateResults.UpdatedValue()
+                                    {
+                                        FriendlyName = "AssignedTo",
+                                        FriendlyOld = oldUser == null ? String.Empty : oldUser.UserName,
+                                        FriendlyNew = newUser == null ? String.Empty : newUser.UserName,
+                                        Old = this.AssignedToUserId,
+                                        New = this.AssignedToUserId = assignedTo,
+                                    });
+                                }
                             }
                             else
                             {
@@ -70,38 +87,62 @@
                         break;
 
                     case "private":
-                        this.Private = true; // this field is always tracked as results.Updates below.
+                        privateIssue = true; // this field change is tracked  below.
                         break;
 
                     case "area":
-                        this.Area = ConfigService.Areas.Where(a => a.Equals(value, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
-                        if (String.IsNullOrEmpty(value) || !String.IsNullOrEmpty(this.Area))
                         {
-                            results.Updates.Add("Area", this.Area);
-                        }
-                        else
-                        {
-                            results.Errors.Add(new ValidationError() { Field = name, Message = "Unknown area." });
+                            string area = ConfigService.Areas.Where(a => a.Equals(value, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                            if (String.IsNullOrEmpty(value) || !String.IsNullOrEmpty(area))
+                            {
+                                if ((area ?? String.Empty) != (this.Area ?? String.Empty))
+                                {
+                                    results.Updates.Add("Area", new PopulateResults.UpdatedValue()
+                                    {
+                                        Old = this.Area,
+                                        New = this.Area = area,
+                                    });
+                                }
+                            }
+                            else
+                            {
+                                results.Errors.Add(new ValidationError() { Field = name, Message = "Unknown area." });
+                            }
                         }
                         break;
 
                     case "release":
-                        this.Release = ConfigService.Releases.Where(r => r.Equals(value, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
-                        if (String.IsNullOrEmpty(value) || !String.IsNullOrEmpty(this.Release))
                         {
-                            results.Updates.Add("Release", this.Release);
-                        }
-                        else
-                        {
-                            results.Errors.Add(new ValidationError() { Field = name, Message = "Unknown release." });
+                            string release = ConfigService.Releases.Where(r => r.Equals(value, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                            if (String.IsNullOrEmpty(value) || !String.IsNullOrEmpty(release))
+                            {
+                                if ((release ?? String.Empty) != (this.Release ?? String.Empty))
+                                {
+                                    results.Updates.Add("Release", new PopulateResults.UpdatedValue()
+                                    {
+                                        Old = this.Release,
+                                        New = this.Release = release,
+                                    });
+                                }
+                            }
+                            else
+                            {
+                                results.Errors.Add(new ValidationError() { Field = name, Message = "Unknown release." });
+                            }
                         }
                         break;
 
                     case "resolution":
                         if (String.IsNullOrEmpty(value) || ResolutionValidation.IsMatch(value))
                         {
-                            this.Resolution = value;
-                            results.Updates.Add("Resolution", this.Resolution);
+                            if ((value ?? String.Empty) != (this.Resolution ?? String.Empty))
+                            {
+                                results.Updates.Add("Resolution", new PopulateResults.UpdatedValue()
+                                {
+                                    Old = this.Resolution,
+                                    New = this.Resolution = value,
+                                });
+                            }
                         }
                         else
                         {
@@ -113,8 +154,14 @@
                         IssueStatus status;
                         if (Enum.TryParse(value, true, out status))
                         {
-                            this.Status = status;
-                            results.Updates.Add("Status", this.Status);
+                            if (status != this.Status)
+                            {
+                                results.Updates.Add("Status", new PopulateResults.UpdatedValue()
+                                {
+                                    Old = this.Status,
+                                    New = this.Status = status,
+                                });
+                            }
                         }
                         else
                         {
@@ -132,8 +179,14 @@
                     case "text":
                         if (!String.IsNullOrEmpty(value))
                         {
-                            this.Text = value;
-                            results.Updates.Add("Text", this.Text);
+                            if ((value ?? String.Empty) != (this.Text ?? String.Empty))
+                            {
+                                results.Updates.Add("Text", new PopulateResults.UpdatedValue()
+                                {
+                                    Old = this.Text,
+                                    New = this.Text = value,
+                                });
+                            }
                         }
                         else
                         {
@@ -144,8 +197,14 @@
                     case "title":
                         if (!String.IsNullOrEmpty(value))
                         {
-                            this.Title = value;
-                            results.Updates.Add("Title", this.Title);
+                            if ((value ?? String.Empty) != (this.Title ?? String.Empty))
+                            {
+                                results.Updates.Add("Title", new PopulateResults.UpdatedValue()
+                                {
+                                    Old = this.Title,
+                                    New = this.Title = value,
+                                });
+                            }
                         }
                         else
                         {
@@ -157,8 +216,14 @@
                         IssueType type;
                         if (Enum.TryParse(value, true, out type))
                         {
-                            this.Type = type;
-                            results.Updates.Add("Type", this.Type);
+                            if (type != this.Type)
+                            {
+                                results.Updates.Add("Type", new PopulateResults.UpdatedValue()
+                                {
+                                    Old = this.Type,
+                                    New = this.Type = type,
+                                });
+                            }
                         }
                         else
                         {
@@ -174,10 +239,6 @@
                     //        results.Updates.Add("Votes", this.Votes);
                     //    }
                     //    break;
-
-                    default:
-                        results.Errors.Add(new ValidationError() { Field = name, Message = "Unknown field." });
-                        break;
                 }
             }
 
@@ -196,11 +257,21 @@
 
             // Always update the boolean since we don't know what state it was
             // in originally.
-            results.Updates.Add("Private", this.Private);
+            if (privateIssue != this.Private)
+            {
+                results.Updates.Add("Private", new PopulateResults.UpdatedValue()
+                {
+                    Old = this.Private,
+                    New = this.Private = privateIssue,
+                });
+            }
 
-            this.UpdatedAt = DateTime.UtcNow;
-            results.Updates.Add("results.UpdatesAt", this.UpdatedAt);
-
+            results.Updates.Add("UpdatedAt", new PopulateResults.UpdatedValue()
+            {
+                Old = this.UpdatedAt,
+                New = this.UpdatedAt = DateTime.UtcNow,
+            });
+ 
             return results;
         }
     }
