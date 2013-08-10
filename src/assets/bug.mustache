@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <title>{{app.name}} - #{{issue.id}} | {{issue.title}}</title>
+  <link href="{{app.path}}assets/js/mdd/mdd_styles.css" rel="stylesheet" />
   <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
   <link href="{{app.path}}assets/css/tinybugs.css" rel="stylesheet" />
 </head>
@@ -23,62 +24,31 @@
     <h3><small>{{type}} {{id}} |</small> {{title}}</h3>
   </div>
   </div>
-<!--  <div class="row">
-  <div class="span11">
-    {{#private}}<span class="label label-important">Private</span>{{/private}}
-    <span class="label label-info">{{status}}</span>
-    {{#resolution}} <span class="label label-info">{{resolution}}</span>{{/resolution}}
-    <span class="label label-success">{{release}}</span>
-    <span class="label label-inverse">{{area}}</span>
-    <span class="badge label-warning">{{votes}}</span>
-    <div class="btn-group pull-right">
-      <a href="{{app.path}}edit/{{id}}" class="btn btn-mini">Edit issue</a>
-      <a href="{{app.path}}edit/{{id}}" class="btn btn-mini">Quick edit</a>
-    </div>
-  </div>
-  </div>-->
-<!--  <div class="row">
-  <div class="span12">
-    <p>&nbsp;</p>
-  </div>
-  </div>-->
   <div class="row">
   <div class="span12">
-<!--    <div class="well well-small">
-    <div class="row">
-    <div class="span4">
-    <p><small>Assigned to</small> <strong><a href="#">{{assignedtousername}}</a>{{^assignedtousername}}No one <input id="takeit" type="button" class="btn btn-mini" data-loading-text="acquiring..." value="take it!" />{{/assignedtousername}}</strong></p>
-    </div>
-    <div class="span5">
-    <p><small>Opened by</small> <strong><a href="#">{{createdbyusername}}</a></strong> <small>on</small> <strong>{{createdrelative.date}} @ {{createdrelative.time}}</strong></p>
-    </div>
-    <div class="span2">
-    <p><small>Last updated</small> <strong>{{updatedrelative.date}}</strong> <small>@</small> <strong>{{updatedrelative.time}}</strong></p>
-    </div>
-    </div>
-  </div>
--->
     <table class="table table-hover table-striped">
     <tr>
-    <td>{{#private}}<span class="label label-important">Private</span>{{/private}}
-    <span class="label label-info">{{status}}</span>
-    {{#resolution}} <span class="label label-info">{{resolution}}</span>{{/resolution}}
-    <span class="label label-success">{{release}}</span>
-    <span class="label label-inverse">{{area}}</span>
-    <span class="badge label-warning">{{votes}}</span>
-</td>
+    <td>
+      {{#private}}<span class="label label-important">Private</span>{{/private}}
+      <span class="label label-info">{{status}}</span>
+      {{#resolution}} <span class="label label-info">{{resolution}}</span>{{/resolution}}
+      <span class="label label-success">{{release}}</span>
+      <span class="label label-inverse">{{area}}</span>
+      <span class="badge label-warning" title="votes">{{votes}}</span>
+    </td>
     <td><small>Assigned to</small> <strong><a href="#">{{assignedtousername}}</a>{{^assignedtousername}}No one <input id="takeit" type="button" class="btn btn-mini" data-loading-text="acquiring..." value="take it!" />{{/assignedtousername}}</strong></td>
     <td><small>Updated</small> <strong>{{updatedrelative.date}}</strong> <small>@</small> <strong>{{updatedrelative.time}}</strong></td>
     <td><small>Opened</small> <strong>{{createdrelative.date}}</strong> <small>@</small> <strong>{{createdrelative.time}}</strong> <small>by</small> <strong><a href="#">{{createdbyusername}}</a></strong></td>
-    </tr></table>
-    </div>
+    </tr>
+    </table>
+  </div>
   </div>
 
   <div class="row">
   <div class="span12">
     <div class="btn-group pull-right">
       <a href="{{app.path}}edit/{{id}}" class="btn btn-mini">Edit issue</a>
-      <a href="{{app.path}}edit/{{id}}" class="btn btn-mini">Quick edit</a>
+      <!--<a href="{{app.path}}edit/{{id}}" class="btn btn-mini">Quick edit</a>-->
     </div>
   </div>
   </div>
@@ -91,15 +61,56 @@
 
   <div class="row">
   <div class="span11 form-actions">
-  <input id="addcomment" type="button" class="btn btn-success" value="Add a Comment" />
+    <input id="addcomment" type="button" class="btn btn-success" value="Add a Comment" />
   </div>
   </div>
+
+  <form id='commentForm' method='post' class="hide">
+  <div class="row">
+  <div class="span11">
+    <hr />
+  </div>
+  <div class="span7">
+    <div class="mdd_toolbar"></div>
+    <textarea id='text' name='text' rows='8' class='span7 mdd_editor' placeholder="Leave your comment here." required></textarea>
+    <!--<div class="mdd_resizer"></div>-->
+    <div><br /><p><strong>Preview</strong></p></div>
+    <div class="mdd_preview"></div>
+  </div>
+  <div class="span3 well well-small">
+    <div id="contributorDetails" class="hide">
+      <select id='type' name='type' class="span3" required>
+        <option value='Bug'>Bug</option>
+        <option value='Feature'>Feature</option>
+      </select>
+      <select id='release' name='release' class="span3" title="Please provide the release where the issue was originally encountered." required>
+        <option></option>
+        {{#releases}}
+        <option value='{{value}}'{{#selected}} selected{{/selected}}>{{text}}</option>
+        {{/releases}}
+      </select>
+      <select id='area' name='area' class="span3" title="Please select the most appropriate area affected by the issue." required>
+        <option></option>
+        {{#areas}}
+        <option value='{{value}}'{{#selected}} selected{{/selected}}>{{text}}</option>
+        {{/areas}}
+      </select>
+      <input id='assignedto' name='assignedto' type='text' class="typeahead span3" placeholder="assign to"
+              data-url='{{app.path}}api/user/' autocomplete="off" value="{{issue.assignedtousername}}" />
+      <input id='resolution' name='resolution' type='text' class="typeahead span3" placeholder="resolution"
+              data-url='{{app.path}}api/issue/resolution' autocomplete="off" value="{{resolution}}" />
+    </div>
+    <div class="form-actions">
+      <button id='submit' type="submit" class="btn btn-block btn-success" data-loading-text="Saving...">Save Comment</button>
+      <a href="{{app.path}}" class="btn btn-block">Cancel</a>
+    </div>
+  </div>
+  </div>
+  </form>
 
   <div class="row">
   <div class="span10">
   {{#comments}}
-  <div class="row">
-  <div class="span10">
     <table class="table table-hover">
     <tr>
     <td>
@@ -120,11 +131,9 @@
     </tr>
     </table>
     {{{textrendered}}}
-  </div>
-  </div>
   {{/comments}}
   {{^comments}}
-  <p>No comments.</p>
+    <p>No comments.</p>
   {{/comments}}
   </div>
   </div>
@@ -134,6 +143,7 @@
 </div>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+<script src="{{app.path}}assets/js/mdd/markdowndeeplib.min.js"></script>
 <script src="{{app.path}}assets/js/tinybugs.js"></script>
 <script>
 $(document).ready(function () {
@@ -147,6 +157,11 @@ $(document).ready(function () {
         //matcher: function (item) {
         //    return this.query == item;
         //}
+    });
+
+    $("textarea.mdd_editor").MarkdownDeep({
+      resizebar: false,
+      help_location: "{{app.path}}js/mdd/mdd_help.htm",
     });
 
     $('#takeit').on('click', function (e) {
