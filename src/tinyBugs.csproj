@@ -124,75 +124,37 @@
     <Compile Include="Services\UserService.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="assets\bug.mustache">
+    <Content Include="web.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
-    <Content Include="assets\root.mustache">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="assets\login.mustache">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="assets\notfound.mustache">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="assets\css\tinybugs.css">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="assets\modal_login.mustache">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="assets\accessdenied.mustache">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="assets\login_reset.mustache">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <None Include="assets\tinybugs.js.mustache">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <Content Include="assets\js\mdd\markdowndeeplib.min.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="assets\js\mdd\mdd_ajax_loader.gif">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="assets\js\mdd\mdd_gripper.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="assets\js\mdd\mdd_help.htm">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="assets\js\mdd\mdd_modal_background.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="assets\js\mdd\mdd_styles.css">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="assets\js\mdd\mdd_toolbar.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="assets\bugform.mustache">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="assets\admin.mustache">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="assets\login_create.mustache">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="assets\login_activate.mustache">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <None Include="web.nlog">
+    <Content Include="web.nlog">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </Content>
     <None Include="packages.config" />
-    <None Include="web.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
-    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="assets\bug.mustache" />
+    <EmbeddedResource Include="assets\root.mustache" />
+    <EmbeddedResource Include="assets\login.mustache" />
+    <EmbeddedResource Include="assets\notfound.mustache" />
+    <EmbeddedResource Include="assets\tinybugs.css.mustache" />
+    <EmbeddedResource Include="assets\modal_login.mustache" />
+    <EmbeddedResource Include="assets\accessdenied.mustache" />
+    <EmbeddedResource Include="assets\login_reset.mustache" />
+    <EmbeddedResource Include="assets\tinybugs.js.mustache" />
+    <EmbeddedResource Include="assets\mdd\markdowndeeplib.min.js" />
+    <EmbeddedResource Include="assets\mdd\mdd_ajax_loader.gif" />
+    <EmbeddedResource Include="assets\mdd\mdd_gripper.png" />
+    <EmbeddedResource Include="assets\mdd\mdd_help.htm" />
+    <EmbeddedResource Include="assets\mdd\mdd_modal_background.png" />
+    <EmbeddedResource Include="assets\mdd\mdd_styles.css" />
+    <EmbeddedResource Include="assets\mdd\mdd_toolbar.png" />
+    <EmbeddedResource Include="assets\bugform.mustache" />
+    <EmbeddedResource Include="assets\admin.mustache" />
+    <EmbeddedResource Include="assets\login_create.mustache" />
+    <EmbeddedResource Include="assets\login_activate.mustache" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -267,7 +229,7 @@
       <CopyFiles Include="bin\$(Platform)\$(Configuration)\Global.asax" />
       <CopyFiles Include="bin\$(Platform)\$(Configuration)\web.config" />
       <CopyFiles Include="bin\$(Platform)\$(Configuration)\web.nlog" />
-      <CopyAssetFiles Include="assets\**" />
+      <!--<CopyAssetFiles Include="assets\**" />-->
     </ItemGroup>
     <Copy SourceFiles="@(CopyBinFiles)" DestinationFolder="..\build\publish\$(Platform)\bin\" SkipUnchangedFiles="true" />
     <Copy SourceFiles="@(CopyFiles)" DestinationFiles="..\build\publish\$(Platform)\%(RecursiveDir)%(Filename)%(Extension)" SkipUnchangedFiles="true" />
