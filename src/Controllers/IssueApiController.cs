@@ -81,7 +81,7 @@
 
             string comment = context.UnvalidatedForm.Get("comment");
 
-            IssueViewModel vm = UpdateIssue(context, issue, user.Guid, comment, results.Updates);
+            IssueViewModel vm = UpdateIssue(context, issue, user.Id, comment, results.Updates);
             if (vm == null)
             {
                 return new StatusCodeView(HttpStatusCode.InternalServerError);
@@ -130,7 +130,7 @@
             return Int64.TryParse(value, out issueId);
         }
 
-        public IssueViewModel UpdateIssue(ControllerContext context, Issue issue, Guid userId, string commentText, Dictionary<string, PopulateResults.UpdatedValue> updates)
+        public IssueViewModel UpdateIssue(ControllerContext context, Issue issue, long userId, string commentText, Dictionary<string, PopulateResults.UpdatedValue> updates)
         {
             IssueViewModel vm = null;
 

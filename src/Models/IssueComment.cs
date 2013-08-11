@@ -18,7 +18,7 @@
         public long IssueId { get; set; }
 
         [References(typeof(User))]
-        public Guid CommentByUserId { get; set; }
+        public long CommentByUserId { get; set; }
 
         public DateTime CreatedAt { get; set; }
 

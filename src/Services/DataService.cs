@@ -105,7 +105,7 @@
                 var issueOldComment = new IssueComment()
                 {
                     IssueId = issueOld.Id,
-                    CommentByUserId = barUser.Guid,
+                    CommentByUserId = barUser.Id,
                     CreatedAt = DateTime.UtcNow,
                     Text = "This is the text of the comment. It is a little longer to provide some detail about the feature request.",
                 };
