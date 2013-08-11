@@ -17,6 +17,10 @@
 
         static ConfigService()
         {
+            areas = new string[0];
+            releases = new string[0];
+            breadcrumbs = new Breadcrumb[0];
+
             Mail = new MailConfig()
             {
                 From = WebConfigurationManager.AppSettings["mail.from"],
@@ -68,7 +72,7 @@
         public static void ApplicationInitialization(Application application)
         {
             DataService.ConnectionString = application.Server.MapPath(ConfigService.ConnectionStringSettings.ConnectionString);
-            DataService.Initialize(true);
+            DataService.Initialize();
 
             using (var db = DataService.Connect(true))
             {

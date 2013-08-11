@@ -24,8 +24,13 @@
 
         public static void Initialize(bool overwrite = false)
         {
+#if DEBUG
+            overwrite = true;
+#endif
+
             using (IDbConnection db = Connect())
             {
+                //bool userTableExists = db.TableExists("User");
                 bool fullTextSearchExists = db.TableExists("FullTextSearchIssue");
                 if (overwrite && fullTextSearchExists)
                 {
@@ -39,6 +44,7 @@
                     db.ExecuteSql("CREATE VIRTUAL TABLE FullTextSearchIssue USING fts4(Title, Text, Comments)");
                 }
 
+#if DEBUG
                 Config config = new Config()
                 {
                     Areas = new[] { "candle.exe", "light.exe" },
@@ -49,12 +55,14 @@
                 var fooUser = UserService.Create("foo@example.com", "bar.");
                 fooUser.FullName = "Foo User";
                 fooUser.Role = UserRole.Admin;
-                db.Save(fooUser);
+                db.Insert(fooUser);
+                fooUser.Id = db.GetLastInsertId();
 
                 var barUser = UserService.Create("bar@example.com", "foo");
                 barUser.UserName = "bar";
                 barUser.FullName = "Bar User";
-                db.Save(barUser);
+                db.Insert(barUser);
+                barUser.Id = db.GetLastInsertId();
 
                 var issue = new Issue()
                 {
@@ -67,17 +75,18 @@
                     Text = "This is the text of the bug. It is a little longer than the title.",
                     Votes = 4,
                 };
-                db.Save(issue);
+                db.Insert(issue);
+                issue.Id = db.GetLastInsertId();
 
                 var issueSearch = new FullTextSearchIssue()
                 {
-                    DocId = db.GetLastInsertId(),
+                    DocId = issue.Id,
                     Text = issue.Text,
                     Title = issue.Title,
                 };
                 //db.SqlScalar<int>("INSERT INTO issue_text(docid, title, text) VALUES(@i, @t, @c)",
                 //              new { i = db.GetLastInsertId(), t = issue.Title, c = issue.Text });
-                db.Save(issueSearch);
+                db.Insert(issueSearch);
 
                 var issueOld = new Issue()
                 {
@@ -90,16 +99,18 @@
                     Text = "This is the text of the feature. It is a little longer than the title and it's for older stuff.",
                     Votes = 1,
                 };
-                db.Save(issueOld);
+                db.Insert(issueOld);
+                issueOld.Id = db.GetLastInsertId();
 
                 var issueOldComment = new IssueComment()
                 {
-                    IssueId = db.GetLastInsertId(),
-                    CommentByUserId = barUser.Id,
+                    IssueId = issueOld.Id,
+                    CommentByUserId = barUser.Guid,
                     CreatedAt = DateTime.UtcNow,
                     Text = "This is the text of the comment. It is a little longer to provide some detail about the feature request.",
                 };
-                db.Save(issueOldComment);
+                db.Insert(issueOldComment);
+                issueOldComment.Id = db.GetLastInsertId();
 
                 var issueOldSearch = new FullTextSearchIssue()
                 {
@@ -110,7 +121,8 @@
                 };
                 //db.SqlScalar<int>("INSERT INTO issue_text(docid, title, text) VALUES(@i, @t, @c)",
                 //              new { i = db.GetLastInsertId(), t = issue.Title, c = issue.Text });
-                db.Save(issueOldSearch);
+                db.Insert(issueOldSearch);
+#endif
             }
         }
     }

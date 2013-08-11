@@ -42,7 +42,7 @@
 
             Issue issue = new Issue();
 
-            PopulateResults results = issue.PopulateWithData(context.UnvalidatedForm, user.Id, true);
+            PopulateResults results = issue.PopulateWithData(context.UnvalidatedForm, user.Guid, true);
             if (results.Errors.Count > 0)
             {
                 return new JsonView(results.Errors, HttpStatusCode.BadRequest);

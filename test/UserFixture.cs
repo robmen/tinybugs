@@ -12,7 +12,7 @@
         public void CanCreateNewUser()
         {
             var user = UserService.Create("tinybugs@robmensching.com", "My voice is my password.");
-            Assert.NotEqual(Guid.Empty, user.Id);
+            Assert.NotEqual(Guid.Empty, user.Guid);
             Assert.Equal("tinybugs@robmensching.com", user.Email);
             Assert.Equal(24, user.Salt.Length);
             Assert.Equal(88, user.PasswordHash.Length);

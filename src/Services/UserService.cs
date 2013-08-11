@@ -25,7 +25,7 @@
 
             return new User()
             {
-                Id = id,
+                Guid = id,
                 Email = email.ToLowerInvariant(),
                 UserName = username,
                 GravatarId = GenerateGravatarId(email),
@@ -101,15 +101,15 @@
                 return false;
             }
 
-            string hash = UserService.CalculatePasswordHash(user.Id, user.Salt, password);
+            string hash = UserService.CalculatePasswordHash(user.Guid, user.Salt, password);
             return user.PasswordHash.Equals(hash, StringComparison.Ordinal);
         }
 
-        public static bool TryAuthenticateUser(Guid userId, out User user)
+        public static bool TryAuthenticateUser(Guid userGuid, out User user)
         {
             using (var db = DataService.Connect(true))
             {
-                user = db.GetByIdOrDefault<User>(userId);
+                user = db.FirstOrDefault<User>(u => u.Guid == userGuid);
             }
 
             return user != null;

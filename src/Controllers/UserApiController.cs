@@ -75,7 +75,7 @@
             user.Role = role;
             using (var db = DataService.Connect())
             {
-                db.UpdateOnly<User>(user, ev => ev.Update(u => u.Role).Where(u => u.Id == user.Id));
+                db.UpdateOnly<User>(user, ev => ev.Update(u => u.Role).Where(u => u.Guid == user.Guid));
             }
 
             return new JsonView(new UserViewModel(user));

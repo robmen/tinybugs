@@ -63,7 +63,7 @@
             using (var db = DataService.Connect())
             using (var tx = db.OpenTransaction())
             {
-                db.UpdateOnly(user, u => u.VerifyToken, u => u.Id == user.Id);
+                db.UpdateOnly(user, u => u.VerifyToken, u => u.Guid == user.Guid);
                 MailService.SendPasswordReset(user.Email, user.VerifyToken);
 
                 tx.Commit();
@@ -98,7 +98,7 @@
                 string passwordHash = user.PasswordHash;
                 if (!String.IsNullOrEmpty(password))
                 {
-                    passwordHash = UserService.CalculatePasswordHash(user.Id, user.Salt, password);
+                    passwordHash = UserService.CalculatePasswordHash(user.Guid, user.Salt, password);
                 }
 
                 // Verification tokens are one shot deals. This one is dead now.
@@ -106,7 +106,7 @@
                 UserRole role = (user.Role == UserRole.Unverfied) ? UserRole.User : user.Role;
                 db.UpdateOnly(new User { VerifyToken = null, Role = role, PasswordHash = passwordHash },
                     u => new { u.VerifyToken, u.Role, u.PasswordHash },
-                    u => u.Id == user.Id);
+                    u => u.Guid == user.Guid);
             }
 
             return null;

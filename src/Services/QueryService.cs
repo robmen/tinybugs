@@ -209,28 +209,28 @@ LEFT JOIN User ON IssueComment.CommentByUserId=User.Id
             return TryGetUser(Guid.Empty, nameOrEmail, out user);
         }
 
-        public static bool TryGetUser(Guid currentUserId, string nameOrEmail, out User user)
+        public static bool TryGetUser(Guid currentUserGuid, string nameOrEmail, out User user)
         {
             nameOrEmail = String.IsNullOrEmpty(nameOrEmail) ? String.Empty : nameOrEmail.ToLowerInvariant();
             user = null;
 
             using (var db = DataService.Connect(true))
             {
-                user = (currentUserId != Guid.Empty && "[me]".Equals(nameOrEmail, StringComparison.OrdinalIgnoreCase)) ?
-                        db.GetByIdOrDefault<User>(currentUserId) :
-                        db.SelectParam<User>(u => u.UserName == nameOrEmail || u.Email == nameOrEmail).SingleOrDefault();
+                user = (currentUserGuid != Guid.Empty && "[me]".Equals(nameOrEmail, StringComparison.OrdinalIgnoreCase)) ?
+                        db.FirstOrDefault<User>(u => u.Guid == currentUserGuid) :
+                        db.FirstOrDefault<User>(u => u.UserName == nameOrEmail || u.Email == nameOrEmail);
             }
 
             return user != null;
         }
 
-        public static User GetUserByName(Guid currentUserId, string value)
+        public static User GetUserByName(Guid currentUserGuid, string value)
         {
             using (var db = DataService.Connect(true))
             {
                 return ("[me]".Equals(value, StringComparison.OrdinalIgnoreCase)) ?
-                        db.GetByIdOrDefault<User>(currentUserId) :
-                        db.SelectParam<User>(u => u.UserName == value).SingleOrDefault();
+                        db.FirstOrDefault<User>(u => u.Guid == currentUserGuid) :
+                        db.FirstOrDefault<User>(u => u.UserName == value);
             }
         }
 

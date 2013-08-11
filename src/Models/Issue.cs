@@ -17,10 +17,10 @@
         public long Id { get; set; }
 
         [References(typeof(User))]
-        public Guid AssignedToUserId { get; set; }
+        public long AssignedToUserId { get; set; }
 
         [References(typeof(User))]
-        public Guid CreatedByUserId { get; set; }
+        public long CreatedByUserId { get; set; }
 
         public DateTime CreatedAt { get; set; }
 
@@ -60,7 +60,7 @@
                             User newUser = null;
                             if (String.IsNullOrEmpty(value) || QueryService.TryGetUser(userId, value, out newUser))
                             {
-                                Guid assignedTo = (newUser != null) ? newUser.Id : Guid.Empty;
+                                long assignedTo = (newUser != null) ? newUser.Id : 0;
                                 if (assignedTo != this.AssignedToUserId)
                                 {
                                     User oldUser;

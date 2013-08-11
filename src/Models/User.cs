@@ -6,7 +6,11 @@
 
     public class User : IIdentity, IPrincipal
     {
-        public Guid Id { get; set; }
+        [AutoIncrement]
+        public long Id { get; set; }
+
+        [Index(Unique = true)]
+        public Guid Guid { get; set; }
 
         [Index(Unique = true)]
         public string Email { get; set; }
@@ -35,13 +39,13 @@
         [Ignore]
         public bool IsAuthenticated
         {
-            get { return this.Id != Guid.Empty; }
+            get { return this.Guid != Guid.Empty; }
         }
 
         [Ignore]
         public string Name
         {
-            get { return this.Id.ToString(); }
+            get { return this.Guid.ToString(); }
         }
 
         [Ignore]

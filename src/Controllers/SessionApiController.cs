@@ -30,7 +30,7 @@
             User user;
             if (UserService.TryAuthenticateUser(username, password, out user))
             {
-                string userId = user.Id.ToString();
+                string userId = user.Guid.ToString();
 
                 FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(userId, false, 30);
                 context.Cookies.Add(new HttpCookie(FormsAuthentication.FormsCookieName, FormsAuthentication.Encrypt(ticket)));

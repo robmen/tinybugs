@@ -54,7 +54,19 @@
             using (var tx = db.OpenTransaction())
             {
                 db.Insert(user);
-                MailService.SendVerifyUser(user.Email, user.VerifyToken);
+                user.Id = db.GetLastInsertId();
+
+                // First user magically becomes an admin.
+                if (user.Id == 1)
+                {
+                    user.Role = UserRole.Admin;
+                    user.VerifyToken = null;
+                    db.Update(user);
+                }
+                else
+                {
+                    MailService.SendVerifyUser(user.Email, user.VerifyToken);
+                }
 
                 tx.Commit();
             }

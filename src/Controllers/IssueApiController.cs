@@ -72,7 +72,7 @@
                 user.Id == issue.CreatedByUserId ||
                 user.IsInRole(UserRole.Contributor))
             {
-                results = issue.PopulateWithData(context.UnvalidatedForm, user.Id);
+                results = issue.PopulateWithData(context.UnvalidatedForm, user.Guid);
                 if (results.Errors.Count > 0)
                 {
                     return new JsonView(results.Errors, HttpStatusCode.BadRequest);
@@ -81,7 +81,7 @@
 
             string comment = context.UnvalidatedForm.Get("comment");
 
-            IssueViewModel vm = UpdateIssue(context, issue, user.Id, comment, results.Updates);
+            IssueViewModel vm = UpdateIssue(context, issue, user.Guid, comment, results.Updates);
             if (vm == null)
             {
                 return new StatusCodeView(HttpStatusCode.InternalServerError);
