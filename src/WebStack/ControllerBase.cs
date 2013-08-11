@@ -9,6 +9,10 @@
     {
         private ControllerContext Context { get; set; }
 
+        public virtual RouteValueDictionary RouteDefaults { get { return null; } }
+
+        public virtual RouteValueDictionary RouteConstraints { get { return null; } }
+
         public IHttpHandler GetHttpHandler(RequestContext requestContext)
         {
             var controller = (ControllerBase)Activator.CreateInstance(this.GetType());

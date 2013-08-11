@@ -20,7 +20,7 @@
                 ControllerBase controller = (ControllerBase)Activator.CreateInstance(routedType.Type);
                 foreach (var routeAttribute in routedType.Attributes)
                 {
-                    collection.Add(new Route(routeAttribute.Path, routeAttribute.Defaults, controller));
+                    collection.Add(new Route(routeAttribute.Path, controller.RouteDefaults, controller.RouteConstraints, controller));
                 }
             }
 
