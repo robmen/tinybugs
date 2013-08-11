@@ -13,6 +13,7 @@
     {
         private static string[] areas;
         private static string[] releases;
+        private static IssueType[] types;
         private static Breadcrumb[] breadcrumbs;
 
         static ConfigService()
@@ -20,6 +21,7 @@
             areas = new string[0];
             releases = new string[0];
             breadcrumbs = new Breadcrumb[0];
+            types = new[] { IssueType.Bug, IssueType.Feature };
 
             Mail = new MailConfig()
             {
@@ -57,6 +59,8 @@
         public static IEnumerable<string> Areas { get { return areas; } }
 
         public static IEnumerable<string> Releases { get { return releases; } }
+
+        public static IEnumerable<IssueType> Types { get { return types; } }
 
         public static IEnumerable<Breadcrumb> ExternalBreadcrumbs { get { return breadcrumbs; } }
 

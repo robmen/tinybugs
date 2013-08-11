@@ -70,6 +70,8 @@
 
         public List<OptionViewModel> Releases { get; set; }
 
+        public List<OptionViewModel> Types { get; set; }
+
         public List<IssueCommentViewModel> Comments { get; set; }
 
         public string TextRendered

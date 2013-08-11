@@ -192,7 +192,7 @@ LEFT JOIN User ON IssueComment.CommentByUserId=User.Id
             return db.Query<IssueCommentViewModel>(commentTemplate.RawSql, commentTemplate.Parameters);
         }
 
-        public static IssueViewModel AreasAndReleasesForIssue(IssueViewModel issue)
+        public static IssueViewModel AreasReleasesTypesForIssue(IssueViewModel issue)
         {
             issue.Areas = ConfigService.Areas
                             .Select(a => new OptionViewModel() { Selected = a.Equals(issue.Area, StringComparison.OrdinalIgnoreCase), Text = a, Value = a })
@@ -200,6 +200,10 @@ LEFT JOIN User ON IssueComment.CommentByUserId=User.Id
 
             issue.Releases = ConfigService.Releases
                                .Select(r => new OptionViewModel() { Selected = r.Equals(issue.Release, StringComparison.OrdinalIgnoreCase), Text = r, Value = r })
+                               .ToList();
+
+            issue.Types = ConfigService.Types
+                               .Select(t => new OptionViewModel() { Selected = (t == issue.Type), Text = t.ToString(), Value = t.ToString() })
                                .ToList();
             return issue;
         }
@@ -261,7 +265,7 @@ LEFT JOIN User ON IssueComment.CommentByUserId=User.Id
             {
                 issue.Comments = CommentsForIssueUsingDb(issue.Id, db);
 
-                QueryService.AreasAndReleasesForIssue(issue);
+                QueryService.AreasReleasesTypesForIssue(issue);
             }
 
             return issue != null;

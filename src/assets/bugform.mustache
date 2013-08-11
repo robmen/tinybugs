@@ -18,8 +18,15 @@
           <div class="row">
             <label for='type' class="span2">Type</label>
             <select id='type' name='type' class="span2" required>
-              <option value='Bug'>Bug</option>
-              <option value='Feature'>Feature</option>
+              {{#issue.types}}
+              <option value='{{value}}'{{#selected}} selected{{/selected}}>{{text}}</option>
+              {{/issue.types}}
+              {{^issue.types}}
+              <option value=''></option>
+              {{#app.types}}
+              <option value='{{name}}'>{{name}}</option>
+              {{/app.types}}
+              {{/issue.types}}
             </select>
           </div>
         </div>
@@ -58,8 +65,8 @@
         <div class="span2">
           <div class="row">
             <label class="span1">&nbsp;</label>
-            <label for='private' class="checkbox span2">
-              <input id='private' name='private' type='checkbox' {{#issue.private}}checked="checked"{{/issue.private}} /> Private issue
+            <label for='private' class="checkbox span2 disabled" title="Not implemented yet">
+              <input id='private' name='private' type='checkbox' {{#issue.private}}checked{{/issue.private}} disabled /> Private issue
             </label>
           </div>
         </div>

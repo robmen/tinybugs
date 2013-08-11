@@ -82,8 +82,9 @@
   <div class="span3 well well-small">
     <div id="contributorDetails" class="hide">
       <select id='type' name='type' class="span3" required>
-        <option value='Bug'>Bug</option>
-        <option value='Feature'>Feature</option>
+        {{#types}}
+        <option value='{{value}}'{{#selected}} selected{{/selected}}>{{text}}</option>
+        {{/types}}
       </select>
       <select id='release' name='release' class="span3" title="Please provide the release where the issue was originally encountered." required>
         <option></option>
