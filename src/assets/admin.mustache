@@ -121,15 +121,6 @@
 <script src="{{app.path}}assets/js/tinybugs.js"></script>
 <script>
 $(document).ready(function () {
-  $('#configusername').typeahead({
-    source: function (query, process) {
-      var url = $(this.$element).attr('data-url');
-      return $.get(url, { q: query }, function (data) {
-        return process(data);
-      });
-    },
-  });
-
   $('#configForm').validate({
       validClass: 'success',
       errorContainer: "#configValidationError",
@@ -199,23 +190,7 @@ $(document).ready(function () {
     }
   });
 
-  var dirty = false;
-
-  $(':input').change(function () {
-    dirty = true;
-  });
-
-  window.onbeforeunload = function (e) {
-    if (dirty) {
-      var message = "There are edits to the configuration.";
-      e = e || window.event;
-      if (e) {
-        e.returnValue = message; // IE and Firefox
-      }
-
-      return message; // Webkit
-    }
-  };
+  enableDirtyCheck("There are edits to the configuration.");
 });
 </script>
 </body>

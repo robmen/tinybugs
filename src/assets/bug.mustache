@@ -21,11 +21,6 @@
   {{#issue}}
   <div class="row">
   <div class="span12">
-    <h3><small>{{type}} {{id}} |</small> {{title}}</h3>
-  </div>
-  </div>
-  <div class="row">
-  <div class="span12">
     <table class="table table-hover table-striped">
     <tr>
     <td>
@@ -48,20 +43,24 @@
   <div class="span12">
     <div class="btn-group pull-right">
       <a href="{{app.path}}edit/{{id}}" class="btn btn-mini">Edit issue</a>
-      <!--<a href="{{app.path}}edit/{{id}}" class="btn btn-mini">Quick edit</a>-->
+      <input id="quickedit" type="button" class="btn btn-mini disabled" disabled value="Quick edit" />
     </div>
+    <h3><small>{{type}} {{id}} |</small> {{title}}</h3>
   </div>
   </div>
   <div class="row">
   <div class="span12">
-    <strong>{{title}}</strong>
     <p>{{{textrendered}}}</p>
   </div>
   </div>
 
   <div class="row">
+  <div class="span7 alert alert-error hide">
+    <button type="button" class="close">&times;</button>
+    <strong>Error!</strong> Something went awry while logging in. Please, try again.
+  </div>
   <div class="span11 form-actions">
-    <input id="addcomment" type="button" class="btn btn-success" value="Add a Comment" />
+    <button id="addcomment" type="button" class="btn btn-success" data-loading-text="Logging in...">Add a Comment</button>
   </div>
   </div>
 
@@ -70,10 +69,13 @@
   <div class="span11">
     <hr />
   </div>
+  <div id="commentError" class="span10 alert alert-error hide">
+    <button type="button" class="close">&times;</button>
+    <strong>Error!</strong> Something went awry while submitting your changes. Please, try again.
+  </div>
   <div class="span7">
     <div class="mdd_toolbar"></div>
-    <textarea id='text' name='text' rows='8' class='span7 mdd_editor' placeholder="Leave your comment here." required></textarea>
-    <!--<div class="mdd_resizer"></div>-->
+    <textarea id='comment' name='comment' rows='8' class='span7 mdd_editor' placeholder="Leave your comment here." required></textarea>
     <div><br /><p><strong>Preview</strong></p></div>
     <div class="mdd_preview"></div>
   </div>
@@ -96,13 +98,13 @@
         {{/areas}}
       </select>
       <input id='assignedto' name='assignedto' type='text' class="typeahead span3" placeholder="assign to"
-              data-url='{{app.path}}api/user/' autocomplete="off" value="{{issue.assignedtousername}}" />
+              data-url='{{app.path}}api/user/' autocomplete="off" value="{{assignedtousername}}" />
       <input id='resolution' name='resolution' type='text' class="typeahead span3" placeholder="resolution"
               data-url='{{app.path}}api/issue/resolution' autocomplete="off" value="{{resolution}}" />
     </div>
     <div class="form-actions">
-      <button id='submit' type="submit" class="btn btn-block btn-success" data-loading-text="Saving...">Save Comment</button>
-      <a href="{{app.path}}" class="btn btn-block">Cancel</a>
+      <button id='submit' type="submit" class="btn btn-block btn-success" data-loading-text="Saving...">Save</button>
+      <button id='cancel' type="button" class="btn btn-block">Cancel</button>
     </div>
   </div>
   </div>
@@ -111,7 +113,7 @@
   <div class="row">
   <div class="span10">
   {{#comments}}
-    <table class="table table-hover">
+    <table class="table table-hover table-striped">
     <tr>
     <td>
     {{#text}}
@@ -147,24 +149,12 @@
 <script src="{{app.path}}assets/js/tinybugs.js"></script>
 <script>
 $(document).ready(function () {
-    $('#assignto').typeahead({
-        source: function (query, process) {
-            var url = $(this.$element).attr('data-url');
-            return $.get(url, { q: query }, function (data) {
-                return process(data);
-            });
-        },
-        //matcher: function (item) {
-        //    return this.query == item;
-        //}
-    });
+  $("textarea.mdd_editor").MarkdownDeep({
+    resizebar: false,
+    help_location: "{{app.path}}js/mdd/mdd_help.htm",
+  });
 
-    $("textarea.mdd_editor").MarkdownDeep({
-      resizebar: false,
-      help_location: "{{app.path}}js/mdd/mdd_help.htm",
-    });
-
-    $('#takeit').on('click', function (e) {
+  $('#takeit').on('click', function (e) {
       var takeitButton = $('#takeit').button('loading');
 
       $.post('{{app.path}}api/issue/{{id}}', 'assignedto=[me]')
@@ -182,25 +172,60 @@ $(document).ready(function () {
           });
     });
 
-    $('#bugForm').submit(function (e) {
-        var submit = $(this).find(':submit').button('loading');
-        var alert = $(this).find('.alert').slideUp('fast');
+  $('#addcomment').on('click', function (e) {
+    var commentButton = $(this).button('loading');
+    var form = $('#commentForm');
+    var row = $(this).closest('.row');
+    var alert = $(row).find('.alert').slideUp('fast');
 
-        e.preventDefault();
-        $.post('{{app.path}}api/issue/{{id}}', $(this).serialize())
-            .done( function(data) {
-                // TODO: send the user off to view their bright shiny new bug based on the "data".
-            }).fail(function (jqXHR, textStatus, errorThrown) {
-                if (errorThrown === 'Bad Gateway') {
-                    $('#loginModal').modal();
-                }
-                else {
-                    alert.slideDown();
-                }
-            }).always(function () {
-                $('#savebug').button('reset');
-            });
+    $.getJSON('{{app.path}}api/user/0', function (data) {
+      row.slideUp();
+      form.slideDown();
+      if (data.role === 'Contributor' || data.role === 'Admin') {
+        $('#contributorDetails').removeClass('hide');
+      }
+      else {
+        $('#contributorDetails').addClass('hide');
+      }
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+      if (errorThrown === 'Bad Gateway') {
+        $('#loginModal').modal();
+      }
+      else {
+        alert.slideDown();
+      }
+    }).always(function () {
+      commentButton.button('reset');
     });
+  });
+
+  $('#commentForm').submit(function (e) {
+    var submit = $(this).find(':submit').button('loading');
+    var alert = $(this).find('.alert').slideUp('fast');
+
+    e.preventDefault();
+    $.post('{{app.path}}api/issue/{{issue.id}}', $(this).serialize())
+        .done(function (data) {
+          clearDirty();
+          location.reload();
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+          if (errorThrown === 'Bad Gateway') {
+            $('#loginModal').modal();
+          }
+          else {
+            alert.slideDown();
+          }
+        }).always(function () {
+          $(submit).button('reset');
+        });
+  });
+
+  $('#cancel').on('click', function (e) {
+    $('#commentForm').slideUp();
+    $('#addcomment').closest('.row').slideDown();
+  });
+
+  enableDirtyCheck("There are edits to this page. Do you want to abandon them?");
 });
 </script>
 </body>

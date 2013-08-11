@@ -58,39 +58,40 @@
 <script src="{{app.path}}assets/js/tinybugs.js"></script>
 <script>
 $(document).ready(function () {
-    $('#loginForm').submit(function (e) {
-        var submit = $(this).find(':submit').button('loading');
-        var alert = $(this).find('.alert').slideUp('fast');
-        var query = qs();
+  $('#loginForm').submit(function (e) {
+    e.preventDefault();
 
-        e.preventDefault();
-        $.post('{{app.path}}api/session/', $(this).serialize())
-            .done(function () {
-                window.location.href = query.returnurl || '{{app.path}}';
-            }).fail(function (jqXHR, textStatus, errorThrown) {
-                alert.slideDown();
-            }).always(function () {
-                submit.button('reset');
-            });
-    });
-    $('#resetForm').validate({
-      validClass: 'success',
-      submitHandler: function (form) {
-        var submit = $(form).find(':submit').button('verifying');
-        var success = $('.alert-info').slideUp('fast');
-        var error = $(form).find('.alert-error').slideUp('fast');
-        var query = qs();
+    var submit = $(this).find(':submit').button('loading');
+    var alert = $(this).find('.alert').slideUp('fast');
+    var query = qs();
 
-        $.post('{{app.path}}api/verify/', $(form).serialize())
-            .done(function () {
-              $(form).slideUp('fast');
-              success.slideDown();
-            }).fail(function (jqXHR, textStatus, errorThrown) {
-              submit.button('reset');
-              error.slideDown();
-            });
-      }
-    });
+    $.post('{{app.path}}api/session/', $(this).serialize())
+        .done(function () {
+          window.location.href = query.returnurl || '{{app.path}}';
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+          alert.slideDown();
+        }).always(function () {
+          submit.button('reset');
+        });
+  });
+  $('#resetForm').validate({
+    validClass: 'success',
+    submitHandler: function (form) {
+      var submit = $(form).find(':submit').button('verifying');
+      var success = $('.alert-info').slideUp('fast');
+      var error = $(form).find('.alert-error').slideUp('fast');
+      var query = qs();
+
+      $.post('{{app.path}}api/verify/', $(form).serialize())
+          .done(function () {
+            $(form).slideUp('fast');
+            success.slideDown();
+          }).fail(function (jqXHR, textStatus, errorThrown) {
+            submit.button('reset');
+            error.slideDown();
+          });
+    }
+  });
 });
 </script>
 </body>

@@ -4,6 +4,7 @@
     using System.Net;
     using RobMensching.TinyBugs.Models;
     using RobMensching.TinyBugs.Services;
+    using RobMensching.TinyBugs.ViewModels;
     using RobMensching.TinyWebStack;
     using ServiceStack.OrmLite;
 
@@ -18,15 +19,18 @@
                 return new StatusCodeView(HttpStatusCode.BadRequest);
             }
 
-            var user = QueryService.GetUserByName(Guid.Empty, username);
+            if (username.Equals("0"))
+            {
+                username = "[me]";
+            }
+
+            var user = QueryService.GetUserByName(context.User, username);
             if (user == null)
             {
                 return new StatusCodeView(HttpStatusCode.NotFound);
             }
 
-            // TODO: create user view model and serialize that.
-            //JsonSerializer.SerializeToWriter(vm, context.GetOutput("application/json"));
-            return null;
+            return new JsonView(new UserViewModel(user));
         }
 
         public override ViewBase Post(ControllerContext context)
@@ -54,7 +58,7 @@
                 return new StatusCodeView(HttpStatusCode.Forbidden);
             }
 
-            User user = QueryService.GetUserByName(Guid.Empty, username);
+            User user = QueryService.GetUserByName(context.User, username);
             if (user == null)
             {
                 return new StatusCodeView(HttpStatusCode.NotFound);
@@ -74,9 +78,7 @@
                 db.UpdateOnly<User>(user, ev => ev.Update(u => u.Role).Where(u => u.Id == user.Id));
             }
 
-            // TODO: create user view model and serialize that.
-            //JsonSerializer.SerializeToWriter(vm, context.GetOutput("application/json"));
-            return null;
+            return new JsonView(new UserViewModel(user));
         }
 
         public bool TryGetUserNameFromContext(ControllerContext context, out string username)

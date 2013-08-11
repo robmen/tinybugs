@@ -82,11 +82,10 @@
 
       <div class="span9">
         <label for='title'>Title</label>
-        <input id='title' name='title' type='text' class="span9" maxlength='120' placeholder="required" title="Please provide a short descriptive title for the issue." required value="{{issue.title}}" />
+        <input id='title' name='title' type='text' class="span9" maxlength='140' placeholder="required" title="Please provide a short descriptive title for the issue." required value="{{issue.title}}" />
 
         <div class="mdd_toolbar"></div>
         <textarea id='text' name='text' rows='8' class='span9 mdd_editor' placeholder="required" title="Please provide a detailed explanation of the issue." required>{{{issue.text}}}</textarea>
-        <!--<div class="mdd_resizer"></div>-->
         <div><br /><p><strong>Preview</strong></p></div>
         <div class="mdd_preview"></div>
       </div>
@@ -122,102 +121,76 @@
 <script src="{{app.path}}assets/js/mdd/markdowndeeplib.min.js"></script>
 <script src="{{app.path}}assets/js/tinybugs.js"></script>
 <script>
-  $(function () {
-    $('#assignedto').typeahead({
-      source: function (query, process) {
-        var url = $(this.$element).attr('data-url');
-        return $.get(url, { q: query }, function (data) {
-          return process(data);
-        });
-      },
-    });
+$(function () {
+  $("textarea.mdd_editor").MarkdownDeep({
+    resizebar: false,
+    help_location: "{{app.path}}js/mdd/mdd_help.htm",
+  });
 
-    $("textarea.mdd_editor").MarkdownDeep({
-      resizebar: false,
-      help_location: "{{app.path}}js/mdd/mdd_help.htm",
-    });
-
-    $('#resolution').keyup(function (e) {
-      if ('{{issue.status}}' == 'Open') {
-        if (this.value && this.value != '{{issue.resolution}}') {
-          $("#submit").text('Resolve');
-          $("#status").val('Resolved');
-        }
-        else {
-          $("#submit").text('Save');
-          $("#status").val('{{issue.status}}');
-        }
+  $('#resolution').keyup(function (e) {
+    if ('{{issue.status}}' == 'Open') {
+      if (this.value && this.value != '{{issue.resolution}}') {
+        $("#submit").text('Resolve');
+        $("#status").val('Resolved');
       }
       else {
-        if (!this.value) {
-          $("#submit").text('Reopen');
-          $("#status").val('Open');
-        }
-        else if (this.value != '{{issue.resolution}}') {
-          $("#submit").text('Resolve');
-          $("#status").val('Resolved');
-        }
-        else {
-          $("#submit").text('Save');
-          $("#status").val('{{issue.status}}');
-        }
+        $("#submit").text('Save');
+        $("#status").val('{{issue.status}}');
       }
-    });
-
-    $('#bugForm').validate({
-      validClass: 'success',
-      errorContainer: "#formError",
-      errorLabelContainer: "#formError ul",
-      wrapper: "li",
-      invalidHandler: function (event, validator) {
-        var errors = validator.numberOfInvalids();
-        if (errors) {
-          $(this).slideDown();
-        }
-        else {
-          $(this).find('.alert').slideUp('fast');
-        }
-      },
-      submitHandler: function (form) {
-        var submit = $(form).find(':submit').button('loading');
-        var alert = $('#bugerror').slideUp('fast');
-
-        //e.preventDefault();
-        $.post('{{app.path}}api/issue/{{issue.id}}', $(form).serialize())
-            .done(function (data) {
-              dirty = false;
-              window.location.href = data.location;
-            }).fail(function (jqXHR, textStatus, errorThrown) {
-              if (errorThrown === 'Unauthorized' || errorThrown == 'Bad Gateway') {
-                $('#loginModal').modal();
-              }
-              else {
-                alert.slideDown();
-              }
-
-              submit.button('reset');
-            });
+    }
+    else {
+      if (!this.value) {
+        $("#submit").text('Reopen');
+        $("#status").val('Open');
       }
-    });
-
-    var dirty = false;
-
-    $(':input').change(function () {
-      dirty = true;
-    });
-
-    window.onbeforeunload = function (e) {
-      if (dirty) {
-        var message = "There are edits to this bug report.";
-        e = e || window.event;
-        if (e) {
-          e.returnValue = message; // IE and Firefox
-        }
-
-        return message; // Webkit
+      else if (this.value != '{{issue.resolution}}') {
+        $("#submit").text('Resolve');
+        $("#status").val('Resolved');
       }
-    };
+      else {
+        $("#submit").text('Save');
+        $("#status").val('{{issue.status}}');
+      }
+    }
   });
+
+  $('#bugForm').validate({
+    validClass: 'success',
+    errorContainer: "#formError",
+    errorLabelContainer: "#formError ul",
+    wrapper: "li",
+    invalidHandler: function (event, validator) {
+      var errors = validator.numberOfInvalids();
+      if (errors) {
+        $(this).slideDown();
+      }
+      else {
+        $(this).find('.alert').slideUp('fast');
+      }
+    },
+    submitHandler: function (form) {
+      var submit = $(form).find(':submit').button('loading');
+      var alert = $('#bugerror').slideUp('fast');
+
+      $.post('{{app.path}}api/issue/{{issue.id}}', $(form).serialize())
+          .done(function (data) {
+            clearDirty();
+            window.location.href = data.location;
+          }).fail(function (jqXHR, textStatus, errorThrown) {
+            if (errorThrown === 'Unauthorized' || errorThrown == 'Bad Gateway') {
+              $('#loginModal').modal();
+            }
+            else {
+              alert.slideDown();
+            }
+
+            submit.button('reset');
+          });
+    }
+  });
+
+  enableDirtyCheck("There are edits to this bug report. Do you want to abandon them?");
+});
 </script>
 </body>
 </html>

@@ -7,6 +7,7 @@
     using System.Text.RegularExpressions;
     using RobMensching.TinyBugs.Models;
     using RobMensching.TinyBugs.Services;
+    using RobMensching.TinyBugs.ViewModels;
     using RobMensching.TinyWebStack;
     using ServiceStack.OrmLite;
 
@@ -58,9 +59,7 @@
                 tx.Commit();
             }
 
-            // TODO: create user view model and serialize that and send back the HttpStatusCode.Created.
-            //JsonSerializer.SerializeToWriter(vm, context.GetOutput("application/json"));
-            return new StatusCodeView(HttpStatusCode.Created);
+            return new JsonView(new UserViewModel(user), HttpStatusCode.Created);
         }
 
         private ValidationError[] VerifyData(string email, string password, string verifyPassword, string username)

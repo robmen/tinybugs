@@ -62,17 +62,21 @@
                 }
             }
 
-            if (user.Id != issue.AssignedToUserId &&
-                user.Id != issue.CreatedByUserId &&
-                !user.IsInRole(UserRole.Contributor))
+            if (!user.IsInRole(UserRole.User))
             {
                 return new StatusCodeView(HttpStatusCode.Forbidden);
             }
 
-            PopulateResults results = issue.PopulateWithData(context.UnvalidatedForm, user.Id);
-            if (results.Errors.Count > 0)
+            PopulateResults results = new PopulateResults();
+            if (user.Id == issue.AssignedToUserId ||
+                user.Id == issue.CreatedByUserId ||
+                user.IsInRole(UserRole.Contributor))
             {
-                return new JsonView(results.Errors, HttpStatusCode.BadRequest);
+                results = issue.PopulateWithData(context.UnvalidatedForm, user.Id);
+                if (results.Errors.Count > 0)
+                {
+                    return new JsonView(results.Errors, HttpStatusCode.BadRequest);
+                }
             }
 
             string comment = context.UnvalidatedForm.Get("comment");
@@ -151,6 +155,8 @@
                 change.New = newValue.ToString();
                 comment.Changes.Add(change);
             }
+
+            comment.Changes.Sort();
 
             using (var db = DataService.Connect())
             using (var tx = db.BeginTransaction())
