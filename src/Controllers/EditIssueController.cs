@@ -2,10 +2,10 @@
 {
     using System;
     using System.Net;
-    using Nustache.Core;
     using RobMensching.TinyBugs.Models;
     using RobMensching.TinyBugs.Services;
     using RobMensching.TinyBugs.ViewModels;
+    using RobMensching.TinyBugs.Views;
     using RobMensching.TinyWebStack;
 
     [Route("edit/{issue}")]
@@ -38,9 +38,7 @@
                 return new RedirectView("~/accessdenied/");
             }
 
-            Template template = FileService.LoadTemplate("bugform.mustache");
-            FileService.RenderTemplateToWriter(template, new { app = new AppViewModel(), issue = issue }, context.GetOutput());
-            return null;
+            return new TemplateView("bugform.mustache", new { app = new AppViewModel(), issue = issue });
         }
     }
 }

@@ -3,6 +3,7 @@
     using RobMensching.TinyBugs.Models;
     using RobMensching.TinyBugs.Services;
     using RobMensching.TinyBugs.ViewModels;
+    using RobMensching.TinyBugs.Views;
     using RobMensching.TinyWebStack;
 
     [Route("")]
@@ -24,7 +25,7 @@
             string path = q.Template ?? "root.mustache";
             var template = FileService.LoadTemplate(path);
             template.Render(vm, context.GetOutput(), null);
-            return null;
+            return new TemplateView(path, vm);
         }
     }
 }

@@ -77,6 +77,7 @@
     <Compile Include="Models\Breadcrumb.cs" />
     <Compile Include="ViewModels\RelativeDateViewModel.cs" />
     <Compile Include="ViewModels\UserViewModel.cs" />
+    <Compile Include="Views\TemplateView.cs" />
     <Compile Include="WebStack\JsonView.cs" />
     <Compile Include="WebStack\RedirectView.cs" />
     <Compile Include="WebStack\StatusCodeView.cs" />

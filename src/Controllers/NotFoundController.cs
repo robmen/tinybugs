@@ -4,6 +4,7 @@
     using System.Net;
     using RobMensching.TinyBugs.Services;
     using RobMensching.TinyBugs.ViewModels;
+    using RobMensching.TinyBugs.Views;
     using RobMensching.TinyWebStack;
     using ServiceStack.Logging;
 
@@ -30,11 +31,7 @@
 
             Log.InfoFormat("url: {0}  referrer: {1}", context.Url.AbsoluteUri, referrer);
 
-            var template = FileService.LoadTemplate("notfound.mustache");
-
-            context.SetStatusCode(statusCode);
-            FileService.RenderTemplateToWriter(template, new { ReferralUri = referrer, StatusCode = statusCode }, context.GetOutput());
-            return null;
+            return new TemplateView("notfound.mustache", new { ReferralUri = referrer, StatusCode = statusCode }, statusCode);
         }
     }
 }
