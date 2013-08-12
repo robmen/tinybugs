@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Collections.Specialized;
+    using System.Linq;
     using System.Net;
     using RobMensching.TinyBugs.Models;
     using RobMensching.TinyBugs.Services;
@@ -67,15 +68,27 @@
                 return new StatusCodeView(HttpStatusCode.Forbidden);
             }
 
+            bool unassigned = (issue.AssignedToUserId == 0);
+            bool editable = (user.Id == issue.AssignedToUserId ||
+                             user.Id == issue.CreatedByUserId ||
+                             user.IsInRole(UserRole.Contributor));
+
             PopulateResults results = new PopulateResults();
-            if (user.Id == issue.AssignedToUserId ||
-                user.Id == issue.CreatedByUserId ||
-                user.IsInRole(UserRole.Contributor))
+            if (unassigned || editable)
             {
                 results = issue.PopulateWithData(context.UnvalidatedForm, user.Guid);
                 if (results.Errors.Count > 0)
                 {
                     return new JsonView(results.Errors, HttpStatusCode.BadRequest);
+                }
+            }
+
+            // ensure unassigned only changes the assignedto.
+            if (unassigned && !editable)
+            {
+                if (results.Updates.Keys.Where(s => (s != "AssignedToUserId" && s != "UpdatedAt")).Any())
+                {
+                    return new StatusCodeView(HttpStatusCode.Forbidden);
                 }
             }
 

@@ -29,7 +29,7 @@
       {{#resolution}} <span class="label label-info">{{resolution}}</span>{{/resolution}}
       <span class="label label-success">{{release}}</span>
       <span class="label label-inverse">{{area}}</span>
-      <span class="badge label-warning" title="votes">{{votes}}</span>
+      {{#votes}}<span class="badge label-warning" title="votes">{{votes}}</span>{{/votes}}
     </td>
     <td><small>Assigned to</small> <strong><a href="#">{{assignedtousername}}</a>{{^assignedtousername}}No one <input id="takeit" type="button" class="btn btn-mini" data-loading-text="acquiring..." value="take it!" />{{/assignedtousername}}</strong></td>
     <td><small>Updated</small> <strong>{{updatedrelative.date}}</strong> <small>@</small> <strong>{{updatedrelative.time}}</strong></td>
@@ -158,7 +158,7 @@ $(document).ready(function () {
   $('#takeit').on('click', function (e) {
       var takeitButton = $('#takeit').button('loading');
 
-      $.post('{{app.path}}api/issue/{{id}}', 'assignedto=[me]')
+      $.post('{{app.path}}api/issue/{{issue.id}}', 'assignedto=[me]')
           .done(function(data) {
             location.reload();
           }).fail(function (jqXHR, textStatus, errorThrown) {
