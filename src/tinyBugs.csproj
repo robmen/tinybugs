@@ -67,7 +67,7 @@
     <Compile Include="Controllers\IssuesApiController.cs" />
     <Compile Include="Controllers\CommentApiController.cs" />
     <Compile Include="Controllers\EverythingController.cs" />
-    <Compile Include="Controllers\RootController.cs" />
+    <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Controllers\NotFoundController.cs" />
     <Compile Include="Controllers\UserApiController.cs" />
     <Compile Include="Models\MailConfig.cs" />
@@ -137,7 +137,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="assets\bug.mustache" />
-    <EmbeddedResource Include="assets\root.mustache" />
+    <EmbeddedResource Include="assets\search.mustache" />
     <EmbeddedResource Include="assets\login.mustache" />
     <EmbeddedResource Include="assets\notfound.mustache" />
     <EmbeddedResource Include="assets\tinybugs.css.mustache" />
@@ -221,14 +221,7 @@
       <MergeAssemblies Include="bin\$(Platform)\$(Configuration)\*.dll" />
       <InternalizeExcludeClasses Include="RobMensching.TinyBugs.Application" />
     </ItemGroup>
-    <ILRepack InputAssemblies="@(MergeAssemblies)"
-              OutputFile="bin\$(Platform)\$(Configuration)\merged\$(AssemblyName).dll"
-              InternalizeExclude="@(InternalizeExcludeClasses)"
-              Parallel="true"
-              Internalize="true"
-              DebugInfo="true"
-              ZeroPeKind='true'
-              Condition=" '@(MergeAssemblies)'!='' " />
+    <ILRepack InputAssemblies="@(MergeAssemblies)" OutputFile="bin\$(Platform)\$(Configuration)\merged\$(AssemblyName).dll" InternalizeExclude="@(InternalizeExcludeClasses)" Parallel="true" Internalize="true" DebugInfo="true" ZeroPeKind="true" Condition=" '@(MergeAssemblies)'!='' " />
     <ItemGroup Condition=" '@(MergeAssemblies)'!='' ">
       <CopyBinFiles Include="bin\$(Platform)\$(Configuration)\merged\**" />
       <CopyBinFiles Include="bin\$(Platform)\$(Configuration)\System.Data.SQLite.dll" />

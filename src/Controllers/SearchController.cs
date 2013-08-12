@@ -7,7 +7,8 @@
     using RobMensching.TinyWebStack;
 
     [Route("")]
-    public class RootController : ControllerBase
+    [Route("search")]
+    public class SearchController : ControllerBase
     {
         public override ViewBase Get(ControllerContext context)
         {
@@ -22,9 +23,7 @@
                 Page = new PaginationViewModel(q.Page, q.Count, issuesPaged.Total, pagePrefix),
             };
 
-            string path = q.Template ?? "root.mustache";
-            var template = FileService.LoadTemplate(path);
-            template.Render(vm, context.GetOutput(), null);
+            string path = q.Template ?? "search.mustache";
             return new TemplateView(path, vm);
         }
     }
