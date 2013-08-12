@@ -164,7 +164,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Web" />
-    <Reference Include="System.Web.WebPages, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Web.WebPages, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="MarkdownDeep">
@@ -213,11 +213,22 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild">
-    <ItemGroup>
-      <MergeAssemblies Include="bin\$(Platform)\$(Configuration)\*.dll" Condition=" '$(Platform)'=='Release' " />
+    <ItemGroup Condition=" false and '$(Configuration)'=='Release' ">
+      <!--
+        The file: bin\$(Platform)\$(Configuration)\ServiceStack.OrmLite.dll
+        fails the merge. We can't enable merging until that is solved.
+      -->
+      <MergeAssemblies Include="bin\$(Platform)\$(Configuration)\*.dll" />
       <InternalizeExcludeClasses Include="RobMensching.TinyBugs.Application" />
     </ItemGroup>
-    <ILRepack InputAssemblies="@(MergeAssemblies)" OutputFile="bin\$(Platform)\$(Configuration)\merged\$(AssemblyName).dll" InternalizeExclude="@(InternalizeExcludeClasses)" Parallel="true" Internalize="true" ZeroPeKind="true" DebugInfo="true" Condition=" '@(MergeAssemblies)'!='' " />
+    <ILRepack InputAssemblies="@(MergeAssemblies)"
+              OutputFile="bin\$(Platform)\$(Configuration)\merged\$(AssemblyName).dll"
+              InternalizeExclude="@(InternalizeExcludeClasses)"
+              Parallel="true"
+              Internalize="true"
+              DebugInfo="true"
+              ZeroPeKind='true'
+              Condition=" '@(MergeAssemblies)'!='' " />
     <ItemGroup Condition=" '@(MergeAssemblies)'!='' ">
       <CopyBinFiles Include="bin\$(Platform)\$(Configuration)\merged\**" />
       <CopyBinFiles Include="bin\$(Platform)\$(Configuration)\System.Data.SQLite.dll" />
