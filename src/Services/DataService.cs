@@ -64,6 +64,13 @@
                 db.Insert(barUser);
                 barUser.Id = db.GetLastInsertId();
 
+                var bazUser = UserService.Create("baz@example.com", "foo");
+                bazUser.UserName = "baz";
+                bazUser.FullName = "Baz User";
+                bazUser.Role = UserRole.User;
+                db.Insert(bazUser);
+                bazUser.Id = db.GetLastInsertId();
+
                 var issue = new Issue()
                 {
                     AssignedToUserId = fooUser.Id,
@@ -90,8 +97,7 @@
 
                 var issueOld = new Issue()
                 {
-                    AssignedToUserId = fooUser.Id,
-                    CreatedByUserId = barUser.Id,
+                    CreatedByUserId = fooUser.Id,
                     CreatedAt = DateTime.UtcNow,
                     Title = "This is the title of old feature.",
                     Type = IssueType.Feature,
