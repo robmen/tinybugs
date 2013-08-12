@@ -24,8 +24,8 @@
                 username = "[me]";
             }
 
-            var user = QueryService.GetUserByName(context.User, username);
-            if (user == null)
+            User user;
+            if (!QueryService.TryGetUserByName(context.User, username, out user))
             {
                 return new StatusCodeView(HttpStatusCode.NotFound);
             }
@@ -58,8 +58,8 @@
                 return new StatusCodeView(HttpStatusCode.Forbidden);
             }
 
-            User user = QueryService.GetUserByName(context.User, username);
-            if (user == null)
+            User user;
+            if (!QueryService.TryGetUserByName(context.User, username, out user))
             {
                 return new StatusCodeView(HttpStatusCode.NotFound);
             }

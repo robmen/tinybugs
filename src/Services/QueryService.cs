@@ -192,7 +192,7 @@ LEFT JOIN User ON IssueComment.CommentByUserId=User.Id
             return db.Query<IssueCommentViewModel>(commentTemplate.RawSql, commentTemplate.Parameters);
         }
 
-        public static IssueViewModel AreasReleasesTypesForIssue(IssueViewModel issue)
+        public static IssueViewModel AssignAreasReleasesAndTypesToIssue(IssueViewModel issue)
         {
             issue.Areas = ConfigService.Areas
                             .Select(a => new OptionViewModel() { Selected = a.Equals(issue.Area, StringComparison.OrdinalIgnoreCase), Text = a, Value = a })
@@ -216,7 +216,6 @@ LEFT JOIN User ON IssueComment.CommentByUserId=User.Id
         public static bool TryGetUser(Guid currentUserGuid, string nameOrEmail, out User user)
         {
             nameOrEmail = String.IsNullOrEmpty(nameOrEmail) ? String.Empty : nameOrEmail.ToLowerInvariant();
-            user = null;
 
             using (var db = DataService.Connect(true))
             {
@@ -228,22 +227,16 @@ LEFT JOIN User ON IssueComment.CommentByUserId=User.Id
             return user != null;
         }
 
-        public static User GetUserByName(Guid currentUserGuid, string value)
+        public static bool TryGetUserByName(Guid currentUserGuid, string name, out User user)
         {
             using (var db = DataService.Connect(true))
             {
-                return ("[me]".Equals(value, StringComparison.OrdinalIgnoreCase)) ?
+                user = (currentUserGuid != Guid.Empty && "[me]".Equals(name, StringComparison.OrdinalIgnoreCase)) ?
                         db.FirstOrDefault<User>(u => u.Guid == currentUserGuid) :
-                        db.FirstOrDefault<User>(u => u.UserName == value);
+                        db.FirstOrDefault<User>(u => u.UserName == name);
             }
-        }
 
-        public static User GetUserByEmail(string value)
-        {
-            using (var db = DataService.Connect(true))
-            {
-                return db.SelectParam<User>(u => u.Email == value).SingleOrDefault();
-            }
+            return user != null;
         }
 
         public static bool TryGetIssueWithComments(long issueId, out IssueViewModel issue)
@@ -265,7 +258,7 @@ LEFT JOIN User ON IssueComment.CommentByUserId=User.Id
             {
                 issue.Comments = CommentsForIssueUsingDb(issue.Id, db);
 
-                QueryService.AreasReleasesTypesForIssue(issue);
+                QueryService.AssignAreasReleasesAndTypesToIssue(issue);
             }
 
             return issue != null;
