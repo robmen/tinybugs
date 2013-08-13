@@ -222,6 +222,7 @@ $(document).ready(function () {
   });
 
   $('#cancel').on('click', function (e) {
+    clearDirty();
     $('#commentForm').slideUp();
     $('#addcomment').closest('.row').slideDown();
   });
