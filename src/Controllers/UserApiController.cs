@@ -19,13 +19,19 @@
                 return new StatusCodeView(HttpStatusCode.BadRequest);
             }
 
+            User me;
+            if (!UserService.TryAuthenticateUser(context.User, out me))
+            {
+                return new StatusCodeView(HttpStatusCode.BadGateway); // TODO: return a better error code that doesn't cause forms authentication to overwrite our response
+            }
+
             if (username.Equals("0"))
             {
                 username = "[me]";
             }
 
             User user;
-            if (!QueryService.TryGetUserByName(context.User, username, out user))
+            if (!QueryService.TryGetUserByName(me.Guid, username, out user))
             {
                 return new StatusCodeView(HttpStatusCode.NotFound);
             }
