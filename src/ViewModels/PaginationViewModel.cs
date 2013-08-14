@@ -23,10 +23,13 @@
             this.Next = new Page() { Number = Math.Min(page + 1, this.Total), Active = false, Disabled = (page == this.Total), Url = !String.IsNullOrEmpty(this.PagedUrlPrefix) ? this.PagedUrlPrefix + Math.Min(page + 1, this.Total) : null, };
             this.Last = new Page() { Number = this.Total, Active = false, Disabled = (page == this.Total), Url = !String.IsNullOrEmpty(this.PagedUrlPrefix) ? this.PagedUrlPrefix + this.Total : null, };
 
-            this.Pages = new List<Page>(end - start);
-            for (int i = start; i <= end; ++i)
+            if (end > start)
             {
-                this.Pages.Add(new Page() { Number = i, Active = (this.Current == i), Url = !String.IsNullOrEmpty(this.PagedUrlPrefix) ? this.PagedUrlPrefix + i : null, });
+                this.Pages = new List<Page>(end - start);
+                for (int i = start; i <= end; ++i)
+                {
+                    this.Pages.Add(new Page() { Number = i, Active = (this.Current == i), Url = !String.IsNullOrEmpty(this.PagedUrlPrefix) ? this.PagedUrlPrefix + i : null, });
+                }
             }
         }
 
