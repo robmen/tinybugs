@@ -117,7 +117,7 @@
 
         public static bool TryAuthorizeUser(User user, UserRole role)
         {
-            return user.Role >= role;
+            return user.IsInRole(role);
         }
 
         public static bool TryValidateVerificationToken(string token, out DateTime issued)

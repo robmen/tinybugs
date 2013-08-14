@@ -59,6 +59,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Controllers\ConfigApiController.cs" />
+    <Compile Include="Controllers\RegenerateApiController.cs" />
     <Compile Include="Controllers\UsersApiController.cs" />
     <Compile Include="Controllers\IssueApiController.cs" />
     <Compile Include="Controllers\VerifyApiController.cs" />

@@ -69,6 +69,7 @@
 
       <div class="form-actions">
         <button id='updateConfig' type="submit" class="btn btn-primary" data-loading-text="Saving...">Update configuration</button>
+        <button id='regenPages' type="button" class="btn btn-danger" data-loading-text="Generating...">Regenerate pages</button>
       </div>
     </fieldset>
   </form>
@@ -153,6 +154,22 @@ $(document).ready(function () {
               submit.button('reset');
             });
       }
+  });
+
+  $('#regenPages').on('click', function (e) {
+    $.post('{{app.path}}api/regenerate')
+      .done(function (data) {
+        //success.slideDown();
+      }).fail(function (jqXHR, textStatus, errorThrown) {
+        if (errorThrown === 'Unauthorized' || errorThrown == 'Bad Gateway') {
+          $('#loginModal').modal();
+        }
+        else {
+          alert.slideDown();
+        }
+      }).always(function () {
+        submit.button('reset');
+      });
   });
 
   $('#userForm').validate({
