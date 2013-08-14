@@ -69,26 +69,32 @@
             }
 
             bool unassigned = (issue.AssignedToUserId == 0);
-            bool editable = (user.Id == issue.AssignedToUserId ||
-                             user.Id == issue.CreatedByUserId ||
-                             user.IsInRole(UserRole.Contributor));
+            bool owner = (user.Id == issue.AssignedToUserId || user.Id == issue.CreatedByUserId);
+            bool contributor =  user.IsInRole(UserRole.Contributor);
 
-            PopulateResults results = new PopulateResults();
-            if (unassigned || editable)
+            PopulateResults results = issue.PopulateWithData(context.UnvalidatedForm, user.Guid);
+            if (results.Errors.Count > 0)
             {
-                results = issue.PopulateWithData(context.UnvalidatedForm, user.Guid);
-                if (results.Errors.Count > 0)
-                {
-                    return new JsonView(results.Errors, HttpStatusCode.BadRequest);
-                }
+                return new JsonView(results.Errors, HttpStatusCode.BadRequest);
             }
 
-            // ensure unassigned only changes the assignedto.
-            if (unassigned && !editable)
+            // Only a few fields can be updated by normal users.
+            if (!owner && !contributor)
             {
-                if (results.Updates.Keys.Where(s => (s != "AssignedToUserId" && s != "UpdatedAt")).Any())
+                // AssignedTo may be changed if the issue isn't assigned to anyone. Status can be
+                // changed but if it is changed we'll check it further next.
+                if (results.Updates.Keys.Any(s => !((unassigned && s == "AssignedToUserId") || s == "Status" || s == "UpdatedAt")))
                 {
                     return new StatusCodeView(HttpStatusCode.Forbidden);
+                }
+                else // if status is being changed, ensure it's being set to untriaged.
+                {
+                    PopulateResults.UpdatedValue statusChange;
+                    if (results.Updates.TryGetValue("Status", out statusChange) &&
+                        (IssueStatus)statusChange.New != IssueStatus.Untriaged)
+                    {
+                        return new StatusCodeView(HttpStatusCode.Forbidden);
+                    }
                 }
             }
 

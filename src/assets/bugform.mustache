@@ -110,10 +110,21 @@
 
         <label for='comment'>Comment</label>
         <textarea id='comment' name='comment' rows='4' class='span3'></textarea>
+
+        {{#couldtriage}}
+        <label for='triage' class="checkbox span3" title="Check this box to have the team evaluate the bug. Be sure to provide a good explanation in the comment why the bug should be triaged again.">
+          <input id='triage' name='triage' type='checkbox' /> Send for triage
+        </label>
+        {{/couldtriage}}
+        {{^couldtriage}}
+        <label for='triage' class="checkbox span3" title="Check this box to have the team evaluate the bug. Be sure to provide a good explanation in the comment why the bug should be triaged again.">
+          <input id='triage' name='triage' type='checkbox' checked /> Leave for triage
+        </label>
+        {{/couldtriage}}
 {{/issue}}
 
         <div class="form-actions">
-          <button id='submit' type="submit" class="btn btn-block btn-primary" data-loading-text="Saving...">Save</button>
+          <button id='submit' type="submit" class="btn btn-block {{#couldtriage}}btn-primary{{/couldtriage}}{{^couldtriage}}btn-warning{{/couldtriage}}" data-loading-text="Saving...">Save</button>
           <a href="{{app.path}}" class="btn btn-block">Cancel</a>
         </div>
       </div>
@@ -134,31 +145,12 @@ $(function () {
     help_location: "{{app.path}}assets/mdd/mdd_help.htm",
   });
 
+  $('#triage').on('click', function (e) {
+    updateStatusSubmitButton('{{issue.status}}', '{{issue.resolution}}', 'btn-primary');
+  });
+
   $('#resolution').keyup(function (e) {
-    if ('{{issue.status}}' == 'Open') {
-      if (this.value && this.value != '{{issue.resolution}}') {
-        $("#submit").text('Resolve');
-        $("#status").val('Resolved');
-      }
-      else {
-        $("#submit").text('Save');
-        $("#status").val('{{issue.status}}');
-      }
-    }
-    else {
-      if (!this.value) {
-        $("#submit").text('Reopen');
-        $("#status").val('Open');
-      }
-      else if (this.value != '{{issue.resolution}}') {
-        $("#submit").text('Resolve');
-        $("#status").val('Resolved');
-      }
-      else {
-        $("#submit").text('Save');
-        $("#status").val('{{issue.status}}');
-      }
-    }
+    updateStatusSubmitButton('{{issue.status}}', '{{issue.resolution}}', 'btn-primary');
   });
 
   $('#bugForm').validate({
@@ -197,6 +189,7 @@ $(function () {
   });
 
   enableDirtyCheck("There are edits to this bug report. Do you want to abandon them?");
+  updateStatusSubmitButton('{{issue.status}}', '{{issue.resolution}}', 'btn-primary');
 });
 </script>
 </body>

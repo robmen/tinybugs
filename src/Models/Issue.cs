@@ -48,6 +48,7 @@
         {
             PopulateResults results = new PopulateResults();
             bool privateIssue = false;
+            bool triage = false;
 
             foreach (string name in data.AllKeys)
             {
@@ -88,6 +89,10 @@
 
                     case "private":
                         privateIssue = true; // this field change is tracked  below.
+                        break;
+
+                    case "triage":
+                        triage = true; // this field change is tracked  below.
                         break;
 
                     case "area":
@@ -263,6 +268,23 @@
                 {
                     Old = this.Private,
                     New = this.Private = privateIssue,
+                });
+            }
+
+            if (triage && this.Status != IssueStatus.Untriaged)
+            {
+                results.Updates.Add("Status", new PopulateResults.UpdatedValue()
+                {
+                    Old = this.Status,
+                    New = this.Status = IssueStatus.Untriaged,
+                });
+            }
+            else if (!triage && this.Status == IssueStatus.Untriaged)
+            {
+                results.Updates.Add("Status", new PopulateResults.UpdatedValue()
+                {
+                    Old = this.Status,
+                    New = this.Status = IssueStatus.Open,
                 });
             }
 

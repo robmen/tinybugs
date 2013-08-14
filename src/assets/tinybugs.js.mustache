@@ -27,6 +27,68 @@ function qs() {
   return urlParams;
 }
 
+function updateStatusSubmitButton(issueStatus, issueResolution, primaryButtonClass) {
+  var triage = $('#triage').prop('checked');
+  var resolution = $("#resolution").val();
+
+  if (triage) {
+    if (resolution && resolution != issueResolution) {
+      $("#submit").text('Triage resolution');
+    }
+    else if (!resolution && issueResolution) {
+      $("#submit").text('Triage issue');
+    }
+    else if (issueStatus === 'Untriaged') {
+      $("#submit").text('Save for triage');
+    }
+    else {
+      $("#submit").text('Send for triage');
+    }
+    $("#status").val('Untriaged');
+  }
+  else if (issueStatus === 'Untriaged') {
+    if (resolution) {
+      $("#submit").text('Resolve');
+      $("#status").val('Resolved');
+    }
+    else {
+      $("#submit").text('Open');
+      $("#status").val('Open');
+    }
+  }
+  else if (issueStatus === 'Open') {
+    if (resolution && resolution != issueResolution) {
+      $("#submit").text('Resolve');
+      $("#status").val('Resolved');
+    }
+    else {
+      $("#submit").text('Save');
+      $("#status").val('Open');
+    }
+  }
+  else {
+    if (!resolution) {
+      $("#submit").text('Open');
+      $("#status").val('Open');
+    }
+    else if (resolution != issueResolution) {
+      $("#submit").text('Resolve');
+      $("#status").val('Resolved');
+    }
+    else {
+      $("#submit").text('Save');
+      $("#status").val(issueStatus);
+    }
+  }
+
+  if (triage) {
+    $(submit).removeClass(primaryButtonClass).addClass('btn-warning');
+  }
+  else {
+    $(submit).removeClass('btn-warning').addClass(primaryButtonClass);
+  }
+}
+
 $(function () {
     // support for dirty checking.
     window.onbeforeunload = function (e) {

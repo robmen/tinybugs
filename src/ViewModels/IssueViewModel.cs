@@ -60,6 +60,8 @@
 
         public string Location { get; set; }
 
+        public bool CouldTriage { get { return this.Status != IssueStatus.Untriaged; } }
+
         public RelativeDateViewModel CreatedRelative { get { return new RelativeDateViewModel(this.CreatedAt); } }
 
         public RelativeDateViewModel UpdatedRelative { get { return new RelativeDateViewModel(this.UpdatedAt); } }

@@ -27,8 +27,8 @@
       {{#private}}<span class="label label-important">Private</span>{{/private}}
       <span class="label label-info">{{status}}</span>
       {{#resolution}} <span class="label label-info">{{resolution}}</span>{{/resolution}}
-      <span class="label label-success">{{release}}</span>
-      <span class="label label-inverse">{{area}}</span>
+      {{#release}}<span class="label label-success">{{release}}</span>{{/release}}
+      {{#area}}<span class="label label-inverse">{{area}}</span>{{/area}}
       {{#votes}}<span class="badge label-warning" title="votes">{{votes}}</span>{{/votes}}
     </td>
     <td><small>Assigned to</small> <strong><a href="#">{{assignedtousername}}</a>{{^assignedtousername}}No one <input id="takeit" type="button" class="btn btn-mini" data-loading-text="acquiring..." value="take it!" />{{/assignedtousername}}</strong></td>
@@ -102,6 +102,18 @@
               data-url='{{app.path}}api/user/' autocomplete="off" value="{{assignedtousername}}" />
       <input id='resolution' name='resolution' type='text' class="typeahead span3" placeholder="resolution"
               data-url='{{app.path}}api/issue/resolution' autocomplete="off" value="{{resolution}}" />
+      {{^couldtriage}}
+      <label for='triage' class="checkbox span3" title="Check this box to have the team evaluate the bug. Be sure to provide a good explanation in the comment why the bug should be triaged again.">
+        <input id='triage' name='triage' type='checkbox' checked /> Leave for triage
+      </label>
+      {{/couldtriage}}
+    </div>
+    <div>
+     {{#couldtriage}}
+      <label for='triage' class="checkbox span3" title="Check this box to have the team evaluate the bug. Be sure to provide a good explanation in the comment why the bug should be triaged again.">
+        <input id='triage' name='triage' type='checkbox' /> Send for triage
+      </label>
+      {{/couldtriage}}
     </div>
     <div class="form-actions">
       <button id='submit' type="submit" class="btn btn-block btn-success" data-loading-text="Saving...">Save</button>
@@ -173,6 +185,14 @@ $(document).ready(function () {
           });
     });
 
+  $('#triage').on('click', function (e) {
+    updateStatusSubmitButton('{{issue.status}}', '{{issue.resolution}}', 'btn-success');
+  });
+
+  $('#resolution').keyup(function (e) {
+    updateStatusSubmitButton('{{issue.status}}', '{{issue.resolution}}', 'btn-success');
+  });
+
   $('#addcomment').on('click', function (e) {
     var commentButton = $(this).button('loading');
     var form = $('#commentForm');
@@ -216,7 +236,7 @@ $(document).ready(function () {
           else {
             alert.slideDown();
           }
-        }).always(function () {
+
           $(submit).button('reset');
         });
   });
@@ -228,6 +248,7 @@ $(document).ready(function () {
   });
 
   enableDirtyCheck("There are edits to this page. Do you want to abandon them?");
+  updateStatusSubmitButton('{{issue.status}}', '{{issue.resolution}}', 'btn-success');
 });
 </script>
 </body>
