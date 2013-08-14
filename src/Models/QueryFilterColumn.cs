@@ -1,5 +1,7 @@
 ﻿namespace RobMensching.TinyBugs.Models
 {
+    using System;
+
     public class QueryFilterColumn
     {
         public QueryFilterColumn(string filter)

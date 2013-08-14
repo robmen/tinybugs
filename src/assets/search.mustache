@@ -80,18 +80,10 @@
     {{/page}}
   </div>
   <div class="span2">
-  <!--<p><a href="{{app.path}}new/" class="btn">New issue...</a></p>
-  <h4>Releases</h4>
-    <div class="btn-group">
-      <button class="btn dropdown-toggle" data-toggle="dropdown">All <span class="caret"></span></button>
-      <ul class="dropdown-menu">
-                    <li><a href="#">Action</a></li>
-      </ul>
-    </div>
-  -->
     <div class="tabbable tabs-right">
       <ul class="nav nav-tabs">
-        <li class="active"><a href="{{app.path}}search/"><span class="label label-success">All</span></a></li>
+        <li><a href="{{app.path}}search/?filter=user:[me]&filter=status:Open"><span class="label label-danger">My</span> <span class="label label-info">Open</span></a> </li>
+        <li><a href="{{app.path}}search/"><span class="label label-success">All</span></a></li>
         <li><a href="{{app.path}}search/?filter=status:Open"><span class="label label-success">All</span> <span class="label label-info">Open</span></a> </li>
         <li><a href="{{app.path}}search/?filter=status:Untriaged"><span class="label label-success">All</span> <span class="label label-info">Untriaged</span></a> </li>
     {{#app.releases}}

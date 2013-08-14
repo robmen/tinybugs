@@ -100,7 +100,7 @@ LEFT JOIN User ON IssueComment.CommentByUserId=User.Id
             StringBuilder sb = new StringBuilder("?");
             if (query.Filters != null)
             {
-                string[] filters = query.Filters.Select(f => String.Concat("filter=", f.Column.UrlEncode(), ":", f.Value.UrlEncode())).ToArray();
+                string[] filters = query.Filters.Select(f => String.Concat("filter=", f.Column.UrlEncode(), ":", f.Value.ToString().UrlEncode())).ToArray();
                 sb.Append(String.Join("&", filters));
                 sb.Append("&");
             }
@@ -125,7 +125,7 @@ LEFT JOIN User ON IssueComment.CommentByUserId=User.Id
             return sb.ToString();
         }
 
-        public static QueriedIssuesViewModel QueryIssues(Query query)
+        public static QueriedIssuesViewModel QueryIssues(Guid userGuid, Query query)
         {
             SqlBuilder sql = new SqlBuilder();
             Dictionary<string, object> parameters = new Dictionary<string, object>();
@@ -134,7 +134,7 @@ LEFT JOIN User ON IssueComment.CommentByUserId=User.Id
             {
                 foreach (var filter in query.Filters)
                 {
-                    ProcessFilter(filter, sql, parameters);
+                    ProcessFilter(userGuid, filter, sql, parameters);
                 }
             }
 
@@ -264,10 +264,21 @@ LEFT JOIN User ON IssueComment.CommentByUserId=User.Id
             return issue != null;
         }
 
-        private static void ProcessFilter(QueryFilterColumn filter, SqlBuilder sql, Dictionary<string, object> parameters)
+        private static void ProcessFilter(Guid userGuid, QueryFilterColumn filter, SqlBuilder sql, Dictionary<string, object> parameters)
         {
             string column;
-            if (AllowedColumns.TryGetValue(filter.Column, out column))
+            if (filter.Column.Equals("user", StringComparison.OrdinalIgnoreCase))
+            {
+                User user;
+                if (TryGetUser(userGuid, filter.Value, out user))
+                {
+                    string parameterName = "p" + parameters.Keys.Count;
+
+                    sql.Where(String.Format("u1.Guid=@{0} OR u2.Guid=@{0}", parameterName));
+                    parameters.Add(parameterName, user.Guid.ToString("N"));
+                }
+            }
+            else if (AllowedColumns.TryGetValue(filter.Column, out column))
             {
                 string parameterName = "p" + parameters.Keys.Count;
 

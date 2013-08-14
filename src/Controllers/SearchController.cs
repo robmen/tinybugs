@@ -13,7 +13,7 @@
         public override ViewBase Get(ControllerContext context)
         {
             Query q = QueryService.ParseQuery(context.QueryString);
-            var issuesPaged = QueryService.QueryIssues(q);
+            var issuesPaged = QueryService.QueryIssues(context.User, q);
             var pagePrefix = context.ControllerPath + QueryService.RecreateQueryString(q) + "&page=";
 
             RootViewModel vm = new RootViewModel()

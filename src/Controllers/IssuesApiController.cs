@@ -15,7 +15,7 @@
         public override ViewBase Get(ControllerContext context)
         {
             Query q = QueryService.ParseQuery(context.QueryString);
-            QueriedIssuesViewModel issues = QueryService.QueryIssues(q);
+            QueriedIssuesViewModel issues = QueryService.QueryIssues(context.User, q);
             issues.Issues.ForEach(i => i.Location = context.ApplicationPath + i.Id + "/"); // TODO: come up with a better way of handling this.
             var pagePrefix = context.ControllerPath + QueryService.RecreateQueryString(q) + "&page=";
 
