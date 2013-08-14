@@ -31,7 +31,7 @@
       {{#area}}<span class="label label-inverse">{{area}}</span>{{/area}}
       {{#votes}}<span class="badge label-warning" title="votes">{{votes}}</span>{{/votes}}
     </td>
-    <td><small>Assigned to</small> <strong><a href="#">{{assignedtousername}}</a>{{^assignedtousername}}No one <input id="takeit" type="button" class="btn btn-mini" data-loading-text="acquiring..." value="take it!" />{{/assignedtousername}}</strong></td>
+    <td><small>Assigned to</small> <strong><a href="#">{{assignedtousername}}</a>{{^assignedtousername}}No one {{#couldtriage}}<input id="takeit" type="button" class="btn btn-mini" data-loading-text="acquiring..." value="take it!" />{{/couldtriage}}{{/assignedtousername}}</strong></td>
     <td><small>Updated</small> <strong>{{updatedrelative.date}}</strong> <small>@</small> <strong>{{updatedrelative.time}}</strong></td>
     <td><small>Opened</small> <strong>{{createdrelative.date}}</strong> <small>@</small> <strong>{{createdrelative.time}}</strong> <small>by</small> <strong><a href="#">{{createdbyusername}}</a></strong></td>
     </tr>
@@ -86,13 +86,13 @@
         <option value='{{value}}'{{#selected}} selected{{/selected}}>{{text}}</option>
         {{/types}}
       </select>
-      <select id='release' name='release' class="span3" title="Please provide the release where the issue was originally encountered." required>
+      <select id='release' name='release' class="span3" title="Please provide the release where the issue was originally encountered.">
         <option></option>
         {{#releases}}
         <option value='{{value}}'{{#selected}} selected{{/selected}}>{{text}}</option>
         {{/releases}}
       </select>
-      <select id='area' name='area' class="span3" title="Please select the most appropriate area affected by the issue." required>
+      <select id='area' name='area' class="span3" title="Please select the most appropriate area affected by the issue.">
         <option></option>
         {{#areas}}
         <option value='{{value}}'{{#selected}} selected{{/selected}}>{{text}}</option>
@@ -170,7 +170,7 @@ $(document).ready(function () {
   $('#takeit').on('click', function (e) {
       var takeitButton = $('#takeit').button('loading');
 
-      $.post('{{app.path}}api/issue/{{issue.id}}', 'assignedto=[me]')
+    $.post('{{app.path}}api/issue/{{issue.id}}', 'assignedto=[me]{{^issue.couldtriage}}&triage=checked{{/issue.couldtriage}}')
           .done(function(data) {
             location.reload();
           }).fail(function (jqXHR, textStatus, errorThrown) {
