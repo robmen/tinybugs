@@ -33,7 +33,7 @@
         <div class="span3">
           <div class="row">
             <label for='release' class="span3">Release</label>
-            <select id='release' name='release' class="span3" title="Please provide the release where the issue was originally encountered." required>
+            <select id='release' name='release' class="span3" title="Please provide the release where the issue was originally encountered.">
               <option></option>
               {{#issue.releases}}
               <option value='{{value}}'{{#selected}} selected{{/selected}}>{{text}}</option>
@@ -49,7 +49,7 @@
         <div class="span3">
           <div class="row">
             <label for='tags' class="span3">Area</label>
-            <select id='area' name='area' class="span3" title="Please select the most appropriate area affected by the issue." required>
+            <select id='area' name='area' class="span3" title="Please select the most appropriate area affected by the issue.">
               <option></option>
               {{#issue.areas}}
               <option value='{{value}}'{{#selected}} selected{{/selected}}>{{text}}</option>
