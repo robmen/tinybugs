@@ -58,12 +58,15 @@ Issues:
 </tbody>
 </table>
 {{#page}}
-{{#previousUrl}}
-<a href="{{previousUrl}}">Previous</a>
-{{/previousUrl}}
-{{#nextUrl}}
-<a href="{{nextUrl}}">Next</a>
-{{/nextUrl}}
+<div class="pagination pagination-centered pagination-large">
+  <ul>
+  <li{{#first.disabled}} class='disabled'{{/first.disabled}}><a href="{{first.url}}">&laquo;</a></li>
+  <li{{#previous.disabled}} class='disabled'{{/previous.disabled}}><a href="{{previous.url}}">&lsaquo;</a></li>
+  {{#pages}}<li{{#active}} class="active"{{/active}}><a href="{{url}}">{{number}}</a></li>{{/pages}}
+  <li{{#next.disabled}} class='disabled'{{/next.disabled}}><a href="{{next.url}}">&rsaquo;</a></li>
+  <li{{#last.disabled}} class='disabled'{{/last.disabled}}><a href="{{last.url}}">&raquo;</a></li>
+  </ul>
+</div>
 {{/page}}
 
 <hr>
