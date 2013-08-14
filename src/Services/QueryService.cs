@@ -90,7 +90,7 @@ LEFT JOIN User ON IssueComment.CommentByUserId=User.Id
                 Sorts = (sorts != null) ? sorts.Select(s => new QuerySortColumn(s)).ToArray() : null,
                 Searches = (searches != null) ? searches.ToArray() : null,
                 Page = (pages != null) ? Convert.ToInt32(pages[pages.Length - 1]) : 1,
-                Count = (counts != null) ? Math.Min(Convert.ToInt32(counts[counts.Length - 1]), 500) : 250,
+                Count = (counts != null) ? Math.Min(Convert.ToInt32(counts[counts.Length - 1]), 500) : 25,
                 Template = (templates != null) ? templates[templates.Length - 1] : null,
             };
         }
