@@ -11,7 +11,7 @@
         {
             collection = collection ?? RouteTable.Routes;
 
-            var routedTypes = from t in Assembly.GetExecutingAssembly().GetTypes().AsParallel()
+            var routedTypes = from t in Assembly.GetCallingAssembly().GetTypes().AsParallel()
                               let attributes = t.GetCustomAttributes(typeof(RouteAttribute), true)
                               where attributes != null && attributes.Length > 0
                               select new { Type = t, Attributes = attributes.Cast<RouteAttribute>() };
