@@ -10,6 +10,9 @@
         [BelongTo(typeof(IssueComment))]
         public long Id { get; set; }
 
+        [BelongTo(typeof(IssueComment))]
+        public string CommentByUserId { get; set; }
+
         [BelongTo(typeof(User))]
         public string CommentByUserEmail { get; set; }
 

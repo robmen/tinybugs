@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>{{app.name}} - {{user.username}} | {{user.fullname}}</title>
+  <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+  <link href="{{app.path}}assets/css/tinybugs.css" rel="stylesheet" />
+</head>
+<body>
+<div class="container">
+  <div class="row">
+    <div class="span12">
+    <ul class="breadcrumb">
+    {{#breadcrumbs}}
+    {{#parents}}<li><a href="{{url}}">{{title}}</a> <span class="divider">/</span></li>{{/parents}}
+    {{/breadcrumbs}}
+    <li><a href="{{app.path}}">Issues</a> <span class="divider">/</span></li>
+    <li class="active">{{user.username}}</li>
+    </ul>
+    </div>
+  </div>
+
+  {{#user}}
+  <div class="row">
+  <div class="span10">
+    <img src="{{user.gravatarImageUrl}}" class="pull-left" />
+    <h1>{{username}}</h1>
+    <p>{{fullname}} <span class="label label-inverse">{{role}}</span></p>
+  </div>
+  </div>
+  {{/user}}
+  {{#me}}
+  <p>logged in as: {{me.username}}</p>
+  {{#unverified}}
+  <div class="row">
+  <div class="span6">
+  <form id='reactivateForm' method='post' class="form-inline">
+    <div class="alert alert-error hide">
+      <button type="button" class="close">&times;</button>
+      <strong>Error!</strong> Could not send the activate reset instructions.
+    </div>
+    <p>Your account is unverified. If you have not recieved an account verification email
+       or your account verification ticket expired, you can resend a ticket below by providing
+       your email address again.</p>
+    <div class="input-prepend">
+      <span class="add-on"><i class="icon-envelope"></i></span>
+      <input id='email' name='email' type='text' required />
+    </div>
+    <input type='submit' name='submit' class="btn" data-loading-text="Sending..." value='Resend verification' />
+  </form>
+  <div class="alert alert-info hide">
+    <button type="button" class="close">&times;</button>
+    <strong>Sent!</strong> An email has been sent with instructions how to activate your password. Feel free to <a href="{{app.path}}">browse some of our issues</a> while you wait.
+  </div>
+  </div>
+  </div>
+  {{/unverified}}
+  {{/me}}
+
+  {{> modal_login.mustache }}
+</div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="//ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+<script src="{{app.path}}assets/js/tinybugs.js"></script>
+<script>
+$(document).ready(function () {
+  $('#reactivateForm').validate({
+    validClass: 'success',
+    submitHandler: function (form) {
+      var submit = $(form).find(':submit').button('verifying');
+      var success = $('.alert-info').slideUp('fast');
+      var error = $(form).find('.alert-error').slideUp('fast');
+      var query = qs();
+
+      $.post('{{app.path}}api/verify/', $(form).serialize())
+          .done(function () {
+            $(form).slideUp('fast');
+            success.slideDown();
+          }).fail(function (jqXHR, textStatus, errorThrown) {
+            submit.button('reset');
+            error.slideDown();
+          });
+    }
+  });
+});
+</script>
+</body>
+</html>

@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using RobMensching.TinyBugs.Models;
+    using RobMensching.TinyBugs.Services;
     using ServiceStack.DataAnnotations;
 
     public class IssueViewModel
@@ -10,11 +11,17 @@
         [BelongTo(typeof(Issue))]
         public int Id { get; set; }
 
+        [BelongTo(typeof(Issue))]
+        public long AssignedToUserId { get; set; }
+
         [BelongTo(typeof(User))]
         public string AssignedToUserEmail { get; set; }
 
         [BelongTo(typeof(User))]
         public string AssignedToUserName { get; set; }
+
+        [BelongTo(typeof(Issue))]
+        public long CreatedByUserId { get; set; }
 
         [BelongTo(typeof(User))]
         public string CreatedByUserEmail { get; set; }
@@ -61,6 +68,10 @@
         public string Location { get; set; }
 
         public bool CouldTriage { get { return this.Status != IssueStatus.Untriaged; } }
+
+        public string AssignedToUserUrl { get { return ConfigService.AppPath + "user/" + this.AssignedToUserId; } }
+
+        public string CreatedByUserUrl { get { return ConfigService.AppPath + "user/" + this.CreatedByUserId; } }
 
         public RelativeDateViewModel CreatedRelative { get { return new RelativeDateViewModel(this.CreatedAt); } }
 

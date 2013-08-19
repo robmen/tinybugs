@@ -31,9 +31,9 @@
       {{#area}}<span class="label label-inverse">{{area}}</span>{{/area}}
       {{#votes}}<span class="badge label-warning" title="votes">{{votes}}</span>{{/votes}}
     </td>
-    <td><small>Assigned to</small> <strong><a href="#">{{assignedtousername}}</a>{{^assignedtousername}}No one {{#couldtriage}}<input id="takeit" type="button" class="btn btn-mini" data-loading-text="acquiring..." value="take it!" />{{/couldtriage}}{{/assignedtousername}}</strong></td>
+    <td><small>Assigned to</small> <strong><a href="{{assignedtouserurl}}">{{assignedtousername}}</a>{{^assignedtousername}}No one {{#couldtriage}}<input id="takeit" type="button" class="btn btn-mini" data-loading-text="acquiring..." value="take it!" />{{/couldtriage}}{{/assignedtousername}}</strong></td>
     <td><small>Updated</small> <strong>{{updatedrelative.date}}</strong> <small>@</small> <strong>{{updatedrelative.time}}</strong></td>
-    <td><small>Opened</small> <strong>{{createdrelative.date}}</strong> <small>@</small> <strong>{{createdrelative.time}}</strong> <small>by</small> <strong><a href="#">{{createdbyusername}}</a></strong></td>
+    <td><small>Opened</small> <strong>{{createdrelative.date}}</strong> <small>@</small> <strong>{{createdrelative.time}}</strong> <small>by</small> <strong><a href="{{createdbyuserurl}}">{{createdbyusername}}</a></strong></td>
     </tr>
     </table>
   </div>
@@ -130,12 +130,12 @@
     <tr>
     <td>
     {{#text}}
-    <small>Comment from</small> <strong><a href="#">{{commentbyusername}}</a></strong>
-        <strong>{{createdrelative.date}}</strong> <small>@</small> <strong>{{createdrelative.time}}</strong> <!--<small>by</small> <strong><a href="#">{{createdbyusername}}</a></strong>-->
+    <small>Comment from</small> <strong><a href="{{commentbyuserurl}}">{{commentbyusername}}</a></strong>
+        <strong>{{createdrelative.date}}</strong> <small>@</small> <strong>{{createdrelative.time}}</strong>
     {{/text}}
     {{^text}}
-    <small>Edited by</small> <strong><a href="#">{{commentbyusername}}</a></strong>
-        <strong>{{createdrelative.date}}</strong> <small>@</small> <strong>{{createdrelative.time}}</strong> <!--<small>by</small> <strong><a href="#">{{createdbyusername}}</a></strong>-->
+    <small>Edited by</small> <strong><a href="{{commentbyuserurl}}">{{commentbyusername}}</a></strong>
+        <strong>{{createdrelative.date}}</strong> <small>@</small> <strong>{{createdrelative.time}}</strong>
     {{/text}}
     <ul class="inline">
     {{#changes}}
