@@ -55,7 +55,7 @@
             DataService.Initialize(true);
 
             var q = QueryService.ParseQuery("?filter=release:v3.8");
-            var issues = QueryService.QueryIssues(q);
+            var issues = QueryService.QueryIssues(Guid.Empty, q);
             Assert.Equal("foo@example.com", issues.Issues[0].AssignedToUserEmail);
             Assert.Equal("bar@example.com", issues.Issues[0].CreatedByUserEmail);
             Assert.Equal("This is the title.", issues.Issues[0].Title);
@@ -69,7 +69,7 @@
             DataService.Initialize(true);
 
             var q = QueryService.ParseQuery("?filter=milestone:v3.8");
-            var issues = QueryService.QueryIssues(q);
+            var issues = QueryService.QueryIssues(Guid.Empty, q);
 
             Assert.NotEmpty(issues.Issues);
             issues.Issues.ForEach(i => Assert.Equal("v3.8", i.Release));
@@ -82,7 +82,7 @@
             DataService.Initialize(true);
 
             var q = QueryService.ParseQuery("?sort=release");
-            var issues = QueryService.QueryIssues(q);
+            var issues = QueryService.QueryIssues(Guid.Empty, q);
 
             Assert.Equal("v3.7", issues.Issues[0].Release);
             Assert.Equal("v3.8", issues.Issues[1].Release);
@@ -95,7 +95,7 @@
             DataService.Initialize(true);
 
             var q = QueryService.ParseQuery("?sort=release:desc");
-            var issues = QueryService.QueryIssues(q).Issues;
+            var issues = QueryService.QueryIssues(Guid.Empty, q).Issues;
 
             Assert.Equal("v3.8", issues[0].Release);
             Assert.Equal("v3.7", issues[1].Release);
@@ -108,7 +108,7 @@
             DataService.Initialize(true);
 
             var q = QueryService.ParseQuery("?search=old");
-            var issues = QueryService.QueryIssues(q);
+            var issues = QueryService.QueryIssues(Guid.Empty, q);
 
             Assert.NotEmpty(issues.Issues);
             issues.Issues.ForEach(i => Assert.Equal("v3.7", i.Release));
@@ -121,7 +121,7 @@
             DataService.Initialize(true);
 
             var q = QueryService.ParseQuery("?search=\"little%20longer\"");
-            var issues = QueryService.QueryIssues(q);
+            var issues = QueryService.QueryIssues(Guid.Empty, q);
 
             Assert.Equal(2, issues.Issues.Count);
         }
@@ -133,12 +133,12 @@
             DataService.Initialize(true);
 
             var q = QueryService.ParseQuery("?filter=assignedto=foo@example.com");
-            var issues = QueryService.QueryIssues(q).Issues;
+            var issues = QueryService.QueryIssues(Guid.Empty, q).Issues;
 
             issues.ForEach(i => Assert.Equal("foo@example.com", i.AssignedToUserEmail));
 
             var qc = QueryService.ParseQuery("?filter=createdby=bar@example.com");
-            var ic = QueryService.QueryIssues(qc).Issues;
+            var ic = QueryService.QueryIssues(Guid.Empty, qc).Issues;
 
             ic.ForEach(i => Assert.Equal("bar@example.com", i.CreatedByUserEmail));
         }
@@ -150,17 +150,17 @@
             DataService.Initialize(true);
 
             var q1 = QueryService.ParseQuery("?page=1&count=1");
-            var i1 = QueryService.QueryIssues(q1);
+            var i1 = QueryService.QueryIssues(Guid.Empty, q1);
             Assert.Single(i1.Issues);
             Assert.Equal("v3.8", i1.Issues[0].Release);
 
             var q2 = QueryService.ParseQuery("?page=2&count=1");
-            var i2 = QueryService.QueryIssues(q2).Issues;
+            var i2 = QueryService.QueryIssues(Guid.Empty, q2).Issues;
             Assert.Single(i2);
             Assert.Equal("v3.7", i2[0].Release);
 
             var q3 = QueryService.ParseQuery("?page=3&count=1");
-            var i3 = QueryService.QueryIssues(q3).Issues;
+            var i3 = QueryService.QueryIssues(Guid.Empty, q3).Issues;
             Assert.Empty(i3);
         }
 
@@ -179,7 +179,7 @@
             DataService.Initialize(true);
 
             var q = QueryService.ParseQuery("?filter=type:Feature");
-            var i = QueryService.QueryIssues(q);
+            var i = QueryService.QueryIssues(Guid.Empty, q);
             i.Issues.ForEach(issue => issue.Comments = QueryService.CommentsForIssue(issue.Id));
             Assert.Single(i.Issues);
             Assert.Single(i.Issues[0].Comments);
