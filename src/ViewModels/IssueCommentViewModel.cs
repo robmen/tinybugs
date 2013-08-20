@@ -11,7 +11,7 @@
         public long Id { get; set; }
 
         [BelongTo(typeof(IssueComment))]
-        public string CommentByUserId { get; set; }
+        public long CommentByUserId { get; set; }
 
         [BelongTo(typeof(User))]
         public string CommentByUserEmail { get; set; }
