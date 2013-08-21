@@ -48,6 +48,7 @@
                 return new JsonView(results.Errors, HttpStatusCode.BadRequest);
             }
 
+            issue.Status = IssueStatus.Untriaged;
             issue.CreatedAt = issue.UpdatedAt;
             issue.CreatedByUserId = user.Id;
 
