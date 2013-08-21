@@ -89,7 +89,17 @@
 
         public string TextRendered
         {
-            get { return new MarkdownDeep.Markdown() { NoFollowLinks = true, ExtraMode = true, SafeMode = true }.Transform(this.Text); }
+            get
+            {
+                try
+                {
+                    return new MarkdownDeep.Markdown() { NoFollowLinks = true, ExtraMode = true, SafeMode = true }.Transform(this.Text);
+                }
+                catch (Exception)
+                {
+                    return "<p>This issue cannot be rendered to Markdown. Consider simplifying the text of the isssue.</p>";
+                }
+            }
         }
     }
 }
