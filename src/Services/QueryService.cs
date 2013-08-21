@@ -137,6 +137,10 @@ LEFT JOIN User ON IssueComment.CommentByUserId=User.Id
                     ProcessFilter(userGuid, filter, sql, parameters);
                 }
             }
+            else
+            {
+                ProcessFilter(userGuid, new QueryFilterColumn("status:Open"), sql, parameters);
+            }
 
             if (query.Sorts != null)
             {
@@ -147,7 +151,7 @@ LEFT JOIN User ON IssueComment.CommentByUserId=User.Id
             }
             else
             {
-                ProcessSort(new QuerySortColumn("id"), sql, parameters);
+                ProcessSort(new QuerySortColumn("id:desc"), sql, parameters);
             }
 
             if (query.Searches != null)
