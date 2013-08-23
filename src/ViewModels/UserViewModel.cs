@@ -12,6 +12,7 @@
         public UserViewModel(User user)
         {
             this.Id = user.Id;
+            this.Email = user.Email;
             this.Username = user.UserName;
             this.FullName = user.FullName;
             this.GravatarImageUrl = UserService.GetGravatarImageUrl(user.GravatarId);
@@ -20,6 +21,8 @@
         }
 
         public long Id { get; set; }
+
+        public string Email { get; set; }
 
         public string Username { get; set; }
 

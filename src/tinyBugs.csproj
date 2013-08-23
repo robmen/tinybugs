@@ -59,6 +59,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Controllers\ConfigApiController.cs" />
+    <Compile Include="Controllers\EditUserController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\RegenerateApiController.cs" />
     <Compile Include="Controllers\UsersApiController.cs" />
@@ -136,6 +137,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <EmbeddedResource Include="assets\user.mustache" />
+    <EmbeddedResource Include="assets\userform.mustache" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

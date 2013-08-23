@@ -1,12 +1,14 @@
 ﻿namespace RobMensching.TinyBugs.Controllers
 {
     using System;
+    using System.Linq;
     using System.Net;
     using RobMensching.TinyBugs.Models;
     using RobMensching.TinyBugs.Services;
     using RobMensching.TinyBugs.ViewModels;
     using RobMensching.TinyWebStack;
     using ServiceStack.OrmLite;
+    using ServiceStack.Text;
 
     [Route("api/user/{username}")]
     public class UserApiController : ControllerBase
@@ -52,16 +54,15 @@
             {
                 return new StatusCodeView(HttpStatusCode.BadRequest);
             }
+            else if (username.Equals("0"))
+            {
+                username = "[me]";
+            }
 
             User me;
             if (!UserService.TryAuthenticateUser(context.User, out me))
             {
                 return new StatusCodeView(HttpStatusCode.BadGateway); // TODO: return a better error code that doesn't cause forms authentication to overwrite our response
-            }
-
-            if (!UserService.TryAuthorizeUser(me, UserRole.Admin))
-            {
-                return new StatusCodeView(HttpStatusCode.Forbidden);
             }
 
             User user;
@@ -70,21 +71,25 @@
                 return new StatusCodeView(HttpStatusCode.NotFound);
             }
 
-            UserRole role;
-            string newRole = context.Form["role"];
-            if (!Enum.TryParse<UserRole>(newRole, true, out role))
+            var results = user.PopulateWithData(context.Form, me);
+            if (results.Errors.Count == 0)
             {
-                context.SetStatusCode(HttpStatusCode.BadRequest);
-                return null;
+                using (var db = DataService.Connect())
+                using (var tx = db.BeginTransaction())
+                {
+                    db.UpdateOnly(user, v => v.Update(results.Updates.Keys.ToArray()).Where(u => u.Id == user.Id));
+
+                    if (results.Updates.Any(u => u.Key.Equals("VerifyToken")))
+                    {
+                        MailService.SendVerifyUser(user.Email, user.VerifyToken);
+                    }
+
+                    tx.Commit();
+                }
             }
 
-            user.Role = role;
-            using (var db = DataService.Connect())
-            {
-                db.UpdateOnly<User>(user, ev => ev.Update(u => u.Role).Where(u => u.Guid == user.Guid));
-            }
-
-            return new JsonView(new UserViewModel(user));
+            return new JsonView(new { user = new UserViewModel(user), errors = results.Errors },
+                                results.Errors.Count == 0 ? HttpStatusCode.OK : HttpStatusCode.BadRequest);
         }
 
         public bool TryGetUserNameFromContext(ControllerContext context, out string username)

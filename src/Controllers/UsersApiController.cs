@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Net;
-    using System.Text.RegularExpressions;
     using RobMensching.TinyBugs.Models;
     using RobMensching.TinyBugs.Services;
     using RobMensching.TinyBugs.ViewModels;
@@ -14,8 +13,6 @@
     [Route("api/user")]
     public class UsersApiController : ControllerBase
     {
-        private static Regex UsernameValidation = new Regex("[A-Za-z0-9]{3,15}", RegexOptions.Compiled | RegexOptions.CultureInvariant);
-
         public override ViewBase Get(ControllerContext context)
         {
             string query = context.QueryString["q"] ?? String.Empty;
@@ -34,16 +31,16 @@
             string verifyPassword = context.Form["verifypassword"];
             string username = context.Form["username"];
 
-            // Default username to email.
-            if (String.IsNullOrEmpty(username))
-            {
-                username = email;
-            }
-
             var errors = VerifyData(email, password, verifyPassword, username);
             if (errors.Length > 0)
             {
                 return new JsonView(errors, HttpStatusCode.BadRequest);
+            }
+
+            // Default username to email.
+            if (String.IsNullOrEmpty(username))
+            {
+                username = email;
             }
 
             User user = UserService.Create(email, password, username);
@@ -96,7 +93,7 @@
                 errors.Add(new ValidationError() { Field = "verifyPassword", Message = "Passwords must match." });
             }
 
-            if (String.IsNullOrEmpty(username) || !UsernameValidation.IsMatch(username))
+            if (!String.IsNullOrEmpty(username) && !User.UsernameValidation.IsMatch(username))
             {
                 errors.Add(new ValidationError() { Field = "username", Message = "Usernames must be three to fifteen characters long and can only contain letters and numbers." });
             }
