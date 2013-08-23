@@ -1,5 +1,8 @@
 ﻿namespace RobMensching.TinyBugs.Controllers
 {
+    using System;
+    using System.Linq;
+    using System.Web.Security;
     using RobMensching.TinyBugs.Models;
     using RobMensching.TinyBugs.Services;
     using RobMensching.TinyBugs.ViewModels;
@@ -13,6 +16,16 @@
         public override ViewBase Get(ControllerContext context)
         {
             Query q = QueryService.ParseQuery(context.QueryString);
+
+            User user;
+            if (q.Filters != null &&
+                q.Filters.Any(f => f.Column.Equals("user", StringComparison.OrdinalIgnoreCase)) &&
+                !UserService.TryAuthenticateUser(context.User, out user))
+            {
+                FormsAuthentication.RedirectToLoginPage(QueryService.RecreateQueryString(q));
+                return null;
+            }
+
             var issuesPaged = QueryService.QueryIssues(context.User, q);
             var pagePrefix = context.ControllerPath + QueryService.RecreateQueryString(q) + "&page=";
 
