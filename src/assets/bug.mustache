@@ -103,6 +103,7 @@
               data-url='{{app.path}}api/user/' autocomplete="off" value="{{assignedtousername}}" />
       <input id='resolution' name='resolution' type='text' class="typeahead span3" placeholder="resolution"
               data-url='{{app.path}}api/issue/resolution' autocomplete="off" value="{{resolution}}" />
+      <input id="status" name="status" type="hidden" value="{{status}}" />
       {{^couldtriage}}
       <label for='triage' class="checkbox span3" title="Check this box to have the team evaluate the bug. Be sure to provide a good explanation in the comment why the bug should be triaged again.">
         <input id='triage' name='triage' type='checkbox' checked /> Leave for triage
