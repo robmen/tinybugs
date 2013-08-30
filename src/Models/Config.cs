@@ -40,6 +40,7 @@
         public Dictionary<string, object> PopulateWithData(NameValueCollection data)
         {
             Dictionary<string, object> updated = new Dictionary<string, object>();
+            bool ssl = false;
 
             foreach (string name in data.AllKeys)
             {
@@ -108,11 +109,13 @@
                         break;
 
                     case "mailssl":
-                        this.MailSsl = true;
-                        updated.Add("MailSsl", this.MailSsl);
+                        ssl = true;
                         break;
                 }
             }
+
+            this.MailSsl = ssl;
+            updated.Add("MailSsl", this.MailSsl);
 
             this.UpdatedAt = DateTime.UtcNow;
             updated.Add("UpdatedAt", this.UpdatedAt);
