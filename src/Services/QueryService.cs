@@ -278,7 +278,7 @@ LEFT JOIN User ON IssueComment.CommentByUserId=User.Id
                 {
                     string parameterName = "p" + parameters.Keys.Count;
 
-                    sql.Where(String.Format("u1.Guid=@{0} OR u2.Guid=@{0}", parameterName));
+                    sql.Where(String.Format("(u1.Guid=@{0} OR u2.Guid=@{0})", parameterName));
                     parameters.Add(parameterName, user.Guid.ToString("N"));
                 }
             }
