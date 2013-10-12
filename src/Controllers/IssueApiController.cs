@@ -82,19 +82,19 @@
             if (!owner && !contributor)
             {
                 // AssignedTo may be changed if the issue isn't assigned to anyone. Status can be
-                // changed but if it is changed we'll check it further next.
-                if (results.Updates.Keys.Any(s => !((unassigned && s == "AssignedToUserId") || s == "Status" || s == "UpdatedAt")))
+                // changed but if it is changed we'll check it further next. Remove anything else.
+                var disallowed = results.Updates.Keys.Where(s => !((unassigned && s == "AssignedToUserId") || s == "Status" || s == "UpdatedAt")).ToList();
+                foreach (var remove in disallowed)
                 {
-                    return new StatusCodeView(HttpStatusCode.Forbidden);
+                    results.Updates.Remove(remove);
                 }
-                else // if status is being changed, ensure it's being set to untriaged.
+
+                // If status is being changed, ensure it's being set to untriaged.
+                PopulateResults.UpdatedValue statusChange;
+                if (results.Updates.TryGetValue("Status", out statusChange) &&
+                    (IssueStatus)statusChange.New != IssueStatus.Untriaged)
                 {
-                    PopulateResults.UpdatedValue statusChange;
-                    if (results.Updates.TryGetValue("Status", out statusChange) &&
-                        (IssueStatus)statusChange.New != IssueStatus.Untriaged)
-                    {
-                        return new StatusCodeView(HttpStatusCode.Forbidden);
-                    }
+                    results.Updates.Remove("Status");
                 }
             }
 
