@@ -86,7 +86,6 @@
         {
             var vm = new { app = new AppViewModel(), breadcrumbs = ConfigService.ExternalBreadcrumbs, mail = ConfigService.Mail };
             var pregens = new[] { new { template = "accessdenied.mustache", output = "accessdenied/index.html" },
-                                  new { template = "admin.mustache", output = "admin/index.html" },
                                   new { template = "login.mustache", output = "login/index.html" },
                                   new { template = "login_create.mustache", output = "login/create/index.html" },
                                   new { template = "login_reset.mustache", output = "login/reset/index.html" },
