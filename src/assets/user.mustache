@@ -73,7 +73,7 @@ $(document).ready(function () {
       var error = $(form).find('.alert-error').slideUp('fast');
       var query = qs();
 
-      $.post('{{app.path}}api/verify/', $(form).serialize())
+      $.post('{{app.path}}api/resend/activate/', $(form).serialize())
           .done(function () {
             $(form).slideUp('fast');
             success.slideDown();

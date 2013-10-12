@@ -60,6 +60,7 @@
   <ItemGroup>
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\ConfigApiController.cs" />
+    <Compile Include="Controllers\ResendApiController.cs" />
     <Compile Include="Controllers\EditUserController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\RegenerateApiController.cs" />
