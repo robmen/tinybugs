@@ -1,5 +1,7 @@
 ﻿namespace RobMensching.TinyBugs.Services
 {
+    using System;
+    using System.Linq;
     using System.Net;
     using System.Net.Mail;
     using Nustache.Core;
@@ -7,6 +9,22 @@
 
     public class MailService
     {
+        private const string CommentSubject = "Updated {{app.name}} issue #{{issue.id}} - {{issue.title}}";
+        private const string CommentBody =
+@"Issue #{{issue.id}} - {{issue.title}}
+  at: {{app.url}}{{issue.id}}/
+
+{{#comment}}
+{{#text}}Comment from:{{/text}}{{^text}}Edited by:{{/text}} {{commentbyusername}}
+{{#changes}}
+  * {{column}} {{#old}}changed from '{{old}}'{{/old}}{{^old}}set{{/old}} to {{#new}}'{{new}}'{{/new}}{{^new}}blank{{/new}}.
+{{/changes}}
+
+{{#text}}
+{{{text}}}
+{{/text}}
+{{/comment}}";
+
         private const string PasswordResetSubject = "{{app.name}} Password Assistance";
         private const string PasswordResetBody =
 @"We received a request to reset the password associated with this e-mail address. If you made this request, please follow the instructions below.
@@ -28,6 +46,29 @@ If clicking the link doesn't seem to work, you can copy and paste the link into 
 If you did not request a new account you can safely ignore this email.
 
 If clicking the link doesn't seem to work, you can copy and paste the link into your browser's address window, or retype it there. Once you have returned to {{app.name}}, we will give instructions for activating your account.";
+
+        public static void SendIssueComment(IssueViewModel issue, long commentId)
+        {
+            IssueCommentViewModel comment = issue.Comments.Where(c => c.Id == commentId).SingleOrDefault();
+            var vm = new { app = new AppViewModel(), issue = issue, comment = comment };
+            string subject = Render.StringToString(CommentSubject, vm);
+            string body = Render.StringToString(CommentBody, vm);
+
+            // Send to the opener of the issue if not the commenter.
+            if (comment.CommentByUserId != issue.CreatedByUserId &&
+                !String.IsNullOrEmpty(issue.CreatedByUserEmail))
+            {
+                Send(issue.CreatedByUserEmail, subject, body);
+            }
+
+            // Send to the holder of the issue if not also the commenter and opener.
+            if (comment.CommentByUserId != issue.AssignedToUserId &&
+                issue.AssignedToUserId != issue.CreatedByUserId &&
+                !String.IsNullOrEmpty(issue.AssignedToUserEmail))
+            {
+                Send(issue.AssignedToUserEmail, subject, body);
+            }
+        }
 
         public static void SendPasswordReset(string email, string token)
         {

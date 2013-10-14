@@ -9,6 +9,7 @@
     using RobMensching.TinyBugs.Services;
     using RobMensching.TinyBugs.ViewModels;
     using RobMensching.TinyWebStack;
+    using ServiceStack.Logging;
     using ServiceStack.OrmLite;
     using ServiceStack.Text;
 
@@ -191,6 +192,7 @@
                     }
 
                     db.Insert(comment);
+                    comment.Id = db.GetLastInsertId();
                 }
 
                 if (QueryService.TryGetIssueWithCommentsUsingDb(issue.Id, db, out vm))
@@ -200,6 +202,16 @@
 
                     FileService.WriteIssue(vm, breadcrumbs);
                     tx.Commit();
+
+                    // best effort email about changes to issue.
+                    try
+                    {
+                        MailService.SendIssueComment(vm, comment.Id);
+                    }
+                    catch (Exception e)
+                    {
+                        LogManager.GetLogger("error").Error(String.Format("  failed to send update about issue #{0}, comment #{1}", issue.Id, comment.Id), e);
+                    }
                 }
             }
 
