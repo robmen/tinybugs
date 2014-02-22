@@ -1,6 +1,7 @@
 ﻿namespace RobMensching.TinyBugs.Services
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Net;
     using System.Net.Mail;
@@ -54,19 +55,17 @@ If clicking the link doesn't seem to work, you can copy and paste the link into 
             string subject = Render.StringToString(CommentSubject, vm);
             string body = Render.StringToString(CommentBody, vm);
 
-            // Send to the opener of the issue if not the commenter.
-            if (comment.CommentByUserId != issue.CreatedByUserId &&
-                !String.IsNullOrEmpty(issue.CreatedByUserEmail))
-            {
-                Send(issue.CreatedByUserEmail, subject, body);
-            }
+            // Initialize sending emails to all comments.
+            HashSet<string> emails = new HashSet<string>(issue.Comments.Select(c => c.CommentByUserEmail));
+            emails.Add(issue.CreatedByUserEmail); // Send to the opener of the issue.
+            emails.Add(issue.AssignedToUserEmail); // Send to the holder of the issue.
 
-            // Send to the holder of the issue if not also the commenter and opener.
-            if (comment.CommentByUserId != issue.AssignedToUserId &&
-                issue.AssignedToUserId != issue.CreatedByUserId &&
-                !String.IsNullOrEmpty(issue.AssignedToUserEmail))
+            // Don't send emails to users that don't have emails nor the user that left the comment.
+            emails.RemoveWhere(s => String.IsNullOrEmpty(s) || s.Equals(comment.CommentByUserEmail, StringComparison.OrdinalIgnoreCase));
+
+            foreach (string email in emails)
             {
-                Send(issue.AssignedToUserEmail, subject, body);
+                Send(email, subject, body);
             }
         }
 
