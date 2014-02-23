@@ -25,7 +25,7 @@
 
             Mail = new MailConfig()
             {
-                From = WebConfigurationManager.AppSettings["mail.from"],
+                From = WebConfigurationManager.AppSettings["mail.from"] ?? WebConfigurationManager.AppSettings["mail.username"],
                 Server = WebConfigurationManager.AppSettings["mail.server"],
                 Port = WebConfigurationManager.AppSettings["mail.port"] != null ? Int32.Parse(WebConfigurationManager.AppSettings["mail.port"]) : 0,
                 Username = WebConfigurationManager.AppSettings["mail.username"],
@@ -108,15 +108,21 @@
                 areas = config.Areas;
                 releases = config.Releases;
                 breadcrumbs = config.ExternalBreadcrumbs;
-                Mail = new MailConfig()
+
+                // If the mail server was not configured by the web.config, populate the mail
+                // configuration from the provided config information.
+                if (String.IsNullOrEmpty(Mail.Server))
                 {
-                    From = config.MailFrom ?? config.MailUsername,
-                    Server = config.MailServer,
-                    Port = config.MailPort,
-                    RequireSsl = config.MailSsl,
-                    Username = config.MailUsername,
-                    Password = config.MailPassword,
-                };
+                    Mail = new MailConfig()
+                    {
+                        From = config.MailFrom ?? config.MailUsername,
+                        Server = config.MailServer,
+                        Port = config.MailPort,
+                        RequireSsl = config.MailSsl,
+                        Username = config.MailUsername,
+                        Password = config.MailPassword,
+                    };
+                }
             }
 
             if (String.IsNullOrEmpty(AppName))
