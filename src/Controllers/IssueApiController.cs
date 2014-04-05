@@ -185,18 +185,15 @@
                 if (!String.IsNullOrEmpty(comment.Text) || comment.Changes.Count > 0)
                 {
                     db.UpdateOnly(issue, v => v.Update(updates.Keys.ToArray()).Where(i => i.Id == issue.Id));
-
-                    if (updates.ContainsKey("Text") || updates.ContainsKey("Title"))
-                    {
-                        db.Update<FullTextSearchIssue>(new { Text = issue.Text, Title = issue.Title }, s => s.DocId == issue.Id);
-                    }
-
                     db.Insert(comment);
                     comment.Id = db.GetLastInsertId();
                 }
 
                 if (QueryService.TryGetIssueWithCommentsUsingDb(issue.Id, db, out vm))
                 {
+                    var allComments = String.Join(" ", vm.Comments.Select( issueComment => issueComment.Text ));
+                    db.Update<FullTextSearchIssue>(new { Text = issue.Text, Title = issue.Title, Comments = allComments }, s => s.DocId == issue.Id);
+                    
                     vm.Location = context.ApplicationPath + vm.Id + "/";
                     var breadcrumbs = new BreadcrumbsViewModel(new Breadcrumb("Issues", context.ApplicationPath), new Breadcrumb("#" + vm.Id + " - " + vm.Title, vm.Location));
 
